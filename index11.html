@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Monitor - SX Bingo</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%,#1a0505 100%);min-height:100vh;padding:20px;color:white;}
+
+.header{text-align:center;margin-bottom:24px;}
+.header h1{font-size:2.8em;font-weight:900;letter-spacing:4px;}
+.s{color:#c0392b;}
+.x{color:#ffffff;}
+.rest{background:linear-gradient(90deg,#ff6b6b,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.header p{font-size:12px;color:#555;letter-spacing:3px;margin-top:4px;}
+
+.fb-badge{text-align:center;font-size:12px;margin-bottom:12px;padding:7px;border-radius:8px;font-weight:bold;}
+.fb-ok{color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);}
+.fb-err{color:#ff6b6b;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);}
+
+.status-bar{border-radius:12px;padding:14px 24px;text-align:center;margin-bottom:20px;font-size:18px;font-weight:bold;border:2px solid;}
+.aguardando{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1);color:#666;}
+.ativo{background:rgba(76,175,80,0.1);border-color:#4caf50;color:#4caf50;}
+.finalizado{background:rgba(255,215,0,0.1);border-color:#ffd700;color:#ffd700;}
+
+.ultimo-numero{display:flex;justify-content:center;margin-bottom:20px;}
+.bola-grande{width:110px;height:110px;background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000 60%,#440000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:900;box-shadow:0 0 40px rgba(139,0,0,0.6);border:3px solid rgba(255,255,255,0.2);transition:all 0.3s;}
+.bola-grande.flash{box-shadow:0 0 70px rgba(255,215,0,0.9);border-color:#ffd700;transform:scale(1.08);}
+
+.secao{background:rgba(255,255,255,0.05);border-radius:14px;padding:16px;margin-bottom:20px;border:1px solid rgba(255,255,255,0.08);}
+.secao-titulo{color:#ffd700;font-size:12px;letter-spacing:3px;margin-bottom:12px;font-weight:bold;}
+.bolas-wrap{display:flex;flex-wrap:wrap;gap:8px;}
+.bola{width:46px;height:46px;background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;}
+.bola.ultima{box-shadow:0 0 20px #ffd700;border:2px solid #ffd700;transform:scale(1.15);}
+
+.stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+.stat{background:rgba(255,255,255,0.06);border-radius:12px;padding:12px 20px;text-align:center;border:1px solid rgba(255,255,255,0.08);min-width:90px;}
+.stat-val{font-size:24px;font-weight:900;}
+.stat-label{font-size:10px;color:#666;letter-spacing:2px;margin-top:2px;}
+
+/* TABELA JOGADORES */
+.tabela-wrap{background:rgba(255,255,255,0.04);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);margin-bottom:30px;}
+.tabela-header{display:grid;grid-template-columns:70px 60px 1fr 130px 160px;background:rgba(139,0,0,0.7);padding:14px 16px;font-size:12px;font-weight:bold;letter-spacing:2px;color:#ffd700;align-items:center;}
+.tabela-row{display:grid;grid-template-columns:70px 60px 1fr 130px 160px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.06);align-items:center;transition:all 0.4s;}
+.tabela-row:last-child{border-bottom:none;}
+.tabela-row.vencedora{background:rgba(255,215,0,0.12);animation:glow-row 2s ease-in-out infinite alternate;}
+.tabela-row.lider{background:rgba(255,107,107,0.08);}
+@keyframes glow-row{from{background:rgba(255,215,0,0.07);}to{background:rgba(255,215,0,0.18);}}
+.cel-cartela{font-size:13px;color:#888;font-weight:600;}
+.jogador-foto{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.2);display:block;}
+.jogador-foto-vazia{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:22px;}
+.nome-txt{font-size:20px;font-weight:900;color:#FFF;}
+.nome-txt.vencedor-nome{color:#ffd700;font-size:22px;}
+.barra-acertos{height:3px;background:rgba(255,255,255,0.08);border-radius:4px;margin-top:5px;max-width:200px;}
+.barra-fill{height:100%;background:linear-gradient(90deg,#8B0000,#ff6b6b);border-radius:4px;transition:width 0.6s;}
+.cel-acertos{text-align:center;}
+.acertos-badge{display:inline-block;background:rgba(139,0,0,0.5);border:1px solid rgba(255,107,107,0.4);color:#ff9999;border-radius:20px;padding:4px 14px;font-size:15px;font-weight:700;}
+.acertos-badge.alto{background:rgba(76,175,80,0.3);border-color:#4caf50;color:#4caf50;}
+.cel-valor{text-align:right;}
+.valor-txt{font-size:26px;font-weight:900;color:#FFF;}
+.valor-txt.tem-valor{color:#4ade80;font-size:28px;}
+.valor-txt.vencedor-val{color:#ffd700;font-size:30px;}
+.valor-txt.zero{color:#333;font-size:18px;}
+
+/* SEÇÃO CARTELAS */
+.cartelas-titulo{
+  color:#ffd700;font-size:12px;letter-spacing:3px;
+  font-weight:bold;margin-bottom:16px;
+  padding-bottom:10px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.cartelas-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:18px;
+  margin-bottom:30px;
+}
+.cartela{
+  background:#8B0000;
+  border-radius:15px;
+  padding:18px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.3);
+  border:2px solid transparent;
+  transition:all 0.3s;
+}
+.cartela.winner{
+  border-color:#ffd700;
+  box-shadow:0 0 30px rgba(255,215,0,0.6);
+  animation:glow-c 2s ease-in-out infinite alternate;
+}
+@keyframes glow-c{from{box-shadow:0 0 20px rgba(255,215,0,0.4);}to{box-shadow:0 0 45px rgba(255,215,0,0.9);}}
+.cartela-header{color:white;text-align:center;font-size:15px;font-weight:bold;margin-bottom:8px;opacity:0.7;}
+.cartela-player-wrap{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;}
+.cartela-foto{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #ffd700;}
+.cartela-player{color:#ffd700;font-size:15px;font-weight:bold;}
+.cartela-numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.num{
+  background:rgba(255,255,255,0.12);color:white;
+  padding:10px 4px;text-align:center;border-radius:7px;
+  font-size:20px;font-weight:bold;transition:all 0.35s;
+}
+.num.marked{
+  background:#4caf50;
+  box-shadow:0 0 10px rgba(76,175,80,0.6);
+  transform:scale(1.05);
+  animation:pop 0.4s ease;
+}
+@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.18);}100%{transform:scale(1.05);}}
+.cartela-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
+.acertos-txt{color:rgba(255,255,255,0.7);font-size:13px;}
+.acertos-num{color:white;font-weight:bold;}
+.ganho-txt{color:#4caf50;font-size:13px;font-weight:bold;}
+
+.pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4caf50;margin-right:8px;animation:pulseAnim 1.5s infinite;}
+@keyframes pulseAnim{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.3;transform:scale(0.8);}}
+.aguardando-msg{text-align:center;padding:50px;color:#333;font-size:16px;}
+
+@media(max-width:600px){
+  .tabela-header,.tabela-row{grid-template-columns:55px 48px 1fr 90px 110px;}
+  .nome-txt{font-size:16px;}.valor-txt{font-size:20px;}
+  .jogador-foto,.jogador-foto-vazia{width:40px;height:40px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><span class="s">S</span><span class="x">X</span><span class="rest"> BINGO MONITOR</span></h1>
+  <p>SÉRIE BRONZE — AO VIVO</p>
+</div>
+
+<div id="fbBadge" class="fb-badge fb-ok">🔥 Conectando ao Firebase...</div>
+
+<div id="statusBar" class="status-bar aguardando">
+  <span class="pulse"></span> Aguardando sorteio...
+</div>
+
+<div class="ultimo-numero">
+  <div class="bola-grande" id="bolaGrande">?</div>
+</div>
+
+<div class="secao">
+  <div class="secao-titulo">NÚMEROS SORTEADOS</div>
+  <div class="bolas-wrap" id="bolasWrap">
+    <div style="color:#333;font-size:14px;">Nenhum número sorteado ainda...</div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-val" id="stS" style="color:#8B0000;">0</div><div class="stat-label">SORTEADOS</div></div>
+  <div class="stat"><div class="stat-val" id="stR" style="color:#ffd700;">90</div><div class="stat-label">RESTANTES</div></div>
+  <div class="stat"><div class="stat-val" id="stTotal" style="color:#4caf50;">R$0</div><div class="stat-label">TOTAL PAGO</div></div>
+  <div class="stat"><div class="stat-val" id="stLider" style="color:#ff6b6b;">—</div><div class="stat-label">LÍDER</div></div>
+</div>
+
+<!-- TABELA JOGADORES -->
+<div class="tabela-wrap">
+  <div class="tabela-header">
+    <div>CARTELA</div><div>FOTO</div><div>JOGADOR</div>
+    <div style="text-align:center">ACERTOS</div>
+    <div style="text-align:right">TOTAL GANHO</div>
+  </div>
+  <div id="tabelaBody"><div class="aguardando-msg">🎯 Aguardando início do sorteio...</div></div>
+</div>
+
+<!-- CARTELAS AO VIVO -->
+<div class="secao">
+  <div class="cartelas-titulo">🃏 CARTELAS AO VIVO — NÚMEROS MARCADOS EM TEMPO REAL</div>
+  <div class="cartelas-grid" id="cartelasGrid">
+    <div class="aguardando-msg">🎯 Aguardando início do sorteio...</div>
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:10px;margin-bottom:20px;font-size:11px;color:#333;">
+  <span class="pulse"></span> AO VIVO — FIREBASE REALTIME DATABASE
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const cfg = {
+    apiKey:            "AIzaSyCXTQ932v0Amnbtha01BzFsUfUZKnwYQIA",
+    authDomain:        "chofer-522be.firebaseapp.com",
+    databaseURL:       "https://chofer-522be-default-rtdb.firebaseio.com",
+    projectId:         "chofer-522be",
+    storageBucket:     "chofer-522be.firebasestorage.app",
+    messagingSenderId: "81306033578",
+    appId:             "1:81306033578:web:0c3688bc455a51b972dfd3"
+  };
+
+  const db    = getDatabase(initializeApp(cfg));
+  const badge = document.getElementById('fbBadge');
+  let lastDrawnLen = 0;
+  let state = { game: null, fotos: {} };
+
+  // ── Listeners ───────────────────────────────────────────────────────────────
+  onValue(ref(db, 'bingo_bronze/game'), snap => {
+    badge.textContent = '🔥 Firebase conectado — ao vivo';
+    badge.className   = 'fb-badge fb-ok';
+    state.game = snap.exists() ? snap.val() : null;
+    if (!state.game) { reset(); return; }
+    render();
+  }, err => {
+    badge.textContent = '⚠️ Erro: ' + err.message;
+    badge.className   = 'fb-badge fb-err';
+  });
+
+  onValue(ref(db, 'bingo_bronze/fotos'), snap => {
+    state.fotos = snap.exists() ? snap.val() : {};
+    if (state.game) render();
+  });
+
+  // ── Reset ───────────────────────────────────────────────────────────────────
+  function reset() {
+    lastDrawnLen = 0;
+    document.getElementById('statusBar').className  = 'status-bar aguardando';
+    document.getElementById('statusBar').innerHTML  = '<span class="pulse"></span> Aguardando sorteio...';
+    document.getElementById('bolaGrande').textContent = '?';
+    document.getElementById('bolasWrap').innerHTML  = '<div style="color:#333;font-size:14px;">Nenhum número sorteado ainda...</div>';
+    document.getElementById('stS').textContent      = '0';
+    document.getElementById('stR').textContent      = '90';
+    document.getElementById('stTotal').textContent  = 'R$0';
+    document.getElementById('stLider').textContent  = '—';
+    document.getElementById('tabelaBody').innerHTML = '<div class="aguardando-msg">🎯 Aguardando início do sorteio...</div>';
+    document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">🎯 Aguardando início do sorteio...</div>';
+  }
+
+  // ── Render ──────────────────────────────────────────────────────────────────
+  function render() {
+    const g        = state.game;
+    const fotos    = state.fotos;
+    const drawn    = Array.isArray(g.drawn)    ? g.drawn    : [];
+    const cartelas = Array.isArray(g.cartelas) ? g.cartelas : [];
+    const acumulado= g.acumulado || {};
+    const status   = g.status    || 'aguardando';
+
+    // Status bar
+    const bar = document.getElementById('statusBar');
+    if (status === 'finalizado') {
+      bar.className = 'status-bar finalizado';
+      bar.innerHTML = '🏆 SORTEIO FINALIZADO';
+    } else if (status === 'ativo') {
+      bar.className = 'status-bar ativo';
+      bar.innerHTML = '<span class="pulse"></span> SORTEIO EM ANDAMENTO';
+    } else {
+      bar.className = 'status-bar aguardando';
+      bar.innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
+    }
+
+    // Bola grande
+    const ultimo = drawn.length > 0 ? drawn[drawn.length - 1] : null;
+    const bolaG  = document.getElementById('bolaGrande');
+    bolaG.textContent = ultimo ?? '?';
+    if (drawn.length > lastDrawnLen) {
+      bolaG.classList.add('flash');
+      setTimeout(() => bolaG.classList.remove('flash'), 800);
+    }
+    lastDrawnLen = drawn.length;
+
+    // Bolas sorteadas
+    const wrap = document.getElementById('bolasWrap');
+    wrap.innerHTML = drawn.length === 0
+      ? '<div style="color:#333;font-size:14px;">Nenhum número sorteado ainda...</div>'
+      : drawn.map(n => `<div class="bola${n === ultimo ? ' ultima' : ''}">${n}</div>`).join('');
+
+    // Stats
+    document.getElementById('stS').textContent = drawn.length;
+    document.getElementById('stR').textContent = 90 - drawn.length;
+
+    if (!cartelas.length) {
+      document.getElementById('tabelaBody').innerHTML  = '<div class="aguardando-msg">🎯 Inicie o sorteio para ver os jogadores!</div>';
+      document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">🎯 Inicie o sorteio para ver as cartelas!</div>';
+      document.getElementById('stTotal').textContent  = 'R$0';
+      document.getElementById('stLider').textContent  = '—';
+      return;
+    }
+
+    // Total pago
+    let total = 0;
+    cartelas.forEach(c => total += (acumulado[c.id] || 0));
+    document.getElementById('stTotal').textContent = `R$${total.toFixed(2)}`;
+
+    // Ordena por score
+    const sorted   = [...cartelas].sort((a, b) => b.score - a.score || (acumulado[b.id] || 0) - (acumulado[a.id] || 0));
+    document.getElementById('stLider').textContent = sorted[0]?.name?.split(' ')[0] ?? '—';
+
+    const fin      = status === 'finalizado';
+    const maxScore = Math.max(...cartelas.map(c => c.score));
+
+    // ── TABELA ───────────────────────────────────────────────────────────────
+    document.getElementById('tabelaBody').innerHTML = sorted.map((c, i) => {
+      const acum    = acumulado[c.id] || 0;
+      const isVenc  = fin && c.score === maxScore;
+      const isLid   = !fin && i === 0 && c.score > 0;
+      const cls     = isVenc ? 'tabela-row vencedora' : isLid ? 'tabela-row lider' : 'tabela-row';
+      const icon    = isVenc ? '👑 ' : isLid ? '🔥 ' : '';
+      const pct     = (c.score / 16) * 100;
+      const fotoHtml= fotos[c.id]
+        ? `<img class="jogador-foto" src="${fotos[c.id]}"/>`
+        : `<div class="jogador-foto-vazia">👤</div>`;
+      const nomeCls = isVenc ? 'nome-txt vencedor-nome' : 'nome-txt';
+      const valCls  = isVenc ? 'valor-txt vencedor-val' : acum > 0 ? 'valor-txt tem-valor' : 'valor-txt zero';
+      const badgeCls= c.score >= 8 ? 'acertos-badge alto' : 'acertos-badge';
+      return `
+        <div class="${cls}">
+          <div class="cel-cartela">Cartela<br>${c.id}</div>
+          <div>${fotoHtml}</div>
+          <div>
+            <div class="${nomeCls}">${icon}${c.name || 'Jogador ' + c.id}</div>
+            <div class="barra-acertos"><div class="barra-fill" style="width:${pct}%"></div></div>
+          </div>
+          <div class="cel-acertos"><span class="${badgeCls}">${c.score} / 16</span></div>
+          <div class="cel-valor"><div class="${valCls}">${acum > 0 ? 'R$ ' + acum.toFixed(2) : '—'}</div></div>
+        </div>`;
+    }).join('');
+
+    // ── CARTELAS ─────────────────────────────────────────────────────────────
+    document.getElementById('cartelasGrid').innerHTML = cartelas.map(c => {
+      const isWinner   = fin && c.score === maxScore;
+      const acum       = acumulado[c.id] || 0;
+      const foto       = fotos[c.id];
+      const fotoHtml   = foto
+        ? `<img class="cartela-foto" src="${foto}"/>`
+        : `<div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;">👤</div>`;
+      const marked = Array.isArray(c.markedNumbers) ? c.markedNumbers : [];
+      const nums = (Array.isArray(c.numbers) ? c.numbers : []).map(n =>
+        `<div class="num${marked.includes(n) ? ' marked' : ''}">${n}</div>`
+      ).join('');
+      return `
+        <div class="cartela${isWinner ? ' winner' : ''}">
+          <div class="cartela-header">Cartela ${c.id}${isWinner ? ' 👑' : ''}</div>
+          <div class="cartela-player-wrap">${fotoHtml}<span class="cartela-player">${c.name || 'Jogador ' + c.id}</span></div>
+          <div class="cartela-numbers">${nums}</div>
+          <div class="cartela-footer">
+            <span class="acertos-txt">Acertos: <span class="acertos-num">${c.score}/16</span></span>
+            <span class="ganho-txt">${acum > 0 ? '💰 R$ ' + acum.toFixed(2) : ''}</span>
+          </div>
+        </div>`;
+    }).join('');
+  }
+</script>
+</body>
+</html>
