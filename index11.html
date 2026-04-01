@@ -116,6 +116,18 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 @keyframes pulseAnim{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.3;transform:scale(0.8);}}
 .aguardando-msg{text-align:center;padding:50px;color:#333;font-size:16px;}
 
+/* BOTÃO SOM */
+.btn-som{
+  display:block;margin:0 auto 18px auto;
+  padding:10px 28px;border-radius:30px;
+  font-size:15px;font-weight:bold;letter-spacing:2px;
+  cursor:pointer;border:2px solid #ffd700;
+  background:rgba(255,215,0,0.08);color:#ffd700;
+  transition:all 0.2s;
+}
+.btn-som:hover{background:rgba(255,215,0,0.2);}
+.btn-som.mudo{border-color:#444;color:#444;background:rgba(255,255,255,0.03);}
+
 @media(max-width:600px){
   .tabela-header,.tabela-row{grid-template-columns:55px 48px 1fr 90px 110px;}
   .nome-txt{font-size:16px;}.valor-txt{font-size:20px;}
@@ -131,6 +143,9 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 </div>
 
 <div id="fbBadge" class="fb-badge fb-ok">🔥 Conectando ao Firebase...</div>
+
+<!-- BOTÃO SOM -->
+<button class="btn-som mudo" id="btnSom" onclick="toggleSom()">🔇 SOM DESATIVADO</button>
 
 <div id="statusBar" class="status-bar aguardando">
   <span class="pulse"></span> Aguardando sorteio...
@@ -176,6 +191,61 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   <span class="pulse"></span> AO VIVO — FIREBASE REALTIME DATABASE
 </div>
 
+<!-- ── LÓGICA DE SOM ─────────────────────────────────────────────────────── -->
+<script>
+  let somAtivo = false;
+  let audioCtx = null;
+
+  function toggleSom() {
+    somAtivo = !somAtivo;
+    const btn = document.getElementById('btnSom');
+    if (somAtivo) {
+      // Inicializa AudioContext na primeira interação do usuário
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      btn.textContent = '🔊 SOM ATIVADO';
+      btn.classList.remove('mudo');
+    } else {
+      btn.textContent = '🔇 SOM DESATIVADO';
+      btn.classList.add('mudo');
+    }
+  }
+
+  // Toca um "ping" de bingo ao sortear número
+  function tocarSorteio() {
+    if (!somAtivo || !audioCtx) return;
+    // Acorde: três notas rápidas ascendentes
+    [[520, 0], [660, 0.12], [800, 0.24]].forEach(([freq, delay]) => {
+      const osc  = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+      gain.gain.setValueAtTime(0.35, audioCtx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.4);
+      osc.start(audioCtx.currentTime + delay);
+      osc.stop(audioCtx.currentTime + delay + 0.45);
+    });
+  }
+
+  // Toca fanfarra de vitória
+  function tocarVitoria() {
+    if (!somAtivo || !audioCtx) return;
+    [[523,0],[659,0.15],[784,0.3],[1047,0.5],[784,0.7],[1047,0.9]].forEach(([freq, delay]) => {
+      const osc  = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+      gain.gain.setValueAtTime(0.4, audioCtx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.35);
+      osc.start(audioCtx.currentTime + delay);
+      osc.stop(audioCtx.currentTime + delay + 0.4);
+    });
+  }
+</script>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -193,6 +263,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   const db    = getDatabase(initializeApp(cfg));
   const badge = document.getElementById('fbBadge');
   let lastDrawnLen = 0;
+  let jaTocouVitoria = false;
   let state = { game: null, fotos: {} };
 
   // ── Listeners ───────────────────────────────────────────────────────────────
@@ -215,6 +286,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   // ── Reset ───────────────────────────────────────────────────────────────────
   function reset() {
     lastDrawnLen = 0;
+    jaTocouVitoria = false;
     document.getElementById('statusBar').className  = 'status-bar aguardando';
     document.getElementById('statusBar').innerHTML  = '<span class="pulse"></span> Aguardando sorteio...';
     document.getElementById('bolaGrande').textContent = '?';
@@ -241,12 +313,16 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     if (status === 'finalizado') {
       bar.className = 'status-bar finalizado';
       bar.innerHTML = '🏆 SORTEIO FINALIZADO';
+      // Som de vitória — toca só uma vez por jogo finalizado
+      if (!jaTocouVitoria) { jaTocouVitoria = true; tocarVitoria(); }
     } else if (status === 'ativo') {
       bar.className = 'status-bar ativo';
       bar.innerHTML = '<span class="pulse"></span> SORTEIO EM ANDAMENTO';
+      jaTocouVitoria = false;
     } else {
       bar.className = 'status-bar aguardando';
       bar.innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
+      jaTocouVitoria = false;
     }
 
     // Bola grande
@@ -256,6 +332,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     if (drawn.length > lastDrawnLen) {
       bolaG.classList.add('flash');
       setTimeout(() => bolaG.classList.remove('flash'), 800);
+      tocarSorteio(); // ← som ao sortear número
     }
     lastDrawnLen = drawn.length;
 
