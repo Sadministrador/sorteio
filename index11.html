@@ -4,6 +4,19 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SX Bingo</title>
+<meta name="theme-color" content="#8B0000">
+<link rel="manifest" href="data:application/manifest+json,{
+  &quot;name&quot;:&quot;SX Bingo&quot;,
+  &quot;short_name&quot;:&quot;SX Bingo&quot;,
+  &quot;start_url&quot;:&quot;.&quot;,
+  &quot;display&quot;:&quot;standalone&quot;,
+  &quot;background_color&quot;:&quot;#0a0a1a&quot;,
+  &quot;theme_color&quot;:&quot;#8B0000&quot;,
+  &quot;icons&quot;:[
+    {&quot;src&quot;:&quot;https://cdn-icons-png.flaticon.com/512/847/847969.png&quot;,&quot;sizes&quot;:&quot;192x192&quot;,&quot;type&quot;:&quot;image/png&quot;},
+    {&quot;src&quot;:&quot;https://cdn-icons-png.flaticon.com/512/847/847969.png&quot;,&quot;sizes&quot;:&quot;512x512&quot;,&quot;type&quot;:&quot;image/png&quot;}
+  ]
+}">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%,#1a0505 100%);min-height:100vh;padding:16px;color:white;}
@@ -12,16 +25,30 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 .s{color:#ff1a1a;text-shadow:0 0 18px rgba(255,30,30,0.9);}.x{color:#ffffff;}
 .rest{background:linear-gradient(90deg,#ff2222,#ff8800,#ffd700,#ff8800,#ff2222);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:brilhoBingo 2.5s linear infinite;}@keyframes brilhoBingo{0%{background-position:0% center;}100%{background-position:200% center;}}
 .header p{font-size:11px;color:#555;letter-spacing:3px;margin-top:4px;}
-.sorteio-badge{display:inline-block;margin-top:8px;padding:5px 18px;border-radius:30px;font-size:12px;font-weight:bold;letter-spacing:2px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);color:#ffd700;transition:all 0.5s;}
-.sorteio-badge span{font-size:18px;font-weight:900;color:#fff;margin-left:6px;}
+
+/* SORTEIO BADGE — letras maiores */
+.sorteio-badge{display:inline-block;margin-top:8px;padding:6px 22px;border-radius:30px;font-size:15px;font-weight:bold;letter-spacing:3px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);color:#ffd700;transition:all 0.5s;}
+.sorteio-badge span{font-size:24px;font-weight:900;color:#fff;margin-left:8px;}
+
 .fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;display:none;}
 .fb-ok{color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);}
 .fb-err{color:#ff6b6b;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);display:block!important;}
-.btn-som-wrap{text-align:center;margin-bottom:14px;}
-.btn-som{padding:16px 40px;border-radius:40px;font-size:18px;font-weight:bold;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:inline-block;border:none;}
-.btn-som.mudo{background:linear-gradient(135deg,#ff0000,#cc0000);color:white;box-shadow:0 0 35px rgba(255,0,0,0.9);animation:pulseMudo 1.2s ease-in-out infinite;}
-@keyframes pulseMudo{0%,100%{box-shadow:0 0 22px rgba(255,0,0,0.7);transform:scale(1);}50%{box-shadow:0 0 55px rgba(255,0,0,1);transform:scale(1.04);}}
-.btn-som.ativo{background:linear-gradient(135deg,#0077ff,#0044cc);color:white;box-shadow:0 0 28px rgba(0,119,255,0.8);animation:pulseAtivo 2s ease-in-out infinite;}@keyframes pulseAtivo{0%,100%{box-shadow:0 0 20px rgba(0,119,255,0.6);}50%{box-shadow:0 0 42px rgba(0,119,255,1);}}
+
+/* BOTÕES DE AÇÃO — linha com som + instalar */
+.btn-actions{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+
+/* BOTÃO SOM — menor */
+.btn-som{padding:10px 22px;border-radius:30px;font-size:13px;font-weight:bold;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;border:none;}
+.btn-som.mudo{background:linear-gradient(135deg,#ff0000,#cc0000);color:white;box-shadow:0 0 28px rgba(255,0,0,0.8);animation:pulseMudo 1.2s ease-in-out infinite;}
+@keyframes pulseMudo{0%,100%{box-shadow:0 0 18px rgba(255,0,0,0.6);transform:scale(1);}50%{box-shadow:0 0 45px rgba(255,0,0,0.95);transform:scale(1.03);}}
+.btn-som.ativo{background:linear-gradient(135deg,#0077ff,#0044cc);color:white;box-shadow:0 0 22px rgba(0,119,255,0.7);animation:pulseAtivo 2s ease-in-out infinite;}
+@keyframes pulseAtivo{0%,100%{box-shadow:0 0 16px rgba(0,119,255,0.5);}50%{box-shadow:0 0 36px rgba(0,119,255,0.9);}}
+
+/* BOTÃO INSTALAR */
+.btn-instalar{padding:10px 22px;border-radius:30px;font-size:13px;font-weight:bold;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:none;align-items:center;gap:6px;border:none;background:linear-gradient(135deg,#ffd700,#ff8800);color:#000;box-shadow:0 0 20px rgba(255,215,0,0.5);}
+.btn-instalar:hover{transform:scale(1.04);box-shadow:0 0 32px rgba(255,215,0,0.8);}
+.btn-instalar.visivel{display:inline-flex;}
+
 .narrador-box{background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:14px 20px;text-align:center;margin-bottom:14px;min-height:52px;display:flex;align-items:center;justify-content:center;transition:all 0.3s;}
 .narrador-txt{font-size:20px;font-weight:bold;color:#555;letter-spacing:1px;}
 .narrador-box.falando{background:rgba(255,215,0,0.13);border-color:#ffd700;box-shadow:0 0 22px rgba(255,215,0,0.25);}
@@ -107,9 +134,13 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 
 <div id="fbBadge" class="fb-badge fb-ok">🔥 Conectando ao Firebase...</div>
 
-<div class="btn-som-wrap">
+<!-- Linha com botão de som + botão instalar -->
+<div class="btn-actions">
   <button class="btn-som mudo" id="btnSom" onclick="ativarSom()">
-    🔇 TOQUE AQUI PARA ATIVAR VOZ + SOM
+    🔇 Clique para ativar audio
+  </button>
+  <button class="btn-instalar" id="btnInstalar">
+    📲 Instalar App
   </button>
 </div>
 
@@ -157,6 +188,29 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 <div style="margin-bottom:20px;"></div>
 
 <script>
+  // ─── PWA: instalar app ────────────────────────────────────────────────────
+  let deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const btn = document.getElementById('btnInstalar');
+    btn.classList.add('visivel');
+  });
+  document.getElementById('btnInstalar').addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      document.getElementById('btnInstalar').classList.remove('visivel');
+    }
+  });
+  // Service Worker inline para PWA
+  if ('serviceWorker' in navigator) {
+    const swCode = `self.addEventListener('install',e=>{self.skipWaiting();});self.addEventListener('fetch',e=>{});`;
+    const blob   = new Blob([swCode], { type: 'application/javascript' });
+    navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+  }
+
   var somAtivo     = false;
   var audioCtx     = null;
   var gainMaster   = null;
@@ -165,10 +219,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   var filaFala     = [];
   var estaFalando  = false;
 
-  // ─── Controle de áudio independente do status Firebase ───────────────────
-  // Guarda a fila de números pendentes de falar mesmo após status=finalizado
-  // O sorteio visual pode mostrar "finalizado" mas o áudio continua até esvaziar a fila.
-  var filaNumerosAudio = []; // {num, delay} - fila local de números a narrar
+  var filaNumerosAudio = [];
   var audioEmProcessamento = false;
 
   function ativarSom() {
@@ -185,7 +236,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       somAtivo = true;
 
       var btn = document.getElementById('btnSom');
-      btn.textContent = '🔊 VOZ ATIVADA — toque para desativar';
+      btn.textContent = '🔊 Áudio ativado';
       btn.classList.remove('mudo');
       btn.classList.add('ativo');
 
@@ -196,7 +247,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       filaFala = []; estaFalando = false;
       filaNumerosAudio = []; audioEmProcessamento = false;
       var btn = document.getElementById('btnSom');
-      btn.textContent = '🔇 TOQUE AQUI PARA ATIVAR VOZ + SOM';
+      btn.textContent = '🔇 Clique para ativar audio';
       btn.classList.remove('ativo');
       btn.classList.add('mudo');
       setNarrador('— narrador desativado —', false);
@@ -288,34 +339,24 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     });
   }
 
-  // ─── Fila de anúncio de números independente do Firebase ─────────────────
-  // Cada número entra na fila e é anunciado sequencialmente.
-  // Mesmo que o status vire "finalizado" no Firebase, os números na fila
-  // continuam sendo anunciados até o fim — sem interrupção.
-  var filaNumeros      = [];   // números aguardando anúncio de áudio
-  // ─── Contador de sorteios ────────────────────────────────────────────────
-  // Persiste no localStorage — reseta quando participantes mudam
+  var filaNumeros      = [];
   var numSorteio       = parseInt(localStorage.getItem('sx_numSorteio') || '1');
   var hashParticipantes= localStorage.getItem('sx_hashParticipantes') || '';
-  // Atualiza badge com valor salvo ao carregar a página
   document.addEventListener('DOMContentLoaded', function(){
     var el = document.getElementById('numSorteio');
     if (el) el.textContent = numSorteio;
   });
 
   function calcHashParticipantes(cartelas) {
-    // Hash simples: IDs + nomes concatenados, para detectar troca de grupo
     return cartelas.map(function(c){ return c.id + ':' + (c.name||''); }).sort().join('|');
   }
 
   function atualizarContadorSorteio(cartelas, novoSorteio) {
     var hashAtual = calcHashParticipantes(cartelas);
     if (hashAtual !== hashParticipantes) {
-      // Participantes mudaram — recomeça do 1
       numSorteio = 1;
       hashParticipantes = hashAtual;
     } else if (novoSorteio) {
-      // Mesmo grupo, novo sorteio — incrementa
       numSorteio++;
     }
     localStorage.setItem('sx_numSorteio', numSorteio);
@@ -324,14 +365,13 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     if (el) el.textContent = numSorteio;
   }
   var anunciandoNumero = false;
-  var pendingFimAnuncio = null; // guarda dados do fim para anunciar DEPOIS da fila
+  var pendingFimAnuncio = null;
 
   function enfileirarNumero(n) {
     filaNumeros.push(n);
     processarFilaNumeros();
   }
 
-  // Lista dos números já anunciados pelo narrador (controla o visual sincronizado)
   var numerosVisiveis = [];
 
   function atualizarBolaGrande(n) {
@@ -359,14 +399,11 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     var n = filaNumeros.shift();
 
     tocarPing();
-    // Atualiza a bola grande e o painel junto com o ping — sincronizado com a voz
     setTimeout(function() {
       atualizarBolaGrande(n);
       falar('Número... ' + n + '!');
-      // Aguarda o término da fala antes de processar o próximo
       esperarFimFala(function() {
         anunciandoNumero = false;
-        // Se não há mais números na fila, verifica se há anúncio de fim pendente
         if (filaNumeros.length === 0 && pendingFimAnuncio) {
           var dados = pendingFimAnuncio;
           pendingFimAnuncio = null;
@@ -378,7 +415,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     }, 300);
   }
 
-  // Aguarda a fila de fala esvaziar completamente antes de chamar callback
   function esperarFimFala(callback) {
     var intervalo = setInterval(function() {
       if (!estaFalando && filaFala.length === 0) {
@@ -446,7 +482,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 
   function reset() {
     lastDrawnLen = 0; lastStatus = ''; jaAnunciouFim = false;
-    // Limpa fila de áudio e visual ao resetar
     filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null; numerosVisiveis = [];
     document.getElementById('statusBar').className = 'status-bar aguardando';
     document.getElementById('statusBar').innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
@@ -469,8 +504,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     const acumulado= g.acumulado || {};
     const status   = g.status    || 'aguardando';
 
-    // ── Detecta início de novo sorteio (drawn zerou ou status reiniciou) ────
-    // Se o sorteio anterior terminou e um novo começa, limpa tudo visualmente.
     if (lastStatus === 'finalizado' && (status === 'ativo' || status === 'aguardando')) {
       lastDrawnLen = 0; jaAnunciouFim = false;
       filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null;
@@ -483,10 +516,8 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       document.getElementById('stS').textContent = '0';
       document.getElementById('stR').textContent = '90';
       setNarrador('— narrador aguardando —', false);
-      // Novo sorteio com mesmos participantes — incrementa contador
       atualizarContadorSorteio(cartelas, true);
     }
-    // Também reseta se drawn voltou para 0 enquanto estava ativo (novo jogo iniciado)
     if (drawn.length < lastDrawnLen && drawn.length === 0) {
       filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null;
       numerosVisiveis = [];
@@ -500,7 +531,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       setNarrador('— narrador aguardando —', false);
     }
 
-    // ── Barra de status visual ───────────────────────────────────────────────
     const bar = document.getElementById('statusBar');
     if (status === 'finalizado') {
       bar.className = 'status-bar finalizado';
@@ -513,32 +543,23 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       bar.innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
     }
 
-    // ── Anuncia início ───────────────────────────────────────────────────────
     if (status === 'ativo' && lastStatus !== 'ativo' && lastStatus !== '') {
       falar('Atenção! Sorteio da série bronze iniciado!', true);
     }
 
-    // ── Novos números: enfileira no sistema de áudio independente ────────────
-    // Isso garante que mesmo após status=finalizado, todos os números
-    // previamente sorteados sejam narrados até o fim antes do anúncio do vencedor.
     if (drawn.length > lastDrawnLen) {
       const novos = drawn.slice(lastDrawnLen);
       novos.forEach(n => enfileirarNumero(n));
     }
 
-    // ── Fim do sorteio: agenda anúncio do vencedor APÓS a fila de áudio ──────
-    // Em vez de anunciar imediatamente, salva em pendingFimAnuncio.
-    // A função processarFilaNumeros() vai disparar o anúncio quando a fila esvaziar.
     if (status === 'finalizado' && !jaAnunciouFim && cartelas.length > 0) {
       jaAnunciouFim = true;
       const maxScore = Math.max(...cartelas.map(c => c.score));
       const winners  = cartelas.filter(c => c.score === maxScore);
 
       if (filaNumeros.length === 0 && !anunciandoNumero) {
-        // Fila já vazia — anuncia imediatamente
         anunciarVencedorAgora(winners, maxScore);
       } else {
-        // Ainda há números na fila de áudio — armazena para anunciar depois
         pendingFimAnuncio = { winners, maxScore };
       }
     }
@@ -548,9 +569,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     lastDrawnLen = drawn.length;
     lastStatus   = status;
 
-    // ── Visual: bola grande e painel são controlados pelo áudio ────────────
-    // atualizarBolaGrande(n) é chamado em processarFilaNumeros() junto com a voz.
-    // Assim a bola e o painel só mudam quando o narrador começa a falar o número.
     if (numerosVisiveis.length === 0 && drawn.length === 0) {
       document.getElementById('bolasWrap').innerHTML =
         '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
@@ -565,7 +583,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       document.getElementById('stLider').textContent = '—';
       return;
     }
-    // Verifica se participantes mudaram (novo grupo) sem incrementar sorteio
     atualizarContadorSorteio(cartelas, false);
 
     let total = 0;
