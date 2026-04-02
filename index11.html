@@ -13,39 +13,47 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 .s{color:#ff1a1a;text-shadow:0 0 18px rgba(255,30,30,0.9);}.x{color:#ffffff;}
 .rest{background:linear-gradient(90deg,#ff2222,#ff8800,#ffd700,#ff8800,#ff2222);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:brilhoBingo 2.5s linear infinite;}@keyframes brilhoBingo{0%{background-position:0% center;}100%{background-position:200% center;}}
 .header p{font-size:11px;color:#555;letter-spacing:3px;margin-top:4px;}
+
 .sorteio-badge{display:inline-block;margin-top:8px;padding:6px 22px;border-radius:30px;font-size:15px;font-weight:bold;letter-spacing:3px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);color:#ffd700;}
 .sorteio-badge span{font-size:24px;font-weight:900;color:#fff;margin-left:8px;}
-.fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;}
-.fb-ok{color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);}
+
+.fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);}
+
 .btn-actions{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;}
 .btn-som{padding:12px 26px;border-radius:30px;font-size:14px;font-weight:bold;cursor:pointer;transition:all 0.2s;border:none;outline:none;}
 .btn-som.mudo{background:linear-gradient(135deg,#ff0000,#cc0000);color:white;box-shadow:0 0 20px rgba(255,0,0,0.6);animation:pulse 1.5s infinite;}
 .btn-som.ativo{background:linear-gradient(135deg,#0077ff,#0044cc);color:white;}
 @keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);}}
+
 .narrador-box{background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:14px;text-align:center;margin-bottom:14px;min-height:52px;display:flex;align-items:center;justify-content:center;}
 .narrador-txt{font-size:20px;font-weight:bold;color:#555;}
 .narrador-box.falando .narrador-txt{color:#ffd700;}
+
 .status-bar{border-radius:12px;padding:12px;text-align:center;margin-bottom:16px;font-size:16px;font-weight:bold;border:2px solid;}
 .aguardando{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);color:#555;}
 .ativo{background:rgba(76,175,80,0.1);border-color:#4caf50;color:#4caf50;}
 .finalizado{background:rgba(255,215,0,0.1);border-color:#ffd700;color:#ffd700;}
+
 .ultimo-numero{display:flex;justify-content:center;margin-bottom:16px;}
 .bola-grande{width:110px;height:110px;background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000 60%,#440000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:50px;font-weight:900;box-shadow:0 0 30px rgba(139,0,0,0.5);border:3px solid rgba(255,255,255,0.15);}
 .bola-grande.flash{box-shadow:0 0 70px rgba(255,215,0,1);border-color:#ffd700;}
+
 .secao{background:rgba(255,255,255,0.04);border-radius:12px;padding:14px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.07);}
 .bolas-wrap{display:flex;flex-wrap:wrap;gap:7px;}
 .bola{width:40px;height:40px;background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
-.bola.ultima{border:2px solid #ffd700;box-shadow:0 0 15px #ffd700;}
+
 .stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
 .stat{background:rgba(255,255,255,0.05);border-radius:10px;padding:10px;text-align:center;min-width:80px;}
+
 .tabela-wrap{background:rgba(255,255,255,0.03);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.07);margin-bottom:20px;}
 .tabela-row{display:grid;grid-template-columns:50px 60px 1fr 80px;padding:12px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center;}
+.jogador-foto{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.1);}
+
 .cartelas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:15px;}
 .cartela{background:#8B0000;border-radius:12px;padding:15px;box-shadow:0 5px 15px rgba(0,0,0,0.3);}
 .cartela-numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:10px;}
 .num{background:rgba(255,255,255,0.1);padding:8px;text-align:center;border-radius:5px;font-weight:bold;}
 .num.marked{background:#4caf50;}
-.jogador-foto-vazia{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;}
 </style>
 </head>
 <body>
@@ -56,7 +64,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   <div class="sorteio-badge">SORTEIO <span id="numSorteioDisplay">1</span></div>
 </div>
 
-<div id="fbBadge" class="fb-badge fb-ok" style="background: rgba(255,0,0,0.1); color: red;">⏳ Conectando ao Firebase...</div>
+<div id="fbBadge" class="fb-badge">Conectado ao SX Server</div>
 
 <div class="btn-actions">
   <button class="btn-som mudo" id="btnSom" onclick="ativarSom()">
@@ -68,7 +76,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   <div class="narrador-txt" id="narradorTxt">— narrador aguardando —</div>
 </div>
 
-<div id="statusBar" class="status-bar aguardando">Aguardando sorteio...</div>
+<div id="statusBar" class="status-bar aguardando">Conectando...</div>
 
 <div class="ultimo-numero">
   <div class="bola-grande" id="bolaGrande">?</div>
@@ -89,6 +97,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 <div class="cartelas-grid" id="cartelasGrid"></div>
 
 <script>
+  // --- CONTROLE DE ÁUDIO ---
   var somAtivo = false;
   var audioCtx = null;
   var gainMaster = null;
@@ -96,7 +105,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   var filaFala = [];
   var vozEscolhida = null;
   
-  // Persistência do número do sorteio
   var numSorteio = parseInt(localStorage.getItem('sx_bingo_n_sorteio')) || 1;
   var ultimaListaJogadores = localStorage.getItem('sx_bingo_jogadores_hash') || "";
 
@@ -123,9 +131,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
         vozEscolhida = vozes.find(v => v.lang.startsWith('pt') && (v.name.includes('Male') || v.name.includes('Google'))) || vozes.find(v => v.lang.startsWith('pt'));
       };
       carregarVozes();
-      if (speechSynthesis.onvoiceschanged !== undefined) {
-        speechSynthesis.onvoiceschanged = carregarVozes;
-      }
+      if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = carregarVozes;
       
       tocarPing();
     } else {
@@ -149,7 +155,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     var msg = new SpeechSynthesisUtterance(texto);
     msg.lang = 'pt-BR';
     msg.pitch = 0.85; 
-    msg.rate = 1.0; // Velocidade normal para ser mais rápido
+    msg.rate = 1.0;
     if (vozEscolhida) msg.voice = vozEscolhida;
     
     msg.onstart = () => { 
@@ -200,24 +206,16 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     const g = snap.val();
     if (!g) return;
 
-    // Feedback de conexão
-    const badge = document.getElementById('fbBadge');
-    badge.textContent = "✅ Conectado ao Bingo";
-    badge.style.background = "rgba(76, 175, 80, 0.1)";
-    badge.style.color = "#4caf50";
-    
     const drawn = g.drawn || [];
     const cartelas = g.cartelas || [];
 
-    // --- LÓGICA DE TROCA DE SORTEIO ---
-    // Se a lista de números foi esvaziada e antes tinha números, significa que limpou o sorteador.
+    // --- LÓGICA DO CONTADOR DE SORTEIO ---
     if (drawn.length === 0 && lastDrawnCount > 0) {
       numSorteio++;
       salvarSorteio();
-      falar("Iniciando novo sorteio. Sorteio número " + numSorteio);
+      falar("Limpando a mesa. Iniciando sorteio número " + numSorteio);
     }
 
-    // Se a lista de participantes mudou radicalmente (excluiu todos), volta ao 1
     const currentJogadoresHash = cartelas.map(c => c.id).join(',');
     if (ultimaListaJogadores !== "" && currentJogadoresHash === "" && cartelas.length === 0) {
       numSorteio = 1;
@@ -226,14 +224,23 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     ultimaListaJogadores = currentJogadoresHash;
     localStorage.setItem('sx_bingo_jogadores_hash', currentJogadoresHash);
 
-    // --- ÁUDIO DOS NÚMEROS ---
+    // --- ANÚNCIO DE NÚMEROS ---
     if (drawn.length > lastDrawnCount) {
       const novoNumero = drawn[drawn.length - 1];
       tocarPing();
       falar("Número " + novoNumero);
+      lastDrawnCount = drawn.length;
+    }
+
+    // --- ANÚNCIO DE VENCEDORES (PARABÉNS) ---
+    if (g.status === 'finalizado' && statusAnterior === 'ativo') {
+      const vencedores = cartelas.filter(c => c.score >= 16);
+      if (vencedores.length > 0) {
+        const nomes = vencedores.map(v => v.name || 'Jogador ' + v.id).join(', ');
+        falar("Biiingo! Parabéns aos ganhadores: " + nomes);
+      }
     }
     
-    lastDrawnCount = drawn.length;
     statusAnterior = g.status;
     render(g);
   });
@@ -243,27 +250,50 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     const cartelas = g.cartelas || [];
     const bar = document.getElementById('statusBar');
 
+    // Status visual
     bar.textContent = g.status === 'ativo' ? '🔴 SORTEIO EM ANDAMENTO' : '🏆 SORTEIO FINALIZADO';
     bar.className = 'status-bar ' + (g.status === 'ativo' ? 'ativo' : 'finalizado');
 
+    // Bola
     document.getElementById('bolaGrande').textContent = drawn.length ? drawn[drawn.length-1] : '?';
     document.getElementById('bolasWrap').innerHTML = drawn.map(n => `<div class="bola">${n}</div>`).join('');
     
+    // Stats e Prêmios
+    const totalArrecadado = cartelas.length * 5; // Exemplo: 5 reais por cartela
     document.getElementById('stS').textContent = drawn.length;
     document.getElementById('stR').textContent = 90 - drawn.length;
+    document.getElementById('stTotal').textContent = 'R$' + totalArrecadado;
 
-    document.getElementById('tabelaBody').innerHTML = cartelas.sort((a,b)=>b.score-a.score).map(c => `
-      <div class="tabela-row">
-        <div style="font-size:10px">C${c.id}</div>
-        <div><div class="jogador-foto-vazia">👤</div></div>
-        <div class="nome-txt">${c.name || 'Jogador'}</div>
-        <div style="font-weight:bold; color:#ffd700">${c.score}/16</div>
-      </div>
-    `).join('');
+    // Lógica de Ganhadores e Divisão de Prêmio
+    const vencedores = cartelas.filter(c => c.score >= 16);
+    const premioPorPessoa = vencedores.length > 0 ? (totalArrecadado / vencedores.length).toFixed(2) : 0;
 
+    // Tabela com Fotos e Prêmios Individuais
+    document.getElementById('tabelaBody').innerHTML = cartelas.sort((a,b)=>b.score-a.score).map(c => {
+      const eGanhador = c.score >= 16;
+      const displayPremio = eGanhador ? `<span style="color:#4caf50">R$${premioPorPessoa}</span>` : 'R$0';
+      const fotoUrl = c.photoUrl || 'https://via.placeholder.com/50/333/fff?text=?';
+
+      return `
+        <div class="tabela-row" style="${eGanhador ? 'background:rgba(76,175,80,0.1)' : ''}">
+          <div style="font-size:10px">ID ${c.id}</div>
+          <div><img src="${fotoUrl}" class="jogador-foto" onerror="this.src='https://via.placeholder.com/50/333/fff?text=?'"></div>
+          <div class="nome-txt">${c.name || 'Jogador'} ${eGanhador ? '🏆' : ''}</div>
+          <div style="text-align:right">
+             <div style="font-weight:bold; color:#ffd700">${c.score}/16</div>
+             <div style="font-size:10px">${displayPremio}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Cartelas
     document.getElementById('cartelasGrid').innerHTML = cartelas.map(c => `
       <div class="cartela">
-        <div style="font-weight:bold; font-size:12px">CARTELA ${c.id} - ${c.name || ''}</div>
+        <div style="font-weight:bold; font-size:12px; display:flex; justify-content:space-between">
+           <span>CARTELA ${c.id} - ${c.name || ''}</span>
+           <span>${c.score}/16</span>
+        </div>
         <div class="cartela-numbers">
           ${(c.numbers || []).map(n => `<div class="num ${(c.markedNumbers || []).includes(n)?'marked':''}">${n}</div>`).join('')}
         </div>
