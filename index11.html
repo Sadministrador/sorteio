@@ -218,6 +218,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   var vozEscolhida = null;
   var filaFala     = [];
   var estaFalando  = false;
+  var falaAtual    = null; // CORREÇÃO PARA CELULAR: Guarda a referência da fala
 
   var filaNumerosAudio = [];
   var audioEmProcessamento = false;
@@ -244,7 +245,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     } else {
       somAtivo = false;
       if (window.speechSynthesis) window.speechSynthesis.cancel();
-      filaFala = []; estaFalando = false;
+      filaFala = []; estaFalando = false; falaAtual = null;
       filaNumerosAudio = []; audioEmProcessamento = false;
       var btn = document.getElementById('btnSom');
       btn.textContent = '🔇 Clique para ativar audio';
@@ -282,16 +283,34 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     estaFalando = true;
     setNarrador(texto, true);
 
-    var u    = new SpeechSynthesisUtterance(texto);
+    var u = new SpeechSynthesisUtterance(texto);
+    falaAtual = u; // Evita que o celular mate o processo de voz no meio
+
     u.lang   = 'pt-BR';
     u.rate   = 0.90;
     u.pitch  = 1.1;
     u.volume = 1;
-    if (vozEscolhida) u.voice = vozEscolhida;
-    else carregarVozes();
 
-    u.onend  = function(){ estaFalando = false; setTimeout(processarFila, 300); setNarrador(texto, false); };
-    u.onerror= function(){ estaFalando = false; setTimeout(processarFila, 300); };
+    if (vozEscolhida) {
+      u.voice = vozEscolhida;
+    } else {
+      carregarVozes();
+      if (vozEscolhida) u.voice = vozEscolhida;
+    }
+
+    u.onend = function() { 
+      estaFalando = false; 
+      falaAtual = null;
+      setTimeout(processarFila, 300); 
+      setNarrador(texto, false); 
+    };
+    
+    u.onerror = function() { 
+      estaFalando = false; 
+      falaAtual = null;
+      setTimeout(processarFila, 300); 
+    };
+    
     window.speechSynthesis.speak(u);
   }
 
@@ -509,7 +528,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null;
       numerosVisiveis = [];
       if (window.speechSynthesis) window.speechSynthesis.cancel();
-      filaFala = []; estaFalando = false;
+      filaFala = []; estaFalando = false; falaAtual = null;
       document.getElementById('bolaGrande').textContent = '?';
       document.getElementById('bolasWrap').innerHTML =
         '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
@@ -522,7 +541,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null;
       numerosVisiveis = [];
       if (window.speechSynthesis) window.speechSynthesis.cancel();
-      filaFala = []; estaFalando = false;
+      filaFala = []; estaFalando = false; falaAtual = null;
       document.getElementById('bolaGrande').textContent = '?';
       document.getElementById('bolasWrap').innerHTML =
         '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
