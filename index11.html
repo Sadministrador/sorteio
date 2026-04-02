@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Monitor - SX Bingo</title>
+<title>SX Bingo</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%,#1a0505 100%);min-height:100vh;padding:16px;color:white;}
@@ -98,7 +98,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 <body>
 
 <div class="header">
-  <h1><span class="s">S</span><span class="x">X</span><span class="rest"> BINGO MONITOR</span></h1>
+  <h1><span class="s">S</span><span class="x">X</span><span class="rest"> BINGO</span></h1>
   <p>SÉRIE BRONZE — AO VIVO</p>
 </div>
 
@@ -164,6 +164,12 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   var filaFala     = [];
   var estaFalando  = false;
 
+  // ─── Controle de áudio independente do status Firebase ───────────────────
+  // Guarda a fila de números pendentes de falar mesmo após status=finalizado
+  // O sorteio visual pode mostrar "finalizado" mas o áudio continua até esvaziar a fila.
+  var filaNumerosAudio = []; // {num, delay} - fila local de números a narrar
+  var audioEmProcessamento = false;
+
   function ativarSom() {
     if (!somAtivo) {
       try {
@@ -182,11 +188,12 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       btn.classList.remove('mudo');
       btn.classList.add('ativo');
 
-      falar('T V Bingo Oficial. Série bronze. Pronto para o sorteio!', true);
+      falar('S X Bingo Oficial. Série bronze. Pronto para o sorteio!', true);
     } else {
       somAtivo = false;
       if (window.speechSynthesis) window.speechSynthesis.cancel();
       filaFala = []; estaFalando = false;
+      filaNumerosAudio = []; audioEmProcessamento = false;
       var btn = document.getElementById('btnSom');
       btn.textContent = '🔇 TOQUE AQUI PARA ATIVAR VOZ + SOM';
       btn.classList.remove('ativo');
@@ -279,6 +286,70 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       osc.stop(audioCtx.currentTime + delay + 0.45);
     });
   }
+
+  // ─── Fila de anúncio de números independente do Firebase ─────────────────
+  // Cada número entra na fila e é anunciado sequencialmente.
+  // Mesmo que o status vire "finalizado" no Firebase, os números na fila
+  // continuam sendo anunciados até o fim — sem interrupção.
+  var filaNumeros      = [];   // números aguardando anúncio de áudio
+  var anunciandoNumero = false;
+  var pendingFimAnuncio = null; // guarda dados do fim para anunciar DEPOIS da fila
+
+  function enfileirarNumero(n) {
+    filaNumeros.push(n);
+    processarFilaNumeros();
+  }
+
+  function processarFilaNumeros() {
+    if (anunciandoNumero || filaNumeros.length === 0) return;
+    anunciandoNumero = true;
+    var n = filaNumeros.shift();
+
+    tocarPing();
+    // Pausa dramática antes de falar o número
+    setTimeout(function() {
+      falar('Número... ' + n + '!');
+      // Aguarda o término da fala antes de processar o próximo
+      esperarFimFala(function() {
+        anunciandoNumero = false;
+        // Se não há mais números na fila, verifica se há anúncio de fim pendente
+        if (filaNumeros.length === 0 && pendingFimAnuncio) {
+          var dados = pendingFimAnuncio;
+          pendingFimAnuncio = null;
+          anunciarVencedorAgora(dados.winners, dados.maxScore);
+        } else {
+          processarFilaNumeros();
+        }
+      });
+    }, 300);
+  }
+
+  // Aguarda a fila de fala esvaziar completamente antes de chamar callback
+  function esperarFimFala(callback) {
+    var intervalo = setInterval(function() {
+      if (!estaFalando && filaFala.length === 0) {
+        clearInterval(intervalo);
+        setTimeout(callback, 400);
+      }
+    }, 200);
+  }
+
+  function anunciarVencedorAgora(winners, maxScore) {
+    var valor = (10 / winners.length).toFixed(2);
+    tocarFanfarra();
+    setTimeout(function() {
+      var msg;
+      if (winners.length === 1) {
+        msg = 'Sorteio encerrado! O grande vencedor é ' + winners[0].name +
+              '! Com ' + maxScore + ' acertos! Ganhando R$ ' + valor + '! Parabéns!';
+      } else {
+        var nomes = winners.map(function(w){ return w.name; }).join(' e ');
+        msg = 'Sorteio encerrado! Empate emocionante! ' + nomes +
+              ' vencem com ' + maxScore + ' acertos cada! Ganhando R$ ' + valor + ' cada! Parabéns a todos!';
+      }
+      falar(msg, true);
+    }, 1600);
+  }
 </script>
 
 <script type="module">
@@ -321,6 +392,8 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 
   function reset() {
     lastDrawnLen = 0; lastStatus = ''; jaAnunciouFim = false;
+    // Limpa fila de áudio ao resetar
+    window.filaNumeros = []; window.anunciandoNumero = false; window.pendingFimAnuncio = null;
     document.getElementById('statusBar').className = 'status-bar aguardando';
     document.getElementById('statusBar').innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
     document.getElementById('bolaGrande').textContent = '?';
@@ -342,6 +415,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     const acumulado= g.acumulado || {};
     const status   = g.status    || 'aguardando';
 
+    // ── Barra de status visual ───────────────────────────────────────────────
     const bar = document.getElementById('statusBar');
     if (status === 'finalizado') {
       bar.className = 'status-bar finalizado';
@@ -354,41 +428,34 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       bar.innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
     }
 
-    // Anuncia início
+    // ── Anuncia início ───────────────────────────────────────────────────────
     if (status === 'ativo' && lastStatus !== 'ativo' && lastStatus !== '') {
       falar('Atenção! Sorteio da série bronze iniciado!', true);
     }
 
-    // Novos números — toca ping e fala
+    // ── Novos números: enfileira no sistema de áudio independente ────────────
+    // Isso garante que mesmo após status=finalizado, todos os números
+    // previamente sorteados sejam narrados até o fim antes do anúncio do vencedor.
     if (drawn.length > lastDrawnLen) {
       const novos = drawn.slice(lastDrawnLen);
-      novos.forEach((n, i) => {
-        const delay = i * 1600;
-        setTimeout(() => tocarPing(), delay);
-        // pausa dramática com reticências
-        setTimeout(() => falar('Número... ' + n + '!'), delay + 300);
-      });
+      novos.forEach(n => enfileirarNumero(n));
     }
 
-    // Fim — anuncia vencedor
+    // ── Fim do sorteio: agenda anúncio do vencedor APÓS a fila de áudio ──────
+    // Em vez de anunciar imediatamente, salva em pendingFimAnuncio.
+    // A função processarFilaNumeros() vai disparar o anúncio quando a fila esvaziar.
     if (status === 'finalizado' && !jaAnunciouFim && cartelas.length > 0) {
       jaAnunciouFim = true;
       const maxScore = Math.max(...cartelas.map(c => c.score));
       const winners  = cartelas.filter(c => c.score === maxScore);
-      const valor    = (10 / winners.length).toFixed(2);
-      setTimeout(() => {
-        tocarFanfarra();
-        setTimeout(() => {
-          let msg;
-          if (winners.length === 1) {
-            msg = 'Sorteio encerrado! O grande vencedor é ' + winners[0].name + '! Com ' + maxScore + ' acertos! Ganhando R$ ' + valor + '! Parabéns!';
-          } else {
-            const nomes = winners.map(w => w.name).join(' e ');
-            msg = 'Sorteio encerrado! Empate emocionante! ' + nomes + ' vencem com ' + maxScore + ' acertos cada! Ganhando R$ ' + valor + ' cada! Parabéns a todos!';
-          }
-          falar(msg, true);
-        }, 1600);
-      }, 600);
+
+      if (filaNumeros.length === 0 && !anunciandoNumero) {
+        // Fila já vazia — anuncia imediatamente
+        anunciarVencedorAgora(winners, maxScore);
+      } else {
+        // Ainda há números na fila de áudio — armazena para anunciar depois
+        pendingFimAnuncio = { winners, maxScore };
+      }
     }
 
     if (status !== 'finalizado') jaAnunciouFim = false;
@@ -396,6 +463,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     lastDrawnLen = drawn.length;
     lastStatus   = status;
 
+    // ── Visual: bola grande ──────────────────────────────────────────────────
     const ultimo = drawn.length > 0 ? drawn[drawn.length - 1] : null;
     const bolaG  = document.getElementById('bolaGrande');
     bolaG.textContent = ultimo ?? '?';
