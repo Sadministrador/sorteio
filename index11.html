@@ -6,7 +6,7 @@
 <title>SX Bingo</title>
 <meta name="theme-color" content="#8B0000">
 <style>
-/* Mantive todo o seu CSS original intacto para não mudar o visual */
+/* SEU CSS ORIGINAL RESTAURADO */
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%,#1a0505 100%);min-height:100vh;padding:16px;color:white;}
 .header{text-align:center;margin-bottom:20px;}
@@ -35,192 +35,205 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 .bolas-wrap{display:flex;flex-wrap:wrap;gap:7px;}
 .bola{width:44px;height:44px;background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;}
 .bola.ultima{box-shadow:0 0 18px #ffd700;border:2px solid #ffd700;}
-.tabela-wrap{background:rgba(255,255,255,0.03);border-radius:12px;overflow:hidden;margin-bottom:20px;}
+.tabela-wrap{background:rgba(255,255,255,0.03);border-radius:12px;overflow:hidden;margin-bottom:20px;border:1px solid rgba(255,255,255,0.07);}
 .tabela-row{display:grid;grid-template-columns:52px 70px 1fr auto auto;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center;gap:10px;}
+.jogador-foto{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.2);}
+.jogador-foto-vazia{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;}
+.nome-txt{font-size:18px;font-weight:900;}
+.barra-acertos{height:4px;background:rgba(255,255,255,0.1);border-radius:4px;margin-top:6px;width:100px;}
+.barra-fill{height:100%;background:#ff4444;border-radius:4px;transition:width 0.5s;}
+.acertos-badge{background:rgba(139,0,0,0.5);padding:4px 10px;border-radius:20px;font-weight:bold;color:#ff9999;}
 .cartelas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
 .cartela{background:#8B0000;border-radius:14px;padding:16px;border:2px solid transparent;}
 .cartela.winner{border-color:#ffd700;box-shadow:0 0 28px rgba(255,215,0,0.5);}
+.cartela-player-wrap{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.cartela-numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
 .num{background:rgba(255,255,255,0.12);color:white;padding:9px 3px;text-align:center;border-radius:6px;font-size:18px;font-weight:bold;}
-.num.marked{background:#4caf50;transform:scale(1.04);}
-.jogador-foto{width:60px;height:60px;border-radius:50%;object-fit:cover;}
-.jogador-foto-vazia{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;}
+.num.marked{background:#4caf50;transform:scale(1.04);box-shadow:0 0 8px rgba(76,175,80,0.6);}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1><span class="s">S</span><span class="x">X</span><span class="rest"> BINGO</span></h1>
-  <p>SÉRIE BRONZE — AO VIVO</p>
-  <div class="sorteio-badge">SORTEIO <span id="numSorteio">1</span></div>
+    <h1><span class="s">S</span><span class="x">X</span><span class="rest"> BINGO</span></h1>
+    <p>SÉRIE BRONZE — AO VIVO</p>
+    <div class="sorteio-badge">SORTEIO <span id="numSorteio">1</span></div>
 </div>
 
 <div class="btn-actions">
-  <button class="btn-som mudo" id="btnSom" onclick="ativarSom()">🔇 Clique para ativar audio</button>
+    <button class="btn-som mudo" id="btnSom" onclick="ativarSom()">🔇 Clique para ativar audio</button>
 </div>
 
 <div class="narrador-box" id="narradorBox">
-  <div class="narrador-txt" id="narradorTxt">— narrador aguardando —</div>
+    <div class="narrador-txt" id="narradorTxt">— narrador aguardando —</div>
 </div>
 
 <div id="statusBar" class="status-bar aguardando">Aguardando sorteio...</div>
-
 <div class="bola-grande" id="bolaGrande">?</div>
 
 <div class="secao">
-  <div class="bolas-wrap" id="bolasWrap"></div>
+    <div class="bolas-wrap" id="bolasWrap"></div>
 </div>
 
-<div id="tabelaBody"></div>
+<div class="tabela-wrap" id="tabelaBody"></div>
 <div class="cartelas-grid" id="cartelasGrid"></div>
 
 <script>
-  var somAtivo = false;
-  var vozEscolhida = null;
-  var filaFala = [];
-  var estaFalando = false;
+    var somAtivo = false;
+    var vozEscolhida = null;
+    var filaFala = [];
+    var estaFalando = false;
 
-  function ativarSom() {
-    if (!somAtivo) {
-      somAtivo = true;
-      carregarVozes();
-      document.getElementById('btnSom').textContent = '🔊 Áudio ativado';
-      document.getElementById('btnSom').className = 'btn-som ativo';
-      falar("S X Bingo. Série bronze pronta!");
-    } else {
-      somAtivo = false;
-      window.speechSynthesis.cancel();
-      document.getElementById('btnSom').textContent = '🔇 Clique para ativar audio';
-      document.getElementById('btnSom').className = 'btn-som mudo';
+    function ativarSom() {
+        if (!somAtivo) {
+            somAtivo = true;
+            carregarVozes();
+            document.getElementById('btnSom').textContent = '🔊 Áudio ativado';
+            document.getElementById('btnSom').className = 'btn-som ativo';
+            falar("S X Bingo iniciado!");
+        } else {
+            somAtivo = false;
+            window.speechSynthesis.cancel();
+            document.getElementById('btnSom').className = 'btn-som mudo';
+            document.getElementById('btnSom').textContent = '🔇 Clique para ativar audio';
+        }
     }
-  }
 
-  function carregarVozes() {
-    var v = window.speechSynthesis.getVoices();
-    vozEscolhida = v.find(x => x.lang.startsWith('pt-BR')) || v.find(x => x.lang.startsWith('pt'));
-  }
-  window.speechSynthesis.onvoiceschanged = carregarVozes;
-
-  function falar(texto, imediato = false) {
-    if (!somAtivo) return;
-    if (imediato) { window.speechSynthesis.cancel(); filaFala = []; estaFalando = false; }
-    filaFala.push(texto);
-    if (!estaFalando) processarFila();
-  }
-
-  function processarFila() {
-    if (estaFalando || filaFala.length === 0) return;
-    estaFalando = true;
-    var texto = filaFala.shift();
-    document.getElementById('narradorTxt').textContent = texto;
-    document.getElementById('narradorBox').classList.add('falando');
-    
-    var u = new SpeechSynthesisUtterance(texto);
-    u.lang = 'pt-BR'; u.rate = 1.1; // Um pouco mais rápido para não atrasar
-    if (vozEscolhida) u.voice = vozEscolhida;
-    u.onend = () => { 
-      estaFalando = false; 
-      document.getElementById('narradorBox').classList.remove('falando');
-      processarFila(); 
-    };
-    window.speechSynthesis.speak(u);
-  }
-
-  // Persistência do contador
-  var numSorteio = parseInt(localStorage.getItem('sx_numSorteio') || '1');
-  var lastHash = localStorage.getItem('sx_hash');
-
-  function gerirSorteio(cartelas, bolas) {
-    let currentHash = cartelas.map(c => c.id).join('|');
-    if (bolas === 0 && lastHash && currentHash === lastHash) {
-      numSorteio++;
-      localStorage.setItem('sx_numSorteio', numSorteio);
-      falar("Sorteio número " + numSorteio);
-    } else if (currentHash !== lastHash) {
-      numSorteio = 1;
-      localStorage.setItem('sx_numSorteio', '1');
+    function carregarVozes() {
+        var v = window.speechSynthesis.getVoices();
+        vozEscolhida = v.find(x => x.lang.startsWith('pt-BR')) || v.find(x => x.lang.startsWith('pt'));
     }
-    lastHash = currentHash;
-    localStorage.setItem('sx_hash', lastHash);
-    document.getElementById('numSorteio').textContent = numSorteio;
-  }
+    window.speechSynthesis.onvoiceschanged = carregarVozes;
+
+    function falar(texto, imediato = false) {
+        if (!somAtivo) return;
+        if (imediato) { window.speechSynthesis.cancel(); filaFala = []; estaFalando = false; }
+        filaFala.push(texto);
+        if (!estaFalando) processarFila();
+    }
+
+    function processarFila() {
+        if (estaFalando || filaFala.length === 0) return;
+        estaFalando = true;
+        var texto = filaFala.shift();
+        document.getElementById('narradorTxt').textContent = texto;
+        document.getElementById('narradorBox').classList.add('falando');
+        
+        var u = new SpeechSynthesisUtterance(texto);
+        u.lang = 'pt-BR'; u.rate = 1.0;
+        if (vozEscolhida) u.voice = vozEscolhida;
+        u.onend = () => { 
+            estaFalando = false; 
+            document.getElementById('narradorBox').classList.remove('falando');
+            processarFila(); 
+        };
+        window.speechSynthesis.speak(u);
+    }
 </script>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  const cfg = {
-    apiKey: "AIzaSyCXTQ932v0Amnbtha01BzFsUfUZKnwYQIA",
-    authDomain: "chofer-522be.firebaseapp.com",
-    databaseURL: "https://chofer-522be-default-rtdb.firebaseio.com",
-    projectId: "chofer-522be",
-    appId: "1:81306033578:web:0c3688bc455a51b972dfd3"
-  };
+    const cfg = {
+        apiKey: "AIzaSyCXTQ932v0Amnbtha01BzFsUfUZKnwYQIA",
+        authDomain: "chofer-522be.firebaseapp.com",
+        databaseURL: "https://chofer-522be-default-rtdb.firebaseio.com",
+        projectId: "chofer-522be",
+        appId: "1:81306033578:web:0c3688bc455a51b972dfd3"
+    };
 
-  const db = getDatabase(initializeApp(cfg));
-  let lastDrawnLen = 0;
-  let statusAntigo = '';
+    const db = getDatabase(initializeApp(cfg));
+    let lastDrawnLen = 0;
+    let statusAntigo = '';
+    let state = { game: null, fotos: {} };
 
-  onValue(ref(db, 'bingo_bronze/game'), snap => {
-    const g = snap.val(); if(!g) return;
-    const drawn = g.drawn || [];
-    const cartelas = g.cartelas || [];
+    // Carregar fotos separadamente conforme seu banco
+    onValue(ref(db, 'bingo_bronze/fotos'), snap => {
+        state.fotos = snap.val() || {};
+        if(state.game) render();
+    });
 
-    // 1. SINCRO DE ÁUDIO: Fala o número IMEDIATAMENTE
-    if (drawn.length > lastDrawnLen) {
-      const num = drawn[drawn.length - 1];
-      falar("Número " + num, true); // O 'true' cancela filas antigas para falar o número na hora
+    onValue(ref(db, 'bingo_bronze/game'), snap => {
+        const g = snap.val(); if(!g) return;
+        state.game = g;
+        const drawn = g.drawn || [];
+        const cartelas = g.cartelas || [];
+
+        // SINCRONIA: Fala o número no exato momento que entra no array
+        if (drawn.length > lastDrawnLen) {
+            falar("Número " + drawn[drawn.length - 1], true);
+        }
+
+        // FIM DE JOGO: Valor fixo R$ 10,00
+        if (g.status === 'finalizado' && statusAntigo !== 'finalizado') {
+            const max = Math.max(...cartelas.map(c => c.score));
+            const winners = cartelas.filter(c => c.score === max);
+            const premio = (10 / winners.length).toFixed(2);
+            const nomes = winners.map(w => w.name).join(' e ');
+            falar("Biiingo! Vitória de " + nomes + ". Prêmio de " + premio + " reais para cada!");
+        }
+
+        lastDrawnLen = drawn.length;
+        statusAntigo = g.status;
+        render();
+    });
+
+    function render() {
+        const g = state.game;
+        const drawn = g.drawn || [];
+        const cartelas = g.cartelas || [];
+        const fotos = state.fotos;
+
+        // Atualiza bola grande
+        const bg = document.getElementById('bolaGrande');
+        if(drawn.length > 0) {
+            bg.textContent = drawn[drawn.length-1];
+            bg.classList.add('flash');
+            setTimeout(() => bg.classList.remove('flash'), 500);
+        }
+
+        // Lista de bolas
+        document.getElementById('bolasWrap').innerHTML = drawn.map(n => `<div class="bola ${n===drawn[drawn.length-1]?'ultima':''}">${n}</div>`).join('');
+
+        // Tabela de Ranking (Com fotos e barras)
+        const sorted = [...cartelas].sort((a,b) => b.score - a.score);
+        document.getElementById('tabelaBody').innerHTML = sorted.map(c => {
+            const foto = fotos[c.id] ? `<img src="${fotos[c.id]}" class="jogador-foto">` : `<div class="jogador-foto-vazia">👤</div>`;
+            return `
+                <div class="tabela-row">
+                    <div style="font-size:12px; color:#777">C${c.id}</div>
+                    <div>${foto}</div>
+                    <div>
+                        <div class="nome-txt">${c.name}</div>
+                        <div class="barra-acertos"><div class="barra-fill" style="width:${(c.score/16)*100}%"></div></div>
+                    </div>
+                    <div><span class="acertos-badge">${c.score}/16</span></div>
+                    <div style="font-weight:bold">R$ 10.00</div>
+                </div>
+            `;
+        }).join('');
+
+        // Grid de Cartelas (Marcação em tempo real)
+        document.getElementById('cartelasGrid').innerHTML = cartelas.map(c => {
+            const marked = c.markedNumbers || [];
+            const foto = fotos[c.id] ? `<img src="${fotos[c.id]}" style="width:40px;height:40px;border-radius:50%">` : `👤`;
+            return `
+                <div class="cartela ${g.status==='finalizado' && c.score>=16 ? 'winner' : ''}">
+                    <div class="cartela-player-wrap">${foto} <span style="color:#ffd700;font-weight:bold">${c.name}</span></div>
+                    <div class="cartela-numbers">
+                        ${(c.numbers || []).map(n => `<div class="num ${marked.includes(n)?'marked':''}">${n}</div>`).join('')}
+                    </div>
+                    <div style="margin-top:10px; font-size:12px">Acertos: ${c.score}/16</div>
+                </div>
+            `;
+        }).join('');
+
+        // Status Bar
+        const bar = document.getElementById('statusBar');
+        bar.className = 'status-bar ' + g.status;
+        bar.textContent = g.status === 'ativo' ? 'SORTEIO EM ANDAMENTO' : (g.status === 'finalizado' ? 'FINALIZADO' : 'AGUARDANDO');
     }
-
-    // 2. DETECÇÃO DE NOVO JOGO (Limpou bolas)
-    if (drawn.length === 0 && lastDrawnLen > 0) {
-      gerirSorteio(cartelas, 0);
-    }
-
-    // 3. ANÚNCIO DE VITÓRIA (Valor fixo R$ 10,00)
-    if (g.status === 'finalizado' && statusAntigo !== 'finalizado') {
-      const max = Math.max(...cartelas.map(c => c.score));
-      const winners = cartelas.filter(c => c.score === max);
-      if (winners.length > 0) {
-        const nomes = winners.map(w => w.name || 'Jogador').join(' e ');
-        const premio = (10 / winners.length).toFixed(2);
-        falar("Biiingo! Vitória de " + nomes + ". Prêmio de " + premio + " reais para cada!", false);
-      }
-    }
-
-    lastDrawnLen = drawn.length;
-    statusAntigo = g.status;
-    render(g);
-  });
-
-  // Função Render apenas para atualizar o visual
-  function render(g) {
-    const drawn = g.drawn || [];
-    const cartelas = g.cartelas || [];
-    const bolaG = document.getElementById('bolaGrande');
-    
-    if (drawn.length > 0) {
-      bolaG.textContent = drawn[drawn.length-1];
-      bolaG.classList.add('flash');
-      setTimeout(() => bolaG.classList.remove('flash'), 400);
-    }
-    
-    document.getElementById('bolasWrap').innerHTML = drawn.map(n => `<div class="bola ${n===drawn[drawn.length-1]?'ultima':''}">${n}</div>`).join('');
-    
-    // Grid de Cartelas (Marcação em tempo real)
-    document.getElementById('cartelasGrid').innerHTML = cartelas.map(c => {
-      const marked = c.markedNumbers || [];
-      return `
-        <div class="cartela ${c.score>=16 ? 'winner' : ''}">
-          <div class="cartela-player-wrap"><span class="cartela-player">${c.name || 'Jogador'}</span></div>
-          <div class="cartela-numbers">
-            ${(c.numbers || []).map(n => `<div class="num ${marked.includes(n)?'marked':''}">${n}</div>`).join('')}
-          </div>
-          <div class="cartela-footer"><span>Acertos: ${c.score}/16</span></div>
-        </div>
-      `;
-    }).join('');
-  }
 </script>
 </body>
 </html>
