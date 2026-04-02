@@ -12,9 +12,9 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 .s{color:#c0392b;}.x{color:#ffffff;}
 .rest{background:linear-gradient(90deg,#ff6b6b,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .header p{font-size:11px;color:#555;letter-spacing:3px;margin-top:4px;}
-.fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;}
+.fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;display:none;}
 .fb-ok{color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);}
-.fb-err{color:#ff6b6b;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);}
+.fb-err{color:#ff6b6b;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);display:block!important;}
 .btn-som-wrap{text-align:center;margin-bottom:14px;}
 .btn-som{padding:16px 40px;border-radius:40px;font-size:18px;font-weight:bold;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:inline-block;border:none;}
 .btn-som.mudo{background:#c0392b;color:white;box-shadow:0 0 28px rgba(192,57,43,0.8);animation:pulseMudo 1.2s ease-in-out infinite;}
@@ -435,6 +435,35 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     const cartelas = Array.isArray(g.cartelas) ? g.cartelas : [];
     const acumulado= g.acumulado || {};
     const status   = g.status    || 'aguardando';
+
+    // ── Detecta início de novo sorteio (drawn zerou ou status reiniciou) ────
+    // Se o sorteio anterior terminou e um novo começa, limpa tudo visualmente.
+    if (lastStatus === 'finalizado' && (status === 'ativo' || status === 'aguardando')) {
+      lastDrawnLen = 0; jaAnunciouFim = false;
+      filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null;
+      numerosVisiveis = [];
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      filaFala = []; estaFalando = false;
+      document.getElementById('bolaGrande').textContent = '?';
+      document.getElementById('bolasWrap').innerHTML =
+        '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
+      document.getElementById('stS').textContent = '0';
+      document.getElementById('stR').textContent = '90';
+      setNarrador('— narrador aguardando —', false);
+    }
+    // Também reseta se drawn voltou para 0 enquanto estava ativo (novo jogo iniciado)
+    if (drawn.length < lastDrawnLen && drawn.length === 0) {
+      filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null;
+      numerosVisiveis = [];
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      filaFala = []; estaFalando = false;
+      document.getElementById('bolaGrande').textContent = '?';
+      document.getElementById('bolasWrap').innerHTML =
+        '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
+      document.getElementById('stS').textContent = '0';
+      document.getElementById('stR').textContent = '90';
+      setNarrador('— narrador aguardando —', false);
+    }
 
     // ── Barra de status visual ───────────────────────────────────────────────
     const bar = document.getElementById('statusBar');
