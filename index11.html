@@ -5,11 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SX Bingo</title>
 <meta name="theme-color" content="#8B0000">
-<meta name="apple-mobile-web-app-capable" content="apple-mobile-web-app-capable">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="SX Bingo">
-<link id="apple-touch-icon" rel="apple-touch-icon" href="">
-<link id="favicon-link" rel="icon" type="image/jpeg" href="">
+<link rel="manifest" href="data:application/manifest+json,{
+  &quot;name&quot;:&quot;SX Bingo&quot;,
+  &quot;short_name&quot;:&quot;SX Bingo&quot;,
+  &quot;start_url&quot;:&quot;.&quot;,
+  &quot;display&quot;:&quot;standalone&quot;,
+  &quot;background_color&quot;:&quot;#0a0a1a&quot;,
+  &quot;theme_color&quot;:&quot;#8B0000&quot;,
+  &quot;icons&quot;:[
+    {&quot;src&quot;:&quot;https://cdn-icons-png.flaticon.com/512/847/847969.png&quot;,&quot;sizes&quot;:&quot;192x192&quot;,&quot;type&quot;:&quot;image/png&quot;},
+    {&quot;src&quot;:&quot;https://cdn-icons-png.flaticon.com/512/847/847969.png&quot;,&quot;sizes&quot;:&quot;512x512&quot;,&quot;type&quot;:&quot;image/png&quot;}
+  ]
+}">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%,#1a0505 100%);min-height:100vh;padding:16px;color:white;}
@@ -18,20 +25,30 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 .s{color:#ff1a1a;text-shadow:0 0 18px rgba(255,30,30,0.9);}.x{color:#ffffff;}
 .rest{background:linear-gradient(90deg,#ff2222,#ff8800,#ffd700,#ff8800,#ff2222);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:brilhoBingo 2.5s linear infinite;}@keyframes brilhoBingo{0%{background-position:0% center;}100%{background-position:200% center;}}
 .header p{font-size:11px;color:#555;letter-spacing:3px;margin-top:4px;}
+
+/* SORTEIO BADGE — letras maiores */
 .sorteio-badge{display:inline-block;margin-top:8px;padding:6px 22px;border-radius:30px;font-size:15px;font-weight:bold;letter-spacing:3px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);color:#ffd700;transition:all 0.5s;}
 .sorteio-badge span{font-size:24px;font-weight:900;color:#fff;margin-left:8px;}
+
 .fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;display:none;}
 .fb-ok{color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);}
 .fb-err{color:#ff6b6b;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);display:block!important;}
+
+/* BOTÕES DE AÇÃO — linha com som + instalar */
 .btn-actions{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+
+/* BOTÃO SOM — menor */
 .btn-som{padding:10px 22px;border-radius:30px;font-size:13px;font-weight:bold;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;border:none;}
 .btn-som.mudo{background:linear-gradient(135deg,#ff0000,#cc0000);color:white;box-shadow:0 0 28px rgba(255,0,0,0.8);animation:pulseMudo 1.2s ease-in-out infinite;}
 @keyframes pulseMudo{0%,100%{box-shadow:0 0 18px rgba(255,0,0,0.6);transform:scale(1);}50%{box-shadow:0 0 45px rgba(255,0,0,0.95);transform:scale(1.03);}}
 .btn-som.ativo{background:linear-gradient(135deg,#0077ff,#0044cc);color:white;box-shadow:0 0 22px rgba(0,119,255,0.7);animation:pulseAtivo 2s ease-in-out infinite;}
 @keyframes pulseAtivo{0%,100%{box-shadow:0 0 16px rgba(0,119,255,0.5);}50%{box-shadow:0 0 36px rgba(0,119,255,0.9);}}
+
+/* BOTÃO INSTALAR */
 .btn-instalar{padding:10px 22px;border-radius:30px;font-size:13px;font-weight:bold;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:none;align-items:center;gap:6px;border:none;background:linear-gradient(135deg,#ffd700,#ff8800);color:#000;box-shadow:0 0 20px rgba(255,215,0,0.5);}
 .btn-instalar:hover{transform:scale(1.04);box-shadow:0 0 32px rgba(255,215,0,0.8);}
 .btn-instalar.visivel{display:inline-flex;}
+
 .narrador-box{background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:14px 20px;text-align:center;margin-bottom:14px;min-height:52px;display:flex;align-items:center;justify-content:center;transition:all 0.3s;}
 .narrador-txt{font-size:20px;font-weight:bold;color:#555;letter-spacing:1px;}
 .narrador-box.falando{background:rgba(255,215,0,0.13);border-color:#ffd700;box-shadow:0 0 22px rgba(255,215,0,0.25);}
@@ -117,6 +134,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 
 <div id="fbBadge" class="fb-badge fb-ok">🔥 Conectando ao Firebase...</div>
 
+<!-- Linha com botão de som + botão instalar -->
 <div class="btn-actions">
   <button class="btn-som mudo" id="btnSom" onclick="ativarSom()">
     🔇 Clique para ativar audio
@@ -170,77 +188,29 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 <div style="margin-bottom:20px;"></div>
 
 <script>
-  // ─── ÍCONE PWA em base64 ──────────────────────────────────────────────────
-  var ICON_B64 = 'data:image/jpeg;base64,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';
-
-  // Aplicar ícone dinamicamente
-  (function aplicarIcone(){
-    document.getElementById('apple-touch-icon').href = ICON_B64;
-    document.getElementById('favicon-link').href     = ICON_B64;
-  })();
-
-  // ─── PWA: Service Worker + Install ───────────────────────────────────────
-  // Registrar SW com ícone base64 embutido no manifest
-  if ('serviceWorker' in navigator) {
-    var swCode = "self.addEventListener('install',e=>{self.skipWaiting();});self.addEventListener('fetch',e=>{});";
-    var swBlob = new Blob([swCode], { type: 'application/javascript' });
-    var swUrl  = URL.createObjectURL(swBlob);
-    navigator.serviceWorker.register(swUrl).catch(function(){});
-  }
-
-  // Manifest dinâmico com ícone base64
-  var manifestData = {
-    name: 'SX Bingo',
-    short_name: 'SX Bingo',
-    start_url: '.',
-    display: 'standalone',
-    background_color: '#0a0a1a',
-    theme_color: '#8B0000',
-    icons: [
-      { src: ICON_B64, sizes: '192x192', type: 'image/jpeg' },
-      { src: ICON_B64, sizes: '512x512', type: 'image/jpeg' }
-    ]
-  };
-  var manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/manifest+json' });
-  var manifestUrl  = URL.createObjectURL(manifestBlob);
-  var linkManifest = document.createElement('link');
-  linkManifest.rel  = 'manifest';
-  linkManifest.href = manifestUrl;
-  document.head.appendChild(linkManifest);
-
-  // Botão instalar
-  var deferredPrompt = null;
-  window.addEventListener('beforeinstallprompt', function(e) {
+  // ─── PWA: instalar app ────────────────────────────────────────────────────
+  let deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    var btn = document.getElementById('btnInstalar');
+    const btn = document.getElementById('btnInstalar');
     btn.classList.add('visivel');
   });
-  document.getElementById('btnInstalar').addEventListener('click', async function() {
+  document.getElementById('btnInstalar').addEventListener('click', async () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
-      var choice = await deferredPrompt.userChoice;
+      await deferredPrompt.userChoice;
       deferredPrompt = null;
       document.getElementById('btnInstalar').classList.remove('visivel');
     }
   });
-  // Esconder botão se já instalado (standalone)
-  if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
-    document.getElementById('btnInstalar').style.display = 'none';
+  // Service Worker inline para PWA
+  if ('serviceWorker' in navigator) {
+    const swCode = `self.addEventListener('install',e=>{self.skipWaiting();});self.addEventListener('fetch',e=>{});`;
+    const blob   = new Blob([swCode], { type: 'application/javascript' });
+    navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
   }
-  window.matchMedia('(display-mode: standalone)').addEventListener('change', function(evt) {
-    if (evt.matches) {
-      document.getElementById('btnInstalar').classList.remove('visivel');
-      document.getElementById('btnInstalar').style.display = 'none';
-    }
-  });
-  window.addEventListener('appinstalled', function() {
-    document.getElementById('btnInstalar').classList.remove('visivel');
-    document.getElementById('btnInstalar').style.display = 'none';
-    deferredPrompt = null;
-  });
 
-  // ─── ÁUDIO ───────────────────────────────────────────────────────────────
   var somAtivo     = false;
   var audioCtx     = null;
   var gainMaster   = null;
@@ -248,6 +218,9 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   var vozEscolhida = null;
   var filaFala     = [];
   var estaFalando  = false;
+
+  var filaNumerosAudio = [];
+  var audioEmProcessamento = false;
 
   function ativarSom() {
     if (!somAtivo) {
@@ -258,17 +231,21 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
         gainMaster.connect(audioCtx.destination);
         if (audioCtx.state === 'suspended') audioCtx.resume();
       } catch(e) { console.warn('AudioContext erro:', e); }
+
       carregarVozes();
       somAtivo = true;
+
       var btn = document.getElementById('btnSom');
       btn.textContent = '🔊 Áudio ativado';
       btn.classList.remove('mudo');
       btn.classList.add('ativo');
+
       falar('S X Bingo Oficial. Série bronze. Pronto para o sorteio!', true);
     } else {
       somAtivo = false;
       if (window.speechSynthesis) window.speechSynthesis.cancel();
       filaFala = []; estaFalando = false;
+      filaNumerosAudio = []; audioEmProcessamento = false;
       var btn = document.getElementById('btnSom');
       btn.textContent = '🔇 Clique para ativar audio';
       btn.classList.remove('ativo');
@@ -304,6 +281,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     var texto = filaFala.shift();
     estaFalando = true;
     setNarrador(texto, true);
+
     var u    = new SpeechSynthesisUtterance(texto);
     u.lang   = 'pt-BR';
     u.rate   = 0.90;
@@ -311,6 +289,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     u.volume = 1;
     if (vozEscolhida) u.voice = vozEscolhida;
     else carregarVozes();
+
     u.onend  = function(){ estaFalando = false; setTimeout(processarFila, 300); setNarrador(texto, false); };
     u.onerror= function(){ estaFalando = false; setTimeout(processarFila, 300); };
     window.speechSynthesis.speak(u);
@@ -360,18 +339,9 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     });
   }
 
-  // ─── FILA DE NÚMEROS — CORRIGIDA ──────────────────────────────────────────
-  // O número PRIMEIRO é falado, e SÓ DEPOIS é exibido na cartela/bola
-  var filaNumeros       = [];
-  var anunciandoNumero  = false;
-  var pendingFimAnuncio = null;
-  var numerosVisiveis   = [];
-
-  // numSorteio: gerenciado com lógica correta de reset
-  var numSorteio         = parseInt(localStorage.getItem('sx_numSorteio') || '1');
-  var hashParticipantes  = localStorage.getItem('sx_hashParticipantes') || '';
-  var eraSorteioAtivo    = false; // controla se o sorteio anterior estava ativo
-
+  var filaNumeros      = [];
+  var numSorteio       = parseInt(localStorage.getItem('sx_numSorteio') || '1');
+  var hashParticipantes= localStorage.getItem('sx_hashParticipantes') || '';
   document.addEventListener('DOMContentLoaded', function(){
     var el = document.getElementById('numSorteio');
     if (el) el.textContent = numSorteio;
@@ -382,19 +352,8 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   }
 
   function atualizarContadorSorteio(cartelas, novoSorteio) {
-    if (!cartelas || cartelas.length === 0) {
-      // Sem participantes: resetar para 1
-      numSorteio = 1;
-      hashParticipantes = '';
-      localStorage.setItem('sx_numSorteio', '1');
-      localStorage.setItem('sx_hashParticipantes', '');
-      var el = document.getElementById('numSorteio');
-      if (el) el.textContent = '1';
-      return;
-    }
     var hashAtual = calcHashParticipantes(cartelas);
     if (hashAtual !== hashParticipantes) {
-      // Participantes mudaram: resetar
       numSorteio = 1;
       hashParticipantes = hashAtual;
     } else if (novoSorteio) {
@@ -405,51 +364,15 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     var el = document.getElementById('numSorteio');
     if (el) el.textContent = numSorteio;
   }
+  var anunciandoNumero = false;
+  var pendingFimAnuncio = null;
 
   function enfileirarNumero(n) {
     filaNumeros.push(n);
     processarFilaNumeros();
   }
 
-  function processarFilaNumeros() {
-    if (anunciandoNumero || filaNumeros.length === 0) return;
-    anunciandoNumero = true;
-    var n = filaNumeros.shift();
-
-    // 1) Toca ping
-    tocarPing();
-
-    if (somAtivo) {
-      // 2) Fala o número PRIMEIRO
-      falar('Número... ' + n + '!');
-      // 3) SÓ DEPOIS que terminar de falar, mostra na tela
-      esperarFimFala(function() {
-        atualizarBolaGrande(n);
-        // 4) Pequena pausa, depois próximo número
-        setTimeout(function() {
-          anunciandoNumero = false;
-          if (filaNumeros.length === 0 && pendingFimAnuncio) {
-            var dados = pendingFimAnuncio;
-            pendingFimAnuncio = null;
-            anunciarVencedorAgora(dados.winners, dados.maxScore);
-          } else {
-            processarFilaNumeros();
-          }
-        }, 400);
-      });
-    } else {
-      // Sem áudio: mostra imediatamente
-      atualizarBolaGrande(n);
-      anunciandoNumero = false;
-      if (filaNumeros.length === 0 && pendingFimAnuncio) {
-        var dados = pendingFimAnuncio;
-        pendingFimAnuncio = null;
-        anunciarVencedorAgora(dados.winners, dados.maxScore);
-      } else {
-        processarFilaNumeros();
-      }
-    }
-  }
+  var numerosVisiveis = [];
 
   function atualizarBolaGrande(n) {
     var bolaG = document.getElementById('bolaGrande');
@@ -470,13 +393,35 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     if (stR) stR.textContent = 90 - numerosVisiveis.length;
   }
 
+  function processarFilaNumeros() {
+    if (anunciandoNumero || filaNumeros.length === 0) return;
+    anunciandoNumero = true;
+    var n = filaNumeros.shift();
+
+    tocarPing();
+    setTimeout(function() {
+      atualizarBolaGrande(n);
+      falar('Número... ' + n + '!');
+      esperarFimFala(function() {
+        anunciandoNumero = false;
+        if (filaNumeros.length === 0 && pendingFimAnuncio) {
+          var dados = pendingFimAnuncio;
+          pendingFimAnuncio = null;
+          anunciarVencedorAgora(dados.winners, dados.maxScore);
+        } else {
+          processarFilaNumeros();
+        }
+      });
+    }, 300);
+  }
+
   function esperarFimFala(callback) {
     var intervalo = setInterval(function() {
       if (!estaFalando && filaFala.length === 0) {
         clearInterval(intervalo);
-        setTimeout(callback, 300);
+        setTimeout(callback, 400);
       }
-    }, 150);
+    }, 200);
   }
 
   function anunciarVencedorAgora(winners, maxScore) {
@@ -538,8 +483,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   function reset() {
     lastDrawnLen = 0; lastStatus = ''; jaAnunciouFim = false;
     filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null; numerosVisiveis = [];
-    // Reset do contador de sorteio ao limpar todos os usuários
-    atualizarContadorSorteio([], false);
     document.getElementById('statusBar').className = 'status-bar aguardando';
     document.getElementById('statusBar').innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
     document.getElementById('bolaGrande').textContent = '?';
@@ -561,7 +504,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     const acumulado= g.acumulado || {};
     const status   = g.status    || 'aguardando';
 
-    // Novo sorteio após finalizado
     if (lastStatus === 'finalizado' && (status === 'ativo' || status === 'aguardando')) {
       lastDrawnLen = 0; jaAnunciouFim = false;
       filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null;
@@ -576,7 +518,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       setNarrador('— narrador aguardando —', false);
       atualizarContadorSorteio(cartelas, true);
     }
-
     if (drawn.length < lastDrawnLen && drawn.length === 0) {
       filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null;
       numerosVisiveis = [];
@@ -606,17 +547,16 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       falar('Atenção! Sorteio da série bronze iniciado!', true);
     }
 
-    // Enfileirar novos números — A EXIBIÇÃO SÓ OCORRE APÓS O ÁUDIO
     if (drawn.length > lastDrawnLen) {
       const novos = drawn.slice(lastDrawnLen);
       novos.forEach(n => enfileirarNumero(n));
     }
 
-    // Anunciar vencedor ao finalizar
     if (status === 'finalizado' && !jaAnunciouFim && cartelas.length > 0) {
       jaAnunciouFim = true;
       const maxScore = Math.max(...cartelas.map(c => c.score));
       const winners  = cartelas.filter(c => c.score === maxScore);
+
       if (filaNumeros.length === 0 && !anunciandoNumero) {
         anunciarVencedorAgora(winners, maxScore);
       } else {
@@ -641,11 +581,8 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">Inicie o sorteio!</div>';
       document.getElementById('stTotal').textContent = 'R$0';
       document.getElementById('stLider').textContent = '—';
-      // Sem cartelas = sem jogadores: volta pro sorteio 1
-      atualizarContadorSorteio([], false);
       return;
     }
-
     atualizarContadorSorteio(cartelas, false);
 
     let total = 0;
@@ -657,9 +594,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 
     const fin      = status === 'finalizado';
     const maxScore = Math.max(...cartelas.map(c => c.score));
-
-    // Tabela — usa drawn (fonte verdadeira) para não depender de numerosVisiveis
-    const drawnSet = new Set(drawn);
 
     document.getElementById('tabelaBody').innerHTML = sorted.map((c,i) => {
       const acum   = acumulado[c.id]||0;
