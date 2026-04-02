@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SX Bingo</title>
 <meta name="theme-color" content="#8B0000">
+<link rel="manifest" href="data:application/manifest+json,{
+  &quot;name&quot;:&quot;SX Bingo&quot;,
+  &quot;short_name&quot;:&quot;SX Bingo&quot;,
+  &quot;start_url&quot;:&quot;.&quot;,
+  &quot;display&quot;:&quot;standalone&quot;,
+  &quot;background_color&quot;:&quot;#0a0a1a&quot;,
+  &quot;theme_color&quot;:&quot;#8B0000&quot;,
+  &quot;icons&quot;:[
+    {&quot;src&quot;:&quot;https://cdn-icons-png.flaticon.com/512/847/847969.png&quot;,&quot;sizes&quot;:&quot;192x192&quot;,&quot;type&quot;:&quot;image/png&quot;},
+    {&quot;src&quot;:&quot;https://cdn-icons-png.flaticon.com/512/847/847969.png&quot;,&quot;sizes&quot;:&quot;512x512&quot;,&quot;type&quot;:&quot;image/png&quot;}
+  ]
+}">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%,#1a0505 100%);min-height:100vh;padding:16px;color:white;}
@@ -13,47 +25,93 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 .s{color:#ff1a1a;text-shadow:0 0 18px rgba(255,30,30,0.9);}.x{color:#ffffff;}
 .rest{background:linear-gradient(90deg,#ff2222,#ff8800,#ffd700,#ff8800,#ff2222);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:brilhoBingo 2.5s linear infinite;}@keyframes brilhoBingo{0%{background-position:0% center;}100%{background-position:200% center;}}
 .header p{font-size:11px;color:#555;letter-spacing:3px;margin-top:4px;}
-
-.sorteio-badge{display:inline-block;margin-top:8px;padding:6px 22px;border-radius:30px;font-size:15px;font-weight:bold;letter-spacing:3px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);color:#ffd700;}
+.sorteio-badge{display:inline-block;margin-top:8px;padding:6px 22px;border-radius:30px;font-size:15px;font-weight:bold;letter-spacing:3px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);color:#ffd700;transition:all 0.5s;}
 .sorteio-badge span{font-size:24px;font-weight:900;color:#fff;margin-left:8px;}
-
-.fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);}
-
-.btn-actions{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;}
-.btn-som{padding:12px 26px;border-radius:30px;font-size:14px;font-weight:bold;cursor:pointer;transition:all 0.2s;border:none;outline:none;}
-.btn-som.mudo{background:linear-gradient(135deg,#ff0000,#cc0000);color:white;box-shadow:0 0 20px rgba(255,0,0,0.6);animation:pulse 1.5s infinite;}
-.btn-som.ativo{background:linear-gradient(135deg,#0077ff,#0044cc);color:white;}
-@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);}}
-
-.narrador-box{background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:14px;text-align:center;margin-bottom:14px;min-height:52px;display:flex;align-items:center;justify-content:center;}
-.narrador-txt{font-size:20px;font-weight:bold;color:#555;}
+.fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;display:none;}
+.fb-ok{color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);}
+.fb-err{color:#ff6b6b;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);display:block!important;}
+.btn-actions{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.btn-som{padding:10px 22px;border-radius:30px;font-size:13px;font-weight:bold;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;border:none;}
+.btn-som.mudo{background:linear-gradient(135deg,#ff0000,#cc0000);color:white;box-shadow:0 0 28px rgba(255,0,0,0.8);animation:pulseMudo 1.2s ease-in-out infinite;}
+@keyframes pulseMudo{0%,100%{box-shadow:0 0 18px rgba(255,0,0,0.6);transform:scale(1);}50%{box-shadow:0 0 45px rgba(255,0,0,0.95);transform:scale(1.03);}}
+.btn-som.ativo{background:linear-gradient(135deg,#0077ff,#0044cc);color:white;box-shadow:0 0 22px rgba(0,119,255,0.7);animation:pulseAtivo 2s ease-in-out infinite;}
+@keyframes pulseAtivo{0%,100%{box-shadow:0 0 16px rgba(0,119,255,0.5);}50%{box-shadow:0 0 36px rgba(0,119,255,0.9);}}
+.btn-instalar{padding:10px 22px;border-radius:30px;font-size:13px;font-weight:bold;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:none;align-items:center;gap:6px;border:none;background:linear-gradient(135deg,#ffd700,#ff8800);color:#000;box-shadow:0 0 20px rgba(255,215,0,0.5);}
+.btn-instalar:hover{transform:scale(1.04);box-shadow:0 0 32px rgba(255,215,0,0.8);}
+.btn-instalar.visivel{display:inline-flex;}
+.narrador-box{background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:14px 20px;text-align:center;margin-bottom:14px;min-height:52px;display:flex;align-items:center;justify-content:center;transition:all 0.3s;}
+.narrador-txt{font-size:20px;font-weight:bold;color:#555;letter-spacing:1px;}
+.narrador-box.falando{background:rgba(255,215,0,0.13);border-color:#ffd700;box-shadow:0 0 22px rgba(255,215,0,0.25);}
 .narrador-box.falando .narrador-txt{color:#ffd700;}
-
-.status-bar{border-radius:12px;padding:12px;text-align:center;margin-bottom:16px;font-size:16px;font-weight:bold;border:2px solid;}
+.status-bar{border-radius:12px;padding:12px 20px;text-align:center;margin-bottom:16px;font-size:16px;font-weight:bold;border:2px solid;}
 .aguardando{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);color:#555;}
 .ativo{background:rgba(76,175,80,0.1);border-color:#4caf50;color:#4caf50;}
 .finalizado{background:rgba(255,215,0,0.1);border-color:#ffd700;color:#ffd700;}
-
 .ultimo-numero{display:flex;justify-content:center;margin-bottom:16px;}
-.bola-grande{width:110px;height:110px;background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000 60%,#440000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:50px;font-weight:900;box-shadow:0 0 30px rgba(139,0,0,0.5);border:3px solid rgba(255,255,255,0.15);}
-.bola-grande.flash{box-shadow:0 0 70px rgba(255,215,0,1);border-color:#ffd700;}
-
+.bola-grande{width:110px;height:110px;background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000 60%,#440000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:50px;font-weight:900;box-shadow:0 0 30px rgba(139,0,0,0.5);border:3px solid rgba(255,255,255,0.15);transition:all 0.3s;}
+.bola-grande.flash{box-shadow:0 0 70px rgba(255,215,0,1);border-color:#ffd700;transform:scale(1.12);}
 .secao{background:rgba(255,255,255,0.04);border-radius:12px;padding:14px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.07);}
+.secao-titulo{color:#ffd700;font-size:11px;letter-spacing:3px;margin-bottom:10px;font-weight:bold;}
 .bolas-wrap{display:flex;flex-wrap:wrap;gap:7px;}
-.bola{width:40px;height:40px;background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
-
+.bola{width:44px;height:44px;background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;}
+.bola.ultima{box-shadow:0 0 18px #ffd700;border:2px solid #ffd700;transform:scale(1.14);}
 .stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
-.stat{background:rgba(255,255,255,0.05);border-radius:10px;padding:10px;text-align:center;min-width:80px;}
-
+.stat{background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 16px;text-align:center;border:1px solid rgba(255,255,255,0.07);min-width:80px;}
+.stat-val{font-size:22px;font-weight:900;}
+.stat-label{font-size:10px;color:#555;letter-spacing:2px;margin-top:2px;}
 .tabela-wrap{background:rgba(255,255,255,0.03);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.07);margin-bottom:20px;}
-.tabela-row{display:grid;grid-template-columns:50px 60px 1fr 80px;padding:12px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center;}
-.jogador-foto{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.1);}
-
-.cartelas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:15px;}
-.cartela{background:#8B0000;border-radius:12px;padding:15px;box-shadow:0 5px 15px rgba(0,0,0,0.3);}
-.cartela-numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:10px;}
-.num{background:rgba(255,255,255,0.1);padding:8px;text-align:center;border-radius:5px;font-weight:bold;}
-.num.marked{background:#4caf50;}
+.tabela-header{display:grid;grid-template-columns:52px 70px 1fr auto auto;background:rgba(139,0,0,0.6);padding:12px 14px;font-size:11px;font-weight:bold;letter-spacing:2px;color:#ffd700;align-items:center;gap:10px;}
+@media(max-width:500px){.tabela-header{display:none;}}
+.tabela-row{display:grid;grid-template-columns:52px 70px 1fr auto auto;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center;gap:10px;transition:all 0.4s;}
+.tabela-row.vencedora{background:rgba(255,215,0,0.1);animation:glow-row 2s ease-in-out infinite alternate;}
+.tabela-row.lider{background:rgba(255,107,107,0.06);}
+@keyframes glow-row{from{background:rgba(255,215,0,0.05);}to{background:rgba(255,215,0,0.16);}}
+@media(max-width:500px){
+  .tabela-row{grid-template-columns:72px 1fr;grid-template-rows:auto auto auto;column-gap:12px;row-gap:6px;padding:14px 12px;}
+  .cel-cartela{grid-column:2;grid-row:2;font-size:11px;color:#666;}
+  .cel-foto{grid-column:1;grid-row:1/3;}
+  .cel-nome{grid-column:2;grid-row:1;}
+  .cel-acertos{grid-column:2;grid-row:2;display:flex;align-items:center;gap:8px;}
+  .cel-valor{grid-column:1/3;grid-row:3;background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;margin-top:4px;}
+}
+.cel-cartela{font-size:12px;color:#777;font-weight:600;}
+.jogador-foto{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.2);display:block;}
+.jogador-foto-vazia{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.07);border:2px dashed rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:24px;}
+@media(max-width:500px){.jogador-foto,.jogador-foto-vazia{width:60px;height:60px;}}
+.nome-txt{font-size:18px;font-weight:900;color:#fff;word-break:break-word;}
+.nome-txt.vencedor-nome{color:#ffd700;font-size:20px;}
+.barra-acertos{height:3px;background:rgba(255,255,255,0.07);border-radius:3px;margin-top:5px;max-width:160px;}
+.barra-fill{height:100%;background:linear-gradient(90deg,#8B0000,#ff6b6b);border-radius:3px;transition:width 0.6s;}
+.acertos-badge{display:inline-block;background:rgba(139,0,0,0.4);border:1px solid rgba(255,107,107,0.35);color:#ff9999;border-radius:20px;padding:4px 12px;font-size:14px;font-weight:700;white-space:nowrap;}
+.acertos-badge.alto{background:rgba(76,175,80,0.25);border-color:#4caf50;color:#4caf50;}
+.valor-bloco{text-align:right;}
+.valor-label{font-size:10px;color:#555;letter-spacing:1px;margin-bottom:2px;}
+.valor-txt{font-size:22px;font-weight:900;color:#fff;white-space:nowrap;}
+.valor-txt.tem-valor{color:#4ade80;}
+.valor-txt.vencedor-val{color:#ffd700;font-size:26px;}
+.valor-txt.zero{color:#333;font-size:15px;}
+@media(max-width:500px){.valor-bloco{text-align:left;}.valor-txt{font-size:20px;}.valor-txt.vencedor-val{font-size:23px;}}
+.cartelas-titulo{color:#ffd700;font-size:11px;letter-spacing:3px;font-weight:bold;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.cartelas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:20px;}
+.cartela{background:#8B0000;border-radius:14px;padding:16px;box-shadow:0 6px 18px rgba(0,0,0,0.3);border:2px solid transparent;transition:all 0.3s;}
+.cartela.winner{border-color:#ffd700;box-shadow:0 0 28px rgba(255,215,0,0.5);animation:glow-c 2s ease-in-out infinite alternate;}
+@keyframes glow-c{from{box-shadow:0 0 18px rgba(255,215,0,0.3);}to{box-shadow:0 0 40px rgba(255,215,0,0.8);}}
+.cartela-header{color:white;text-align:center;font-size:14px;font-weight:bold;margin-bottom:8px;opacity:0.7;}
+.cartela-player-wrap{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;}
+.cartela-foto{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid #ffd700;}
+.cartela-foto-vazia{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:22px;}
+.cartela-player{color:#ffd700;font-size:14px;font-weight:bold;}
+.cartela-numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+.num{background:rgba(255,255,255,0.12);color:white;padding:9px 3px;text-align:center;border-radius:6px;font-size:18px;font-weight:bold;transition:all 0.35s;}
+.num.marked{background:#4caf50;box-shadow:0 0 8px rgba(76,175,80,0.6);transform:scale(1.04);animation:pop 0.4s ease;}
+@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.15);}100%{transform:scale(1.04);}}
+.cartela-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
+.acertos-txt{color:rgba(255,255,255,0.65);font-size:12px;}
+.acertos-num{color:white;font-weight:bold;}
+.ganho-txt{color:#4caf50;font-size:13px;font-weight:bold;}
+.pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4caf50;margin-right:8px;animation:pulseAnim 1.5s infinite;}
+@keyframes pulseAnim{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.3;transform:scale(0.8);}}
+.aguardando-msg{text-align:center;padding:40px;color:#333;font-size:15px;}
 </style>
 </head>
 <body>
@@ -61,14 +119,17 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 <div class="header">
   <h1><span class="s">S</span><span class="x">X</span><span class="rest"> BINGO</span></h1>
   <p>SÉRIE BRONZE — AO VIVO</p>
-  <div class="sorteio-badge">SORTEIO <span id="numSorteioDisplay">1</span></div>
+  <div class="sorteio-badge">SORTEIO <span id="numSorteio">1</span></div>
 </div>
 
-<div id="fbBadge" class="fb-badge">Conectado ao SX Server</div>
+<div id="fbBadge" class="fb-badge fb-ok">🔥 Conectando ao Firebase...</div>
 
 <div class="btn-actions">
   <button class="btn-som mudo" id="btnSom" onclick="ativarSom()">
-    🔇 Ativar Áudio Masculino
+    🔇 Clique para ativar audio
+  </button>
+  <button class="btn-instalar" id="btnInstalar">
+    📲 Instalar App
   </button>
 </div>
 
@@ -76,71 +137,96 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   <div class="narrador-txt" id="narradorTxt">— narrador aguardando —</div>
 </div>
 
-<div id="statusBar" class="status-bar aguardando">Conectando...</div>
+<div id="statusBar" class="status-bar aguardando">
+  <span class="pulse"></span> Aguardando sorteio...
+</div>
 
 <div class="ultimo-numero">
   <div class="bola-grande" id="bolaGrande">?</div>
 </div>
 
 <div class="secao">
-  <div class="bolas-wrap" id="bolasWrap"></div>
+  <div class="secao-titulo">NÚMEROS SORTEADOS</div>
+  <div class="bolas-wrap" id="bolasWrap">
+    <div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>
+  </div>
 </div>
 
 <div class="stats">
-  <div class="stat"><div id="stS">0</div><div style="font-size:10px">SORTEADOS</div></div>
-  <div class="stat"><div id="stR">90</div><div style="font-size:10px">RESTANTES</div></div>
-  <div class="stat"><div id="stTotal">R$0</div><div style="font-size:10px">TOTAL</div></div>
+  <div class="stat"><div class="stat-val" id="stS" style="color:#8B0000;">0</div><div class="stat-label">SORTEADOS</div></div>
+  <div class="stat"><div class="stat-val" id="stR" style="color:#ffd700;">90</div><div class="stat-label">RESTANTES</div></div>
+  <div class="stat"><div class="stat-val" id="stTotal" style="color:#4caf50;">R$0</div><div class="stat-label">TOTAL PAGO</div></div>
+  <div class="stat"><div class="stat-val" id="stLider" style="color:#ff6b6b;">—</div><div class="stat-label">LÍDER</div></div>
 </div>
 
-<div id="tabelaBody" class="tabela-wrap"></div>
+<div class="tabela-wrap">
+  <div class="tabela-header">
+    <div>N</div><div>FOTO</div><div>JOGADOR</div>
+    <div>ACERTOS</div><div>TOTAL GANHO</div>
+  </div>
+  <div id="tabelaBody"><div class="aguardando-msg">Aguardando início do sorteio...</div></div>
+</div>
 
-<div class="cartelas-grid" id="cartelasGrid"></div>
+<div class="secao">
+  <div class="cartelas-titulo">CARTELAS AO VIVO — NUMEROS MARCADOS EM TEMPO REAL</div>
+  <div class="cartelas-grid" id="cartelasGrid">
+    <div class="aguardando-msg">Aguardando início do sorteio...</div>
+  </div>
+</div>
 
 <script>
-  // --- CONTROLE DE ÁUDIO ---
-  var somAtivo = false;
-  var audioCtx = null;
-  var gainMaster = null;
-  var estaFalando = false;
-  var filaFala = [];
-  var vozEscolhida = null;
-  
-  var numSorteio = parseInt(localStorage.getItem('sx_bingo_n_sorteio')) || 1;
-  var ultimaListaJogadores = localStorage.getItem('sx_bingo_jogadores_hash') || "";
+  let deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const btn = document.getElementById('btnInstalar');
+    btn.classList.add('visivel');
+  });
+  document.getElementById('btnInstalar').addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      document.getElementById('btnInstalar').classList.remove('visivel');
+    }
+  });
 
-  function salvarSorteio() {
-    localStorage.setItem('sx_bingo_n_sorteio', numSorteio);
-    document.getElementById('numSorteioDisplay').textContent = numSorteio;
-  }
+  var somAtivo     = false;
+  var audioCtx     = null;
+  var gainMaster   = null;
+  var vozEscolhida = null;
+  var filaFala     = [];
+  var estaFalando  = false;
 
   function ativarSom() {
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      gainMaster = audioCtx.createGain();
-      gainMaster.connect(audioCtx.destination);
-    }
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-
     if (!somAtivo) {
-      somAtivo = true;
-      document.getElementById('btnSom').innerHTML = '🔊 Áudio Ativado';
-      document.getElementById('btnSom').className = 'btn-som ativo';
-      
-      var carregarVozes = () => {
-        var vozes = window.speechSynthesis.getVoices();
-        vozEscolhida = vozes.find(v => v.lang.startsWith('pt') && (v.name.includes('Male') || v.name.includes('Google'))) || vozes.find(v => v.lang.startsWith('pt'));
-      };
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        gainMaster = audioCtx.createGain();
+        gainMaster.gain.value = 1.0;
+        gainMaster.connect(audioCtx.destination);
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+      } catch(e) {}
       carregarVozes();
-      if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = carregarVozes;
-      
-      tocarPing();
+      somAtivo = true;
+      document.getElementById('btnSom').textContent = '🔊 Áudio ativado';
+      document.getElementById('btnSom').className = 'btn-som ativo';
+      falar('S X Bingo Oficial. Série bronze. Pronto!');
     } else {
       somAtivo = false;
       window.speechSynthesis.cancel();
-      document.getElementById('btnSom').innerHTML = '🔇 Ativar Áudio Masculino';
+      filaFala = []; estaFalando = false;
+      document.getElementById('btnSom').textContent = '🔇 Clique para ativar audio';
       document.getElementById('btnSom').className = 'btn-som mudo';
+      setNarrador('— narrador desativado —', false);
     }
   }
+
+  function carregarVozes() {
+    var v = window.speechSynthesis.getVoices();
+    vozEscolhida = v.find(x => x.lang.startsWith('pt') && (x.name.includes('Male') || x.name.includes('Google'))) || v.find(x => x.lang.startsWith('pt'));
+  }
+  window.speechSynthesis.onvoiceschanged = carregarVozes;
 
   function falar(texto) {
     if (!somAtivo) return;
@@ -152,36 +238,61 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     if (estaFalando || filaFala.length === 0) return;
     estaFalando = true;
     var texto = filaFala.shift();
-    var msg = new SpeechSynthesisUtterance(texto);
-    msg.lang = 'pt-BR';
-    msg.pitch = 0.85; 
-    msg.rate = 1.0;
-    if (vozEscolhida) msg.voice = vozEscolhida;
-    
-    msg.onstart = () => { 
-      document.getElementById('narradorBox').classList.add('falando'); 
-      document.getElementById('narradorTxt').textContent = texto; 
-    };
-    msg.onend = () => { 
-      estaFalando = false; 
-      document.getElementById('narradorBox').classList.remove('falando'); 
-      processarFila(); 
-    };
-    window.speechSynthesis.speak(msg);
+    setNarrador(texto, true);
+    var u = new SpeechSynthesisUtterance(texto);
+    u.lang = 'pt-BR'; u.rate = 1.0; u.pitch = 0.9;
+    if (vozEscolhida) u.voice = vozEscolhida;
+    u.onend = () => { estaFalando = false; setNarrador(texto, false); processarFila(); };
+    window.speechSynthesis.speak(u);
+  }
+
+  function setNarrador(texto, ativo) {
+    document.getElementById('narradorTxt').textContent = texto;
+    document.getElementById('narradorBox').className = 'narrador-box' + (ativo ? ' falando' : '');
   }
 
   function tocarPing() {
     if (!audioCtx) return;
-    const osc = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
+    var osc = audioCtx.createOscillator();
+    var g = audioCtx.createGain();
     osc.connect(g); g.connect(gainMaster);
     osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-    g.gain.setValueAtTime(0.1, audioCtx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
-    osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
   }
 
-  document.getElementById('numSorteioDisplay').textContent = numSorteio;
+  function tocarFanfarra() {
+    if (!audioCtx) return;
+    [440, 554, 659, 880].forEach((f, i) => {
+      var osc = audioCtx.createOscillator();
+      var g = audioCtx.createGain();
+      osc.connect(g); g.connect(gainMaster);
+      osc.frequency.setValueAtTime(f, audioCtx.currentTime + (i * 0.15));
+      g.gain.setValueAtTime(0.2, audioCtx.currentTime + (i * 0.15));
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (i * 0.15) + 0.4);
+      osc.start(audioCtx.currentTime + (i * 0.15));
+      osc.stop(audioCtx.currentTime + (i * 0.15) + 0.4);
+    });
+  }
+
+  // --- Lógica do Contador de Sorteio ---
+  var numSorteio = parseInt(localStorage.getItem('sx_numSorteio') || '1');
+  var hashParticipantes = localStorage.getItem('sx_hashParticipantes') || '';
+
+  function atualizarContadorSorteio(cartelas, novo) {
+    const hashAtual = cartelas.map(c => c.id).join('|');
+    if (hashParticipantes !== '' && hashAtual === '') {
+       // Se limpou os jogadores, volta pro 1
+       numSorteio = 1;
+    } else if (novo) {
+       numSorteio++;
+    }
+    hashParticipantes = hashAtual;
+    localStorage.setItem('sx_numSorteio', numSorteio);
+    localStorage.setItem('sx_hashParticipantes', hashParticipantes);
+    document.getElementById('numSorteio').textContent = numSorteio;
+  }
 </script>
 
 <script type="module">
@@ -199,106 +310,136 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   };
 
   const db = getDatabase(initializeApp(cfg));
-  let lastDrawnCount = 0;
-  let statusAnterior = "";
+  let lastDrawnLen = 0;
+  let lastStatus = '';
+  let state = { game: null, fotos: {} };
 
   onValue(ref(db, 'bingo_bronze/game'), snap => {
-    const g = snap.val();
-    if (!g) return;
+    state.game = snap.val();
+    if (!state.game) return;
+    
+    const drawn = state.game.drawn || [];
+    const cartelas = state.game.cartelas || [];
 
-    const drawn = g.drawn || [];
-    const cartelas = g.cartelas || [];
-
-    // --- LÓGICA DO CONTADOR DE SORTEIO ---
-    if (drawn.length === 0 && lastDrawnCount > 0) {
-      numSorteio++;
-      salvarSorteio();
-      falar("Limpando a mesa. Iniciando sorteio número " + numSorteio);
+    // Detecta novo sorteio (limpeza de bolas)
+    if (drawn.length === 0 && lastDrawnLen > 0) {
+      atualizarContadorSorteio(cartelas, true);
+      falar("Mesa limpa. Sorteio número " + numSorteio + " iniciado.");
     }
 
-    const currentJogadoresHash = cartelas.map(c => c.id).join(',');
-    if (ultimaListaJogadores !== "" && currentJogadoresHash === "" && cartelas.length === 0) {
-      numSorteio = 1;
-      salvarSorteio();
-    }
-    ultimaListaJogadores = currentJogadoresHash;
-    localStorage.setItem('sx_bingo_jogadores_hash', currentJogadoresHash);
-
-    // --- ANÚNCIO DE NÚMEROS ---
-    if (drawn.length > lastDrawnCount) {
-      const novoNumero = drawn[drawn.length - 1];
+    // Áudio dos números (Sincronizado)
+    if (drawn.length > lastDrawnLen) {
       tocarPing();
-      falar("Número " + novoNumero);
-      lastDrawnCount = drawn.length;
+      falar("Número " + drawn[drawn.length - 1]);
     }
 
-    // --- ANÚNCIO DE VENCEDORES (PARABÉNS) ---
-    if (g.status === 'finalizado' && statusAnterior === 'ativo') {
-      const vencedores = cartelas.filter(c => c.score >= 16);
-      if (vencedores.length > 0) {
-        const nomes = vencedores.map(v => v.name || 'Jogador ' + v.id).join(', ');
-        falar("Biiingo! Parabéns aos ganhadores: " + nomes);
+    // Áudio do Vencedor (Parabéns + Valor)
+    if (state.game.status === 'finalizado' && lastStatus === 'ativo') {
+      const maxScore = Math.max(...cartelas.map(c => c.score));
+      const winners = cartelas.filter(c => c.score === maxScore);
+      if (winners.length > 0) {
+        tocarFanfarra();
+        const nomes = winners.map(w => w.name || 'Jogador '+w.id).join(' e ');
+        let totalPago = 0;
+        cartelas.forEach(c => totalPago += (state.game.acumulado?.[c.id] || 0));
+        const premioDiv = (totalPago / winners.length).toFixed(2);
+        
+        setTimeout(() => {
+          falar("Biiingo! Parabéns " + nomes + "! Ganhando R$ " + premioDiv + " cada.");
+        }, 1000);
       }
     }
-    
-    statusAnterior = g.status;
-    render(g);
+
+    lastDrawnLen = drawn.length;
+    lastStatus = state.game.status;
+    render();
   });
 
-  function render(g) {
+  onValue(ref(db, 'bingo_bronze/fotos'), snap => {
+    state.fotos = snap.val() || {};
+    render();
+  });
+
+  function render() {
+    const g = state.game; if(!g) return;
     const drawn = g.drawn || [];
     const cartelas = g.cartelas || [];
+    const acumulado = g.acumulado || {};
+    const fotos = state.fotos;
+
+    // Barra de Status
     const bar = document.getElementById('statusBar');
+    if (g.status === 'finalizado') {
+      bar.className = 'status-bar finalizado';
+      bar.innerHTML = '🏆 SORTEIO FINALIZADO';
+    } else {
+      bar.className = 'status-bar ativo';
+      bar.innerHTML = '<span class="pulse"></span> SORTEIO AO VIVO';
+    }
 
-    // Status visual
-    bar.textContent = g.status === 'ativo' ? '🔴 SORTEIO EM ANDAMENTO' : '🏆 SORTEIO FINALIZADO';
-    bar.className = 'status-bar ' + (g.status === 'ativo' ? 'ativo' : 'finalizado');
+    // Bola Grande
+    const bolaG = document.getElementById('bolaGrande');
+    const ultimo = drawn[drawn.length-1];
+    if (ultimo !== undefined) {
+      bolaG.textContent = ultimo;
+      bolaG.classList.add('flash');
+      setTimeout(() => bolaG.classList.remove('flash'), 500);
+    }
 
-    // Bola
-    document.getElementById('bolaGrande').textContent = drawn.length ? drawn[drawn.length-1] : '?';
-    document.getElementById('bolasWrap').innerHTML = drawn.map(n => `<div class="bola">${n}</div>`).join('');
-    
-    // Stats e Prêmios
-    const totalArrecadado = cartelas.length * 5; // Exemplo: 5 reais por cartela
+    // Lista de Bolas
+    document.getElementById('bolasWrap').innerHTML = drawn.map(n => `<div class="bola ${n===ultimo?'ultima':''}">${n}</div>`).join('') || 'Aguardando...';
+
+    // Stats
+    let totalSoma = 0;
+    cartelas.forEach(c => totalSoma += (acumulado[c.id]||0));
     document.getElementById('stS').textContent = drawn.length;
     document.getElementById('stR').textContent = 90 - drawn.length;
-    document.getElementById('stTotal').textContent = 'R$' + totalArrecadado;
+    document.getElementById('stTotal').textContent = 'R$' + totalSoma.toFixed(2);
 
-    // Lógica de Ganhadores e Divisão de Prêmio
-    const vencedores = cartelas.filter(c => c.score >= 16);
-    const premioPorPessoa = vencedores.length > 0 ? (totalArrecadado / vencedores.length).toFixed(2) : 0;
-
-    // Tabela com Fotos e Prêmios Individuais
-    document.getElementById('tabelaBody').innerHTML = cartelas.sort((a,b)=>b.score-a.score).map(c => {
-      const eGanhador = c.score >= 16;
-      const displayPremio = eGanhador ? `<span style="color:#4caf50">R$${premioPorPessoa}</span>` : 'R$0';
-      const fotoUrl = c.photoUrl || 'https://via.placeholder.com/50/333/fff?text=?';
-
+    // Tabela
+    const sorted = [...cartelas].sort((a,b) => b.score - a.score);
+    document.getElementById('tabelaBody').innerHTML = sorted.map((c, i) => {
+      const fotoUrl = fotos[c.id] || '';
+      const fotoHtml = fotoUrl ? `<img src="${fotoUrl}" class="jogador-foto">` : `<div class="jogador-foto-vazia">👤</div>`;
+      const valor = acumulado[c.id] || 0;
       return `
-        <div class="tabela-row" style="${eGanhador ? 'background:rgba(76,175,80,0.1)' : ''}">
-          <div style="font-size:10px">ID ${c.id}</div>
-          <div><img src="${fotoUrl}" class="jogador-foto" onerror="this.src='https://via.placeholder.com/50/333/fff?text=?'"></div>
-          <div class="nome-txt">${c.name || 'Jogador'} ${eGanhador ? '🏆' : ''}</div>
-          <div style="text-align:right">
-             <div style="font-weight:bold; color:#ffd700">${c.score}/16</div>
-             <div style="font-size:10px">${displayPremio}</div>
+        <div class="tabela-row ${g.status==='finalizado' && c.score>=16 ? 'vencedora' : ''}">
+          <div class="cel-cartela">C${c.id}</div>
+          <div class="cel-foto">${fotoHtml}</div>
+          <div class="cel-nome">
+            <div class="nome-txt">${c.name || 'Jogador'}</div>
+            <div class="barra-acertos"><div class="barra-fill" style="width:${(c.score/16)*100}%"></div></div>
+          </div>
+          <div class="cel-acertos"><span class="acertos-badge ${c.score>=12?'alto':''}">${c.score}/16</span></div>
+          <div class="cel-valor">
+            <div class="valor-bloco">
+              <div class="valor-txt ${valor>0?'tem-valor':''}">${valor > 0 ? 'R$ '+valor.toFixed(2) : '—'}</div>
+            </div>
           </div>
         </div>
       `;
     }).join('');
 
-    // Cartelas
-    document.getElementById('cartelasGrid').innerHTML = cartelas.map(c => `
-      <div class="cartela">
-        <div style="font-weight:bold; font-size:12px; display:flex; justify-content:space-between">
-           <span>CARTELA ${c.id} - ${c.name || ''}</span>
-           <span>${c.score}/16</span>
+    // Cartelas Grid
+    document.getElementById('cartelasGrid').innerHTML = cartelas.map(c => {
+      const marked = c.markedNumbers || [];
+      return `
+        <div class="cartela ${c.score>=16 ? 'winner' : ''}">
+          <div class="cartela-header">CARTELA ${c.id}</div>
+          <div class="cartela-player-wrap">
+            ${fotos[c.id] ? `<img src="${fotos[c.id]}" class="cartela-foto">` : '<div class="cartela-foto-vazia">👤</div>'}
+            <span class="cartela-player">${c.name || 'Jogador'}</span>
+          </div>
+          <div class="cartela-numbers">
+            ${(c.numbers || []).map(n => `<div class="num ${marked.includes(n)?'marked':''}">${n}</div>`).join('')}
+          </div>
+          <div class="cartela-footer">
+            <span class="acertos-txt">Acertos: <b>${c.score}/16</b></span>
+            <span class="ganho-txt">${acumulado[c.id] ? 'R$ '+acumulado[c.id].toFixed(2) : ''}</span>
+          </div>
         </div>
-        <div class="cartela-numbers">
-          ${(c.numbers || []).map(n => `<div class="num ${(c.markedNumbers || []).includes(n)?'marked':''}">${n}</div>`).join('')}
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
 </script>
 </body>
