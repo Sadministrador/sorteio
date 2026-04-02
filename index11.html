@@ -9,17 +9,19 @@
 body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%,#1a0505 100%);min-height:100vh;padding:16px;color:white;}
 .header{text-align:center;margin-bottom:20px;}
 .header h1{font-size:2.4em;font-weight:900;letter-spacing:3px;}
-.s{color:#c0392b;}.x{color:#ffffff;}
-.rest{background:linear-gradient(90deg,#ff6b6b,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.s{color:#ff1a1a;text-shadow:0 0 18px rgba(255,30,30,0.9);}.x{color:#ffffff;}
+.rest{background:linear-gradient(90deg,#ff2222,#ff8800,#ffd700,#ff8800,#ff2222);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:brilhoBingo 2.5s linear infinite;}@keyframes brilhoBingo{0%{background-position:0% center;}100%{background-position:200% center;}}
 .header p{font-size:11px;color:#555;letter-spacing:3px;margin-top:4px;}
+.sorteio-badge{display:inline-block;margin-top:8px;padding:5px 18px;border-radius:30px;font-size:12px;font-weight:bold;letter-spacing:2px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);color:#ffd700;transition:all 0.5s;}
+.sorteio-badge span{font-size:18px;font-weight:900;color:#fff;margin-left:6px;}
 .fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;display:none;}
 .fb-ok{color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);}
 .fb-err{color:#ff6b6b;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);display:block!important;}
 .btn-som-wrap{text-align:center;margin-bottom:14px;}
 .btn-som{padding:16px 40px;border-radius:40px;font-size:18px;font-weight:bold;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:inline-block;border:none;}
-.btn-som.mudo{background:#c0392b;color:white;box-shadow:0 0 28px rgba(192,57,43,0.8);animation:pulseMudo 1.2s ease-in-out infinite;}
-@keyframes pulseMudo{0%,100%{box-shadow:0 0 18px rgba(192,57,43,0.5);transform:scale(1);}50%{box-shadow:0 0 44px rgba(192,57,43,1);transform:scale(1.03);}}
-.btn-som.ativo{background:#4caf50;color:white;box-shadow:0 0 20px rgba(76,175,80,0.6);animation:none;}
+.btn-som.mudo{background:linear-gradient(135deg,#ff0000,#cc0000);color:white;box-shadow:0 0 35px rgba(255,0,0,0.9);animation:pulseMudo 1.2s ease-in-out infinite;}
+@keyframes pulseMudo{0%,100%{box-shadow:0 0 22px rgba(255,0,0,0.7);transform:scale(1);}50%{box-shadow:0 0 55px rgba(255,0,0,1);transform:scale(1.04);}}
+.btn-som.ativo{background:linear-gradient(135deg,#0077ff,#0044cc);color:white;box-shadow:0 0 28px rgba(0,119,255,0.8);animation:pulseAtivo 2s ease-in-out infinite;}@keyframes pulseAtivo{0%,100%{box-shadow:0 0 20px rgba(0,119,255,0.6);}50%{box-shadow:0 0 42px rgba(0,119,255,1);}}
 .narrador-box{background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:14px 20px;text-align:center;margin-bottom:14px;min-height:52px;display:flex;align-items:center;justify-content:center;transition:all 0.3s;}
 .narrador-txt{font-size:20px;font-weight:bold;color:#555;letter-spacing:1px;}
 .narrador-box.falando{background:rgba(255,215,0,0.13);border-color:#ffd700;box-shadow:0 0 22px rgba(255,215,0,0.25);}
@@ -100,6 +102,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 <div class="header">
   <h1><span class="s">S</span><span class="x">X</span><span class="rest"> BINGO</span></h1>
   <p>SÉRIE BRONZE — AO VIVO</p>
+  <div class="sorteio-badge">SORTEIO <span id="numSorteio">1</span></div>
 </div>
 
 <div id="fbBadge" class="fb-badge fb-ok">🔥 Conectando ao Firebase...</div>
@@ -290,6 +293,36 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   // Mesmo que o status vire "finalizado" no Firebase, os números na fila
   // continuam sendo anunciados até o fim — sem interrupção.
   var filaNumeros      = [];   // números aguardando anúncio de áudio
+  // ─── Contador de sorteios ────────────────────────────────────────────────
+  // Persiste no localStorage — reseta quando participantes mudam
+  var numSorteio       = parseInt(localStorage.getItem('sx_numSorteio') || '1');
+  var hashParticipantes= localStorage.getItem('sx_hashParticipantes') || '';
+  // Atualiza badge com valor salvo ao carregar a página
+  document.addEventListener('DOMContentLoaded', function(){
+    var el = document.getElementById('numSorteio');
+    if (el) el.textContent = numSorteio;
+  });
+
+  function calcHashParticipantes(cartelas) {
+    // Hash simples: IDs + nomes concatenados, para detectar troca de grupo
+    return cartelas.map(function(c){ return c.id + ':' + (c.name||''); }).sort().join('|');
+  }
+
+  function atualizarContadorSorteio(cartelas, novoSorteio) {
+    var hashAtual = calcHashParticipantes(cartelas);
+    if (hashAtual !== hashParticipantes) {
+      // Participantes mudaram — recomeça do 1
+      numSorteio = 1;
+      hashParticipantes = hashAtual;
+    } else if (novoSorteio) {
+      // Mesmo grupo, novo sorteio — incrementa
+      numSorteio++;
+    }
+    localStorage.setItem('sx_numSorteio', numSorteio);
+    localStorage.setItem('sx_hashParticipantes', hashParticipantes);
+    var el = document.getElementById('numSorteio');
+    if (el) el.textContent = numSorteio;
+  }
   var anunciandoNumero = false;
   var pendingFimAnuncio = null; // guarda dados do fim para anunciar DEPOIS da fila
 
@@ -450,6 +483,8 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       document.getElementById('stS').textContent = '0';
       document.getElementById('stR').textContent = '90';
       setNarrador('— narrador aguardando —', false);
+      // Novo sorteio com mesmos participantes — incrementa contador
+      atualizarContadorSorteio(cartelas, true);
     }
     // Também reseta se drawn voltou para 0 enquanto estava ativo (novo jogo iniciado)
     if (drawn.length < lastDrawnLen && drawn.length === 0) {
@@ -530,6 +565,8 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       document.getElementById('stLider').textContent = '—';
       return;
     }
+    // Verifica se participantes mudaram (novo grupo) sem incrementar sorteio
+    atualizarContadorSorteio(cartelas, false);
 
     let total = 0;
     cartelas.forEach(c => total += (acumulado[c.id]||0));
