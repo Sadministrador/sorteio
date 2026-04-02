@@ -6,133 +6,157 @@
 <title>Monitor - SX Bingo</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%,#1a0505 100%);min-height:100vh;padding:20px;color:white;}
+body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%,#1a0505 100%);min-height:100vh;padding:16px;color:white;}
 
-.header{text-align:center;margin-bottom:24px;}
-.header h1{font-size:2.8em;font-weight:900;letter-spacing:4px;}
-.s{color:#c0392b;}
-.x{color:#ffffff;}
+.header{text-align:center;margin-bottom:20px;}
+.header h1{font-size:2.4em;font-weight:900;letter-spacing:3px;}
+.s{color:#c0392b;}.x{color:#ffffff;}
 .rest{background:linear-gradient(90deg,#ff6b6b,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.header p{font-size:12px;color:#555;letter-spacing:3px;margin-top:4px;}
+.header p{font-size:11px;color:#555;letter-spacing:3px;margin-top:4px;}
 
-.fb-badge{text-align:center;font-size:12px;margin-bottom:12px;padding:7px;border-radius:8px;font-weight:bold;}
+.fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;}
 .fb-ok{color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);}
 .fb-err{color:#ff6b6b;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);}
 
-.status-bar{border-radius:12px;padding:14px 24px;text-align:center;margin-bottom:20px;font-size:18px;font-weight:bold;border:2px solid;}
-.aguardando{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1);color:#666;}
+/* BOTÃO SOM — destaque máximo para o usuário ativar */
+.btn-som-wrap{text-align:center;margin-bottom:14px;}
+.btn-som{
+  padding:14px 36px;border-radius:40px;
+  font-size:17px;font-weight:bold;letter-spacing:1px;
+  cursor:pointer;transition:all 0.2s;
+  display:inline-block;border:none;
+}
+.btn-som.mudo{
+  background:#c0392b;color:white;
+  box-shadow:0 0 24px rgba(192,57,43,0.7);
+  animation:pulseMudo 1.5s ease-in-out infinite;
+}
+@keyframes pulseMudo{0%,100%{box-shadow:0 0 18px rgba(192,57,43,0.5);}50%{box-shadow:0 0 38px rgba(192,57,43,0.9);}}
+.btn-som.ativo{
+  background:#4caf50;color:white;
+  box-shadow:0 0 18px rgba(76,175,80,0.5);
+  animation:none;
+}
+
+.status-bar{border-radius:12px;padding:12px 20px;text-align:center;margin-bottom:16px;font-size:16px;font-weight:bold;border:2px solid;}
+.aguardando{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);color:#555;}
 .ativo{background:rgba(76,175,80,0.1);border-color:#4caf50;color:#4caf50;}
 .finalizado{background:rgba(255,215,0,0.1);border-color:#ffd700;color:#ffd700;}
 
-.ultimo-numero{display:flex;justify-content:center;margin-bottom:20px;}
-.bola-grande{width:110px;height:110px;background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000 60%,#440000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:900;box-shadow:0 0 40px rgba(139,0,0,0.6);border:3px solid rgba(255,255,255,0.2);transition:all 0.3s;}
-.bola-grande.flash{box-shadow:0 0 70px rgba(255,215,0,0.9);border-color:#ffd700;transform:scale(1.08);}
-
-.secao{background:rgba(255,255,255,0.05);border-radius:14px;padding:16px;margin-bottom:20px;border:1px solid rgba(255,255,255,0.08);}
-.secao-titulo{color:#ffd700;font-size:12px;letter-spacing:3px;margin-bottom:12px;font-weight:bold;}
-.bolas-wrap{display:flex;flex-wrap:wrap;gap:8px;}
-.bola{width:46px;height:46px;background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;}
-.bola.ultima{box-shadow:0 0 20px #ffd700;border:2px solid #ffd700;transform:scale(1.15);}
-
-.stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
-.stat{background:rgba(255,255,255,0.06);border-radius:12px;padding:12px 20px;text-align:center;border:1px solid rgba(255,255,255,0.08);min-width:90px;}
-.stat-val{font-size:24px;font-weight:900;}
-.stat-label{font-size:10px;color:#666;letter-spacing:2px;margin-top:2px;}
-
-/* TABELA JOGADORES */
-.tabela-wrap{background:rgba(255,255,255,0.04);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);margin-bottom:30px;}
-.tabela-header{display:grid;grid-template-columns:70px 60px 1fr 130px 160px;background:rgba(139,0,0,0.7);padding:14px 16px;font-size:12px;font-weight:bold;letter-spacing:2px;color:#ffd700;align-items:center;}
-.tabela-row{display:grid;grid-template-columns:70px 60px 1fr 130px 160px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.06);align-items:center;transition:all 0.4s;}
-.tabela-row:last-child{border-bottom:none;}
-.tabela-row.vencedora{background:rgba(255,215,0,0.12);animation:glow-row 2s ease-in-out infinite alternate;}
-.tabela-row.lider{background:rgba(255,107,107,0.08);}
-@keyframes glow-row{from{background:rgba(255,215,0,0.07);}to{background:rgba(255,215,0,0.18);}}
-.cel-cartela{font-size:13px;color:#888;font-weight:600;}
-.jogador-foto{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.2);display:block;}
-.jogador-foto-vazia{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:22px;}
-.nome-txt{font-size:20px;font-weight:900;color:#FFF;}
-.nome-txt.vencedor-nome{color:#ffd700;font-size:22px;}
-.barra-acertos{height:3px;background:rgba(255,255,255,0.08);border-radius:4px;margin-top:5px;max-width:200px;}
-.barra-fill{height:100%;background:linear-gradient(90deg,#8B0000,#ff6b6b);border-radius:4px;transition:width 0.6s;}
-.cel-acertos{text-align:center;}
-.acertos-badge{display:inline-block;background:rgba(139,0,0,0.5);border:1px solid rgba(255,107,107,0.4);color:#ff9999;border-radius:20px;padding:4px 14px;font-size:15px;font-weight:700;}
-.acertos-badge.alto{background:rgba(76,175,80,0.3);border-color:#4caf50;color:#4caf50;}
-.cel-valor{text-align:right;}
-.valor-txt{font-size:26px;font-weight:900;color:#FFF;}
-.valor-txt.tem-valor{color:#4ade80;font-size:28px;}
-.valor-txt.vencedor-val{color:#ffd700;font-size:30px;}
-.valor-txt.zero{color:#333;font-size:18px;}
-
-/* SEÇÃO CARTELAS */
-.cartelas-titulo{
-  color:#ffd700;font-size:12px;letter-spacing:3px;
-  font-weight:bold;margin-bottom:16px;
-  padding-bottom:10px;
-  border-bottom:1px solid rgba(255,255,255,0.08);
+.ultimo-numero{display:flex;justify-content:center;margin-bottom:16px;}
+.bola-grande{
+  width:100px;height:100px;
+  background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000 60%,#440000);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:44px;font-weight:900;
+  box-shadow:0 0 30px rgba(139,0,0,0.5);
+  border:3px solid rgba(255,255,255,0.15);transition:all 0.3s;
 }
-.cartelas-grid{
+.bola-grande.flash{box-shadow:0 0 60px rgba(255,215,0,0.9);border-color:#ffd700;transform:scale(1.1);}
+
+.secao{background:rgba(255,255,255,0.04);border-radius:12px;padding:14px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.07);}
+.secao-titulo{color:#ffd700;font-size:11px;letter-spacing:3px;margin-bottom:10px;font-weight:bold;}
+.bolas-wrap{display:flex;flex-wrap:wrap;gap:7px;}
+.bola{width:42px;height:42px;background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+.bola.ultima{box-shadow:0 0 16px #ffd700;border:2px solid #ffd700;transform:scale(1.12);}
+
+.stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
+.stat{background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 16px;text-align:center;border:1px solid rgba(255,255,255,0.07);min-width:80px;}
+.stat-val{font-size:22px;font-weight:900;}
+.stat-label{font-size:10px;color:#555;letter-spacing:2px;margin-top:2px;}
+
+/* ── TABELA JOGADORES — totalmente responsiva ── */
+.tabela-wrap{background:rgba(255,255,255,0.03);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.07);margin-bottom:20px;}
+
+/* Cabeçalho apenas em desktop */
+.tabela-header{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:18px;
-  margin-bottom:30px;
+  grid-template-columns:52px 70px 1fr auto auto;
+  background:rgba(139,0,0,0.6);
+  padding:12px 14px;
+  font-size:11px;font-weight:bold;letter-spacing:2px;color:#ffd700;
+  align-items:center;gap:10px;
 }
-.cartela{
-  background:#8B0000;
-  border-radius:15px;
-  padding:18px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.3);
-  border:2px solid transparent;
-  transition:all 0.3s;
+@media(max-width:500px){.tabela-header{display:none;}}
+
+/* Cada linha: layout diferente em mobile */
+.tabela-row{
+  display:grid;
+  grid-template-columns:52px 70px 1fr auto auto;
+  padding:12px 14px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  align-items:center;
+  gap:10px;
+  transition:all 0.4s;
 }
-.cartela.winner{
-  border-color:#ffd700;
-  box-shadow:0 0 30px rgba(255,215,0,0.6);
-  animation:glow-c 2s ease-in-out infinite alternate;
+.tabela-row.vencedora{background:rgba(255,215,0,0.1);animation:glow-row 2s ease-in-out infinite alternate;}
+.tabela-row.lider{background:rgba(255,107,107,0.06);}
+@keyframes glow-row{from{background:rgba(255,215,0,0.05);}to{background:rgba(255,215,0,0.16);}}
+
+/* Mobile: empilha em 2 colunas simples */
+@media(max-width:500px){
+  .tabela-row{
+    grid-template-columns:72px 1fr;
+    grid-template-rows:auto auto;
+    column-gap:12px;row-gap:6px;
+    padding:14px 12px;
+  }
+  .cel-cartela{grid-column:2;grid-row:2;font-size:11px;color:#666;}
+  .cel-foto{grid-column:1;grid-row:1 / 3;}
+  .cel-nome{grid-column:2;grid-row:1;}
+  .cel-acertos{grid-column:2;grid-row:2;display:flex;align-items:center;gap:8px;}
+  .cel-valor{grid-column:1 / 3;grid-row:3;
+    background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px;
+    display:flex;align-items:center;justify-content:space-between;margin-top:4px;}
 }
-@keyframes glow-c{from{box-shadow:0 0 20px rgba(255,215,0,0.4);}to{box-shadow:0 0 45px rgba(255,215,0,0.9);}}
-.cartela-header{color:white;text-align:center;font-size:15px;font-weight:bold;margin-bottom:8px;opacity:0.7;}
-.cartela-player-wrap{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;}
-.cartela-foto{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #ffd700;}
-.cartela-player{color:#ffd700;font-size:15px;font-weight:bold;}
-.cartela-numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
-.num{
-  background:rgba(255,255,255,0.12);color:white;
-  padding:10px 4px;text-align:center;border-radius:7px;
-  font-size:20px;font-weight:bold;transition:all 0.35s;
-}
-.num.marked{
-  background:#4caf50;
-  box-shadow:0 0 10px rgba(76,175,80,0.6);
-  transform:scale(1.05);
-  animation:pop 0.4s ease;
-}
-@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.18);}100%{transform:scale(1.05);}}
+
+.cel-cartela{font-size:12px;color:#777;font-weight:600;}
+
+/* FOTO — maior */
+.jogador-foto{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.2);display:block;}
+.jogador-foto-vazia{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.07);border:2px dashed rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:24px;}
+@media(max-width:500px){.jogador-foto,.jogador-foto-vazia{width:60px;height:60px;}}
+
+.nome-txt{font-size:18px;font-weight:900;color:#fff;word-break:break-word;}
+.nome-txt.vencedor-nome{color:#ffd700;font-size:20px;}
+.barra-acertos{height:3px;background:rgba(255,255,255,0.07);border-radius:3px;margin-top:5px;max-width:160px;}
+.barra-fill{height:100%;background:linear-gradient(90deg,#8B0000,#ff6b6b);border-radius:3px;transition:width 0.6s;}
+
+.acertos-badge{display:inline-block;background:rgba(139,0,0,0.4);border:1px solid rgba(255,107,107,0.35);color:#ff9999;border-radius:20px;padding:4px 12px;font-size:14px;font-weight:700;white-space:nowrap;}
+.acertos-badge.alto{background:rgba(76,175,80,0.25);border-color:#4caf50;color:#4caf50;}
+
+/* VALOR — formatado para não vazar */
+.valor-bloco{text-align:right;}
+.valor-label{font-size:10px;color:#555;letter-spacing:1px;margin-bottom:2px;}
+.valor-txt{font-size:22px;font-weight:900;color:#fff;white-space:nowrap;}
+.valor-txt.tem-valor{color:#4ade80;}
+.valor-txt.vencedor-val{color:#ffd700;font-size:26px;}
+.valor-txt.zero{color:#333;font-size:15px;}
+@media(max-width:500px){.valor-bloco{text-align:left;}.valor-txt{font-size:20px;}.valor-txt.vencedor-val{font-size:23px;}}
+
+/* ── CARTELAS ── */
+.cartelas-titulo{color:#ffd700;font-size:11px;letter-spacing:3px;font-weight:bold;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.cartelas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:20px;}
+.cartela{background:#8B0000;border-radius:14px;padding:16px;box-shadow:0 6px 18px rgba(0,0,0,0.3);border:2px solid transparent;transition:all 0.3s;}
+.cartela.winner{border-color:#ffd700;box-shadow:0 0 28px rgba(255,215,0,0.5);animation:glow-c 2s ease-in-out infinite alternate;}
+@keyframes glow-c{from{box-shadow:0 0 18px rgba(255,215,0,0.3);}to{box-shadow:0 0 40px rgba(255,215,0,0.8);}}
+.cartela-header{color:white;text-align:center;font-size:14px;font-weight:bold;margin-bottom:8px;opacity:0.7;}
+.cartela-player-wrap{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;}
+.cartela-foto{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid #ffd700;}
+.cartela-foto-vazia{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:22px;}
+.cartela-player{color:#ffd700;font-size:14px;font-weight:bold;}
+.cartela-numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+.num{background:rgba(255,255,255,0.12);color:white;padding:9px 3px;text-align:center;border-radius:6px;font-size:18px;font-weight:bold;transition:all 0.35s;}
+.num.marked{background:#4caf50;box-shadow:0 0 8px rgba(76,175,80,0.6);transform:scale(1.04);animation:pop 0.4s ease;}
+@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.15);}100%{transform:scale(1.04);}}
 .cartela-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
-.acertos-txt{color:rgba(255,255,255,0.7);font-size:13px;}
+.acertos-txt{color:rgba(255,255,255,0.65);font-size:12px;}
 .acertos-num{color:white;font-weight:bold;}
 .ganho-txt{color:#4caf50;font-size:13px;font-weight:bold;}
 
 .pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4caf50;margin-right:8px;animation:pulseAnim 1.5s infinite;}
 @keyframes pulseAnim{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.3;transform:scale(0.8);}}
-.aguardando-msg{text-align:center;padding:50px;color:#333;font-size:16px;}
-
-/* BOTÃO SOM */
-.btn-som{
-  display:block;margin:0 auto 18px auto;
-  padding:10px 28px;border-radius:30px;
-  font-size:15px;font-weight:bold;letter-spacing:2px;
-  cursor:pointer;border:2px solid #ffd700;
-  background:rgba(255,215,0,0.08);color:#ffd700;
-  transition:all 0.2s;
-}
-.btn-som:hover{background:rgba(255,215,0,0.2);}
-.btn-som.mudo{border-color:#444;color:#444;background:rgba(255,255,255,0.03);}
-
-@media(max-width:600px){
-  .tabela-header,.tabela-row{grid-template-columns:55px 48px 1fr 90px 110px;}
-  .nome-txt{font-size:16px;}.valor-txt{font-size:20px;}
-  .jogador-foto,.jogador-foto-vazia{width:40px;height:40px;}
-}
+.aguardando-msg{text-align:center;padding:40px;color:#333;font-size:15px;}
 </style>
 </head>
 <body>
@@ -144,8 +168,12 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 
 <div id="fbBadge" class="fb-badge fb-ok">🔥 Conectando ao Firebase...</div>
 
-<!-- BOTÃO SOM -->
-<button class="btn-som mudo" id="btnSom" onclick="toggleSom()">🔇 SOM DESATIVADO</button>
+<!-- BOTÃO SOM — proeminente, pisca quando mudo -->
+<div class="btn-som-wrap">
+  <button class="btn-som mudo" id="btnSom" onclick="ativarSom()">
+    🔇 TOQUE AQUI PARA ATIVAR O SOM
+  </button>
+</div>
 
 <div id="statusBar" class="status-bar aguardando">
   <span class="pulse"></span> Aguardando sorteio...
@@ -158,7 +186,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 <div class="secao">
   <div class="secao-titulo">NÚMEROS SORTEADOS</div>
   <div class="bolas-wrap" id="bolasWrap">
-    <div style="color:#333;font-size:14px;">Nenhum número sorteado ainda...</div>
+    <div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>
   </div>
 </div>
 
@@ -172,9 +200,9 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 <!-- TABELA JOGADORES -->
 <div class="tabela-wrap">
   <div class="tabela-header">
-    <div>CARTELA</div><div>FOTO</div><div>JOGADOR</div>
-    <div style="text-align:center">ACERTOS</div>
-    <div style="text-align:right">TOTAL GANHO</div>
+    <div>Nº</div><div>FOTO</div><div>JOGADOR</div>
+    <div>ACERTOS</div>
+    <div>TOTAL GANHO</div>
   </div>
   <div id="tabelaBody"><div class="aguardando-msg">🎯 Aguardando início do sorteio...</div></div>
 </div>
@@ -187,38 +215,67 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   </div>
 </div>
 
-<div style="text-align:center;margin-top:10px;margin-bottom:20px;font-size:11px;color:#333;">
+<div style="text-align:center;margin-top:8px;margin-bottom:20px;font-size:11px;color:#333;">
   <span class="pulse"></span> AO VIVO — FIREBASE REALTIME DATABASE
 </div>
 
-<!-- ── LÓGICA DE SOM ─────────────────────────────────────────────────────── -->
 <script>
-  let somAtivo = false;
-  let audioCtx = null;
+  /* ── ÁUDIO ────────────────────────────────────────────────────────────────
+     O AudioContext só pode ser criado após gesto do usuário (política do browser).
+     Quando o usuário toca "ATIVAR SOM", criamos o contexto e mantemos ativo.
+     A partir daí, qualquer número novo que chegar via Firebase dispara o som.
+  ──────────────────────────────────────────────────────────────────────── */
+  let audioCtx   = null;
+  let somAtivo   = false;
 
-  function toggleSom() {
-    somAtivo = !somAtivo;
-    const btn = document.getElementById('btnSom');
-    if (somAtivo) {
-      // Inicializa AudioContext na primeira interação do usuário
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      btn.textContent = '🔊 SOM ATIVADO';
-      btn.classList.remove('mudo');
+  function ativarSom() {
+    if (!somAtivo) {
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // Resume se estiver suspenso (alguns browsers suspendem por padrão)
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        somAtivo = true;
+        const btn = document.getElementById('btnSom');
+        btn.textContent = '🔊 SOM ATIVADO — toque para desativar';
+        btn.classList.remove('mudo');
+        btn.classList.add('ativo');
+        tocarTeste();
+      } catch(e) {
+        console.warn('AudioContext falhou:', e);
+      }
     } else {
-      btn.textContent = '🔇 SOM DESATIVADO';
+      somAtivo = false;
+      const btn = document.getElementById('btnSom');
+      btn.textContent = '🔇 TOQUE AQUI PARA ATIVAR O SOM';
+      btn.classList.remove('ativo');
       btn.classList.add('mudo');
     }
   }
 
-  // Toca um "ping" de bingo ao sortear número
+  // Som de teste ao ativar — confirma que está funcionando
+  function tocarTeste() {
+    if (!somAtivo || !audioCtx) return;
+    [[400,0],[500,0.1],[650,0.2]].forEach(([freq, delay]) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.3);
+      osc.start(audioCtx.currentTime + delay);
+      osc.stop(audioCtx.currentTime + delay + 0.35);
+    });
+  }
+
+  // Ping ao sortear número — chamado pelo Firebase listener quando detecta novo número
   function tocarSorteio() {
     if (!somAtivo || !audioCtx) return;
-    // Acorde: três notas rápidas ascendentes
-    [[520, 0], [660, 0.12], [800, 0.24]].forEach(([freq, delay]) => {
-      const osc  = audioCtx.createOscillator();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    [[520,0],[660,0.12],[800,0.24]].forEach(([freq, delay]) => {
+      const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
+      osc.connect(gain); gain.connect(audioCtx.destination);
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
       gain.gain.setValueAtTime(0.35, audioCtx.currentTime + delay);
@@ -228,14 +285,14 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     });
   }
 
-  // Toca fanfarra de vitória
+  // Fanfarra de vitória
   function tocarVitoria() {
     if (!somAtivo || !audioCtx) return;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     [[523,0],[659,0.15],[784,0.3],[1047,0.5],[784,0.7],[1047,0.9]].forEach(([freq, delay]) => {
-      const osc  = audioCtx.createOscillator();
+      const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
+      osc.connect(gain); gain.connect(audioCtx.destination);
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
       gain.gain.setValueAtTime(0.4, audioCtx.currentTime + delay);
@@ -262,11 +319,10 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 
   const db    = getDatabase(initializeApp(cfg));
   const badge = document.getElementById('fbBadge');
-  let lastDrawnLen = 0;
-  let jaTocouVitoria = false;
+  let lastDrawnLen    = 0;
+  let jaTocouVitoria  = false;
   let state = { game: null, fotos: {} };
 
-  // ── Listeners ───────────────────────────────────────────────────────────────
   onValue(ref(db, 'bingo_bronze/game'), snap => {
     badge.textContent = '🔥 Firebase conectado — ao vivo';
     badge.className   = 'fb-badge fb-ok';
@@ -283,23 +339,20 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     if (state.game) render();
   });
 
-  // ── Reset ───────────────────────────────────────────────────────────────────
   function reset() {
-    lastDrawnLen = 0;
-    jaTocouVitoria = false;
-    document.getElementById('statusBar').className  = 'status-bar aguardando';
-    document.getElementById('statusBar').innerHTML  = '<span class="pulse"></span> Aguardando sorteio...';
+    lastDrawnLen = 0; jaTocouVitoria = false;
+    document.getElementById('statusBar').className = 'status-bar aguardando';
+    document.getElementById('statusBar').innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
     document.getElementById('bolaGrande').textContent = '?';
-    document.getElementById('bolasWrap').innerHTML  = '<div style="color:#333;font-size:14px;">Nenhum número sorteado ainda...</div>';
-    document.getElementById('stS').textContent      = '0';
-    document.getElementById('stR').textContent      = '90';
-    document.getElementById('stTotal').textContent  = 'R$0';
-    document.getElementById('stLider').textContent  = '—';
+    document.getElementById('bolasWrap').innerHTML = '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
+    document.getElementById('stS').textContent = '0';
+    document.getElementById('stR').textContent = '90';
+    document.getElementById('stTotal').textContent = 'R$0';
+    document.getElementById('stLider').textContent = '—';
     document.getElementById('tabelaBody').innerHTML = '<div class="aguardando-msg">🎯 Aguardando início do sorteio...</div>';
     document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">🎯 Aguardando início do sorteio...</div>';
   }
 
-  // ── Render ──────────────────────────────────────────────────────────────────
   function render() {
     const g        = state.game;
     const fotos    = state.fotos;
@@ -308,12 +361,11 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     const acumulado= g.acumulado || {};
     const status   = g.status    || 'aguardando';
 
-    // Status bar
+    // Status
     const bar = document.getElementById('statusBar');
     if (status === 'finalizado') {
       bar.className = 'status-bar finalizado';
       bar.innerHTML = '🏆 SORTEIO FINALIZADO';
-      // Som de vitória — toca só uma vez por jogo finalizado
       if (!jaTocouVitoria) { jaTocouVitoria = true; tocarVitoria(); }
     } else if (status === 'ativo') {
       bar.className = 'status-bar ativo';
@@ -325,21 +377,21 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       jaTocouVitoria = false;
     }
 
-    // Bola grande
+    // Bola grande + som
     const ultimo = drawn.length > 0 ? drawn[drawn.length - 1] : null;
     const bolaG  = document.getElementById('bolaGrande');
     bolaG.textContent = ultimo ?? '?';
     if (drawn.length > lastDrawnLen) {
       bolaG.classList.add('flash');
       setTimeout(() => bolaG.classList.remove('flash'), 800);
-      tocarSorteio(); // ← som ao sortear número
+      tocarSorteio(); // ← dispara som se usuário já ativou
     }
     lastDrawnLen = drawn.length;
 
     // Bolas sorteadas
     const wrap = document.getElementById('bolasWrap');
     wrap.innerHTML = drawn.length === 0
-      ? '<div style="color:#333;font-size:14px;">Nenhum número sorteado ainda...</div>'
+      ? '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>'
       : drawn.map(n => `<div class="bola${n === ultimo ? ' ultima' : ''}">${n}</div>`).join('');
 
     // Stats
@@ -347,60 +399,64 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     document.getElementById('stR').textContent = 90 - drawn.length;
 
     if (!cartelas.length) {
-      document.getElementById('tabelaBody').innerHTML  = '<div class="aguardando-msg">🎯 Inicie o sorteio para ver os jogadores!</div>';
+      document.getElementById('tabelaBody').innerHTML = '<div class="aguardando-msg">🎯 Inicie o sorteio para ver os jogadores!</div>';
       document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">🎯 Inicie o sorteio para ver as cartelas!</div>';
-      document.getElementById('stTotal').textContent  = 'R$0';
-      document.getElementById('stLider').textContent  = '—';
+      document.getElementById('stTotal').textContent = 'R$0';
+      document.getElementById('stLider').textContent = '—';
       return;
     }
 
-    // Total pago
     let total = 0;
     cartelas.forEach(c => total += (acumulado[c.id] || 0));
     document.getElementById('stTotal').textContent = `R$${total.toFixed(2)}`;
 
-    // Ordena por score
-    const sorted   = [...cartelas].sort((a, b) => b.score - a.score || (acumulado[b.id] || 0) - (acumulado[a.id] || 0));
+    const sorted   = [...cartelas].sort((a,b) => b.score - a.score || (acumulado[b.id]||0)-(acumulado[a.id]||0));
     document.getElementById('stLider').textContent = sorted[0]?.name?.split(' ')[0] ?? '—';
 
     const fin      = status === 'finalizado';
     const maxScore = Math.max(...cartelas.map(c => c.score));
 
-    // ── TABELA ───────────────────────────────────────────────────────────────
+    // ── TABELA ──
     document.getElementById('tabelaBody').innerHTML = sorted.map((c, i) => {
-      const acum    = acumulado[c.id] || 0;
-      const isVenc  = fin && c.score === maxScore;
-      const isLid   = !fin && i === 0 && c.score > 0;
-      const cls     = isVenc ? 'tabela-row vencedora' : isLid ? 'tabela-row lider' : 'tabela-row';
-      const icon    = isVenc ? '👑 ' : isLid ? '🔥 ' : '';
-      const pct     = (c.score / 16) * 100;
-      const fotoHtml= fotos[c.id]
+      const acum   = acumulado[c.id] || 0;
+      const isVenc = fin && c.score === maxScore;
+      const isLid  = !fin && i === 0 && c.score > 0;
+      const cls    = isVenc ? 'tabela-row vencedora' : isLid ? 'tabela-row lider' : 'tabela-row';
+      const icon   = isVenc ? '👑 ' : isLid ? '🔥 ' : '';
+      const pct    = (c.score / 16) * 100;
+      const fotoHtml = fotos[c.id]
         ? `<img class="jogador-foto" src="${fotos[c.id]}"/>`
         : `<div class="jogador-foto-vazia">👤</div>`;
       const nomeCls = isVenc ? 'nome-txt vencedor-nome' : 'nome-txt';
       const valCls  = isVenc ? 'valor-txt vencedor-val' : acum > 0 ? 'valor-txt tem-valor' : 'valor-txt zero';
-      const badgeCls= c.score >= 8 ? 'acertos-badge alto' : 'acertos-badge';
+      const bdgCls  = c.score >= 8 ? 'acertos-badge alto' : 'acertos-badge';
+      // Separa o label do valor para não vazar
       return `
         <div class="${cls}">
-          <div class="cel-cartela">Cartela<br>${c.id}</div>
-          <div>${fotoHtml}</div>
-          <div>
+          <div class="cel-cartela">C${c.id}</div>
+          <div class="cel-foto">${fotoHtml}</div>
+          <div class="cel-nome">
             <div class="${nomeCls}">${icon}${c.name || 'Jogador ' + c.id}</div>
             <div class="barra-acertos"><div class="barra-fill" style="width:${pct}%"></div></div>
           </div>
-          <div class="cel-acertos"><span class="${badgeCls}">${c.score} / 16</span></div>
-          <div class="cel-valor"><div class="${valCls}">${acum > 0 ? 'R$ ' + acum.toFixed(2) : '—'}</div></div>
+          <div class="cel-acertos"><span class="${bdgCls}">${c.score}/16</span></div>
+          <div class="cel-valor">
+            <div class="valor-bloco">
+              <div class="valor-label">TOTAL</div>
+              <div class="${valCls}">${acum > 0 ? 'R$&nbsp;' + acum.toFixed(2) : '—'}</div>
+            </div>
+          </div>
         </div>`;
     }).join('');
 
-    // ── CARTELAS ─────────────────────────────────────────────────────────────
+    // ── CARTELAS ──
     document.getElementById('cartelasGrid').innerHTML = cartelas.map(c => {
-      const isWinner   = fin && c.score === maxScore;
-      const acum       = acumulado[c.id] || 0;
-      const foto       = fotos[c.id];
-      const fotoHtml   = foto
+      const isWinner = fin && c.score === maxScore;
+      const acum     = acumulado[c.id] || 0;
+      const foto     = fotos[c.id];
+      const fotoHtml = foto
         ? `<img class="cartela-foto" src="${foto}"/>`
-        : `<div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;">👤</div>`;
+        : `<div class="cartela-foto-vazia">👤</div>`;
       const marked = Array.isArray(c.markedNumbers) ? c.markedNumbers : [];
       const nums = (Array.isArray(c.numbers) ? c.numbers : []).map(n =>
         `<div class="num${marked.includes(n) ? ' marked' : ''}">${n}</div>`
