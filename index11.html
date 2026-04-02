@@ -5,49 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>SX Bingo</title>
 <meta name="theme-color" content="#8B0000">
-<link rel="manifest" href="data:application/manifest+json,{
-  &quot;name&quot;:&quot;SX Bingo&quot;,
-  &quot;short_name&quot;:&quot;SX Bingo&quot;,
-  &quot;start_url&quot;:&quot;.&quot;,
-  &quot;display&quot;:&quot;standalone&quot;,
-  &quot;background_color&quot;:&quot;#0a0a1a&quot;,
-  &quot;theme_color&quot;:&quot;#8B0000&quot;,
-  &quot;icons&quot;:[
-    {&quot;src&quot;:&quot;https://cdn-icons-png.flaticon.com/512/847/847969.png&quot;,&quot;sizes&quot;:&quot;192x192&quot;,&quot;type&quot;:&quot;image/png&quot;},
-    {&quot;src&quot;:&quot;https://cdn-icons-png.flaticon.com/512/847/847969.png&quot;,&quot;sizes&quot;:&quot;512x512&quot;,&quot;type&quot;:&quot;image/png&quot;}
+<link rel="manifest" id="manifestLink">
+<script>
+const svgIcon192 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="36" fill="#8B0000"/><text x="96" y="138" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="108" fill="white">SX</text></svg>`;
+const svgIcon512 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="80" fill="#8B0000"/><text x="256" y="370" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="290" fill="white">SX</text></svg>`;
+const icon192 = 'data:image/svg+xml,' + encodeURIComponent(svgIcon192);
+const icon512 = 'data:image/svg+xml,' + encodeURIComponent(svgIcon512);
+const manifest = {
+  name: "SX Bingo", short_name: "SX Bingo", start_url: ".", display: "standalone",
+  background_color: "#0a0a1a", theme_color: "#8B0000",
+  icons: [
+    { src: icon192, sizes: "192x192", type: "image/svg+xml" },
+    { src: icon512, sizes: "512x512", type: "image/svg+xml" }
   ]
-}">
+};
+const mblob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+document.getElementById('manifestLink').href = URL.createObjectURL(mblob);
+</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%,#1a0505 100%);min-height:100vh;padding:16px;color:white;}
 .header{text-align:center;margin-bottom:20px;}
 .header h1{font-size:2.4em;font-weight:900;letter-spacing:3px;}
 .s{color:#ff1a1a;text-shadow:0 0 18px rgba(255,30,30,0.9);}.x{color:#ffffff;}
-.rest{background:linear-gradient(90deg,#ff2222,#ff8800,#ffd700,#ff8800,#ff2222);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:brilhoBingo 2.5s linear infinite;}@keyframes brilhoBingo{0%{background-position:0% center;}100%{background-position:200% center;}}
+.rest{background:linear-gradient(90deg,#ff2222,#ff8800,#ffd700,#ff8800,#ff2222);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:brilhoBingo 2.5s linear infinite;}
+@keyframes brilhoBingo{0%{background-position:0% center;}100%{background-position:200% center;}}
 .header p{font-size:11px;color:#555;letter-spacing:3px;margin-top:4px;}
-
-/* SORTEIO BADGE — letras maiores */
-.sorteio-badge{display:inline-block;margin-top:8px;padding:6px 22px;border-radius:30px;font-size:15px;font-weight:bold;letter-spacing:3px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);color:#ffd700;transition:all 0.5s;}
+.sorteio-badge{display:inline-block;margin-top:8px;padding:6px 22px;border-radius:30px;font-size:15px;font-weight:bold;letter-spacing:3px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);color:#ffd700;}
 .sorteio-badge span{font-size:24px;font-weight:900;color:#fff;margin-left:8px;}
-
 .fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;display:none;}
 .fb-ok{color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);}
 .fb-err{color:#ff6b6b;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);display:block!important;}
-
-/* BOTÕES DE AÇÃO — linha com som + instalar */
 .btn-actions{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
-
-/* BOTÃO SOM — menor */
 .btn-som{padding:10px 22px;border-radius:30px;font-size:13px;font-weight:bold;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;border:none;}
 .btn-som.mudo{background:linear-gradient(135deg,#ff0000,#cc0000);color:white;box-shadow:0 0 28px rgba(255,0,0,0.8);animation:pulseMudo 1.2s ease-in-out infinite;}
 @keyframes pulseMudo{0%,100%{box-shadow:0 0 18px rgba(255,0,0,0.6);transform:scale(1);}50%{box-shadow:0 0 45px rgba(255,0,0,0.95);transform:scale(1.03);}}
 .btn-som.ativo{background:linear-gradient(135deg,#0077ff,#0044cc);color:white;box-shadow:0 0 22px rgba(0,119,255,0.7);animation:pulseAtivo 2s ease-in-out infinite;}
 @keyframes pulseAtivo{0%,100%{box-shadow:0 0 16px rgba(0,119,255,0.5);}50%{box-shadow:0 0 36px rgba(0,119,255,0.9);}}
 
-/* BOTÃO INSTALAR */
-.btn-instalar{padding:10px 22px;border-radius:30px;font-size:13px;font-weight:bold;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:none;align-items:center;gap:6px;border:none;background:linear-gradient(135deg,#ffd700,#ff8800);color:#000;box-shadow:0 0 20px rgba(255,215,0,0.5);}
+/* Botão instalar — oculto por padrão, aparece quando PWA disponível, some após instalar */
+.btn-instalar{padding:10px 22px;border-radius:30px;font-size:13px;font-weight:bold;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:none;align-items:center;gap:8px;border:none;background:linear-gradient(135deg,#ffd700,#ff8800);color:#000;box-shadow:0 0 20px rgba(255,215,0,0.5);}
 .btn-instalar:hover{transform:scale(1.04);box-shadow:0 0 32px rgba(255,215,0,0.8);}
 .btn-instalar.visivel{display:inline-flex;}
+.sx-icon{width:26px;height:26px;border-radius:6px;background:#8B0000;display:inline-flex;align-items:center;justify-content:center;font-family:'Arial Black',Arial,sans-serif;font-weight:900;font-size:11px;color:white;letter-spacing:-1px;flex-shrink:0;}
 
 .narrador-box{background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:14px 20px;text-align:center;margin-bottom:14px;min-height:52px;display:flex;align-items:center;justify-content:center;transition:all 0.3s;}
 .narrador-txt{font-size:20px;font-weight:bold;color:#555;letter-spacing:1px;}
@@ -129,17 +129,19 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 <div class="header">
   <h1><span class="s">S</span><span class="x">X</span><span class="rest"> BINGO</span></h1>
   <p>SÉRIE BRONZE — AO VIVO</p>
-  <div class="sorteio-badge">SORTEIO <span id="numSorteio">1</span></div>
+  <div class="sorteio-badge">SORTEIO <span id="numSorteio">—</span></div>
 </div>
 
 <div id="fbBadge" class="fb-badge fb-ok">🔥 Conectando ao Firebase...</div>
 
-<!-- Linha com botão de som + botão instalar -->
 <div class="btn-actions">
   <button class="btn-som mudo" id="btnSom" onclick="ativarSom()">
     🔇 Clique para ativar audio
   </button>
+  <!-- Oculto por padrão. Aparece quando o browser dispara beforeinstallprompt.
+       Some automaticamente após instalar ou ao fechar o prompt. -->
   <button class="btn-instalar" id="btnInstalar">
+    <span class="sx-icon">SX</span>
     📲 Instalar App
   </button>
 </div>
@@ -188,315 +190,273 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 <div style="margin-bottom:20px;"></div>
 
 <script>
-  // ─── PWA: instalar app ────────────────────────────────────────────────────
+  // ─── PWA ──────────────────────────────────────────────────────────────────
   let deferredPrompt = null;
+
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    const btn = document.getElementById('btnInstalar');
-    btn.classList.add('visivel');
+    document.getElementById('btnInstalar').classList.add('visivel');
   });
+
   document.getElementById('btnInstalar').addEventListener('click', async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      document.getElementById('btnInstalar').classList.remove('visivel');
-    }
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    // Some o botão após o usuário interagir (instalar ou cancelar)
+    document.getElementById('btnInstalar').classList.remove('visivel');
   });
-  // Service Worker inline para PWA
+
+  // Some também se o app já estava instalado antes
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    document.getElementById('btnInstalar').classList.remove('visivel');
+  });
+
   if ('serviceWorker' in navigator) {
     const swCode = `self.addEventListener('install',e=>{self.skipWaiting();});self.addEventListener('fetch',e=>{});`;
     const blob   = new Blob([swCode], { type: 'application/javascript' });
     navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
   }
 
-  var somAtivo     = false;
-  var audioCtx     = null;
-  var gainMaster   = null;
-  var vozesPT      = [];
-  var vozEscolhida = null;
-  var filaFala     = [];
-  var estaFalando  = false;
+  // ─── SOM ─────────────────────────────────────────────────────────────────
+  var somAtivo=false,audioCtx=null,gainMaster=null,vozesPT=[],vozEscolhida=null,filaFala=[],estaFalando=false;
 
-  var filaNumerosAudio = [];
-  var audioEmProcessamento = false;
-
-  function ativarSom() {
-    if (!somAtivo) {
-      try {
-        audioCtx   = new (window.AudioContext || window.webkitAudioContext)();
-        gainMaster = audioCtx.createGain();
-        gainMaster.gain.value = 3.0;
+  function ativarSom(){
+    if(!somAtivo){
+      try{
+        audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+        gainMaster=audioCtx.createGain();gainMaster.gain.value=3.0;
         gainMaster.connect(audioCtx.destination);
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-      } catch(e) { console.warn('AudioContext erro:', e); }
-
-      carregarVozes();
-      somAtivo = true;
-
-      var btn = document.getElementById('btnSom');
-      btn.textContent = '🔊 Áudio ativado';
-      btn.classList.remove('mudo');
-      btn.classList.add('ativo');
-
-      falar('S X Bingo Oficial. Série bronze. Pronto para o sorteio!', true);
-    } else {
-      somAtivo = false;
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
-      filaFala = []; estaFalando = false;
-      filaNumerosAudio = []; audioEmProcessamento = false;
-      var btn = document.getElementById('btnSom');
-      btn.textContent = '🔇 Clique para ativar audio';
-      btn.classList.remove('ativo');
-      btn.classList.add('mudo');
-      setNarrador('— narrador desativado —', false);
+        if(audioCtx.state==='suspended')audioCtx.resume();
+      }catch(e){}
+      carregarVozes();somAtivo=true;
+      var btn=document.getElementById('btnSom');
+      btn.textContent='🔊 Áudio ativado';btn.classList.remove('mudo');btn.classList.add('ativo');
+      falar('S X Bingo Oficial. Série bronze. Pronto para o sorteio!',true);
+    }else{
+      somAtivo=false;
+      if(window.speechSynthesis)window.speechSynthesis.cancel();
+      filaFala=[];estaFalando=false;
+      var btn=document.getElementById('btnSom');
+      btn.textContent='🔇 Clique para ativar audio';btn.classList.remove('ativo');btn.classList.add('mudo');
+      setNarrador('— narrador desativado —',false);
     }
   }
 
-  function carregarVozes() {
-    if (!window.speechSynthesis) return;
-    var todas = window.speechSynthesis.getVoices();
-    vozesPT = todas.filter(function(v){ return v.lang && v.lang.startsWith('pt'); });
-    vozEscolhida = vozesPT.find(function(v){ return v.lang === 'pt-BR'; }) || vozesPT[0] || null;
+  function carregarVozes(){
+    if(!window.speechSynthesis)return;
+    var todas=window.speechSynthesis.getVoices();
+    vozesPT=todas.filter(function(v){return v.lang&&v.lang.startsWith('pt');});
+    vozEscolhida=vozesPT.find(function(v){return v.lang==='pt-BR';})||vozesPT[0]||null;
   }
-  if (window.speechSynthesis) {
-    window.speechSynthesis.onvoiceschanged = carregarVozes;
-    carregarVozes();
+  if(window.speechSynthesis){window.speechSynthesis.onvoiceschanged=carregarVozes;carregarVozes();}
+
+  function falar(texto,prioridade){
+    if(!somAtivo||!window.speechSynthesis)return;
+    if(prioridade){window.speechSynthesis.cancel();filaFala=[];estaFalando=false;}
+    filaFala.push(texto);processarFila();
   }
-
-  function falar(texto, prioridade) {
-    if (!somAtivo || !window.speechSynthesis) return;
-    if (prioridade) {
-      window.speechSynthesis.cancel();
-      filaFala = [];
-      estaFalando = false;
-    }
-    filaFala.push(texto);
-    processarFila();
-  }
-
-  function processarFila() {
-    if (estaFalando || filaFala.length === 0) return;
-    var texto = filaFala.shift();
-    estaFalando = true;
-    setNarrador(texto, true);
-
-    var u    = new SpeechSynthesisUtterance(texto);
-    u.lang   = 'pt-BR';
-    u.rate   = 0.90;
-    u.pitch  = 1.1;
-    u.volume = 1;
-    if (vozEscolhida) u.voice = vozEscolhida;
-    else carregarVozes();
-
-    u.onend  = function(){ estaFalando = false; setTimeout(processarFila, 300); setNarrador(texto, false); };
-    u.onerror= function(){ estaFalando = false; setTimeout(processarFila, 300); };
+  function processarFila(){
+    if(estaFalando||filaFala.length===0)return;
+    var texto=filaFala.shift();estaFalando=true;setNarrador(texto,true);
+    var u=new SpeechSynthesisUtterance(texto);
+    u.lang='pt-BR';u.rate=0.90;u.pitch=1.1;u.volume=1;
+    if(vozEscolhida)u.voice=vozEscolhida;else carregarVozes();
+    u.onend=function(){estaFalando=false;setTimeout(processarFila,300);setNarrador(texto,false);};
+    u.onerror=function(){estaFalando=false;setTimeout(processarFila,300);};
     window.speechSynthesis.speak(u);
   }
-
-  function setNarrador(texto, ativo) {
-    var box = document.getElementById('narradorBox');
-    var txt = document.getElementById('narradorTxt');
-    if (txt) txt.textContent = texto;
-    if (box) {
-      if (ativo) box.classList.add('falando');
-      else box.classList.remove('falando');
-    }
+  function setNarrador(texto,ativo){
+    var box=document.getElementById('narradorBox'),txt=document.getElementById('narradorTxt');
+    if(txt)txt.textContent=texto;
+    if(box){if(ativo)box.classList.add('falando');else box.classList.remove('falando');}
   }
-
-  function tocarPing() {
-    if (!audioCtx || !gainMaster) return;
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    [[520,0],[660,0.1],[820,0.2]].forEach(function(pair){
-      var freq = pair[0], delay = pair[1];
-      var osc  = audioCtx.createOscillator();
-      var gain = audioCtx.createGain();
-      osc.connect(gain); gain.connect(gainMaster);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
-      gain.gain.setValueAtTime(0.4, audioCtx.currentTime + delay);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.35);
-      osc.start(audioCtx.currentTime + delay);
-      osc.stop(audioCtx.currentTime + delay + 0.4);
+  function tocarPing(){
+    if(!audioCtx||!gainMaster)return;
+    if(audioCtx.state==='suspended')audioCtx.resume();
+    [[520,0],[660,0.1],[820,0.2]].forEach(function(p){
+      var osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+      osc.connect(gain);gain.connect(gainMaster);osc.type='sine';
+      osc.frequency.setValueAtTime(p[0],audioCtx.currentTime+p[1]);
+      gain.gain.setValueAtTime(0.4,audioCtx.currentTime+p[1]);
+      gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+p[1]+0.35);
+      osc.start(audioCtx.currentTime+p[1]);osc.stop(audioCtx.currentTime+p[1]+0.4);
+    });
+  }
+  function tocarFanfarra(){
+    if(!audioCtx||!gainMaster)return;
+    if(audioCtx.state==='suspended')audioCtx.resume();
+    [[523,0],[659,0.15],[784,0.3],[1047,0.5],[784,0.7],[1047,0.9],[1318,1.1]].forEach(function(p){
+      var osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+      osc.connect(gain);gain.connect(gainMaster);osc.type='triangle';
+      osc.frequency.setValueAtTime(p[0],audioCtx.currentTime+p[1]);
+      gain.gain.setValueAtTime(0.45,audioCtx.currentTime+p[1]);
+      gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+p[1]+0.4);
+      osc.start(audioCtx.currentTime+p[1]);osc.stop(audioCtx.currentTime+p[1]+0.45);
     });
   }
 
-  function tocarFanfarra() {
-    if (!audioCtx || !gainMaster) return;
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    [[523,0],[659,0.15],[784,0.3],[1047,0.5],[784,0.7],[1047,0.9],[1318,1.1]].forEach(function(pair){
-      var freq = pair[0], delay = pair[1];
-      var osc  = audioCtx.createOscillator();
-      var gain = audioCtx.createGain();
-      osc.connect(gain); gain.connect(gainMaster);
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
-      gain.gain.setValueAtTime(0.45, audioCtx.currentTime + delay);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.4);
-      osc.start(audioCtx.currentTime + delay);
-      osc.stop(audioCtx.currentTime + delay + 0.45);
-    });
-  }
+  // ─── FILA DE NÚMEROS ─────────────────────────────────────────────────────
+  var filaNumeros=[],anunciandoNumero=false,pendingFimAnuncio=null,numerosVisiveis=[];
 
-  var filaNumeros      = [];
-  var numSorteio       = parseInt(localStorage.getItem('sx_numSorteio') || '1');
-  var hashParticipantes= localStorage.getItem('sx_hashParticipantes') || '';
-  document.addEventListener('DOMContentLoaded', function(){
-    var el = document.getElementById('numSorteio');
-    if (el) el.textContent = numSorteio;
-  });
+  function enfileirarNumero(n){filaNumeros.push(n);processarFilaNumeros();}
 
-  function calcHashParticipantes(cartelas) {
-    return cartelas.map(function(c){ return c.id + ':' + (c.name||''); }).sort().join('|');
-  }
-
-  function atualizarContadorSorteio(cartelas, novoSorteio) {
-    var hashAtual = calcHashParticipantes(cartelas);
-    if (hashAtual !== hashParticipantes) {
-      numSorteio = 1;
-      hashParticipantes = hashAtual;
-    } else if (novoSorteio) {
-      numSorteio++;
-    }
-    localStorage.setItem('sx_numSorteio', numSorteio);
-    localStorage.setItem('sx_hashParticipantes', hashParticipantes);
-    var el = document.getElementById('numSorteio');
-    if (el) el.textContent = numSorteio;
-  }
-  var anunciandoNumero = false;
-  var pendingFimAnuncio = null;
-
-  function enfileirarNumero(n) {
-    filaNumeros.push(n);
-    processarFilaNumeros();
-  }
-
-  var numerosVisiveis = [];
-
-  function atualizarBolaGrande(n) {
-    var bolaG = document.getElementById('bolaGrande');
-    if (!bolaG) return;
-    bolaG.textContent = n;
-    bolaG.classList.add('flash');
-    setTimeout(function(){ bolaG.classList.remove('flash'); }, 900);
+  function atualizarBolaGrande(n){
+    var bolaG=document.getElementById('bolaGrande');
+    if(!bolaG)return;
+    bolaG.textContent=n;bolaG.classList.add('flash');
+    setTimeout(function(){bolaG.classList.remove('flash');},900);
     numerosVisiveis.push(n);
-    var wrap = document.getElementById('bolasWrap');
-    if (wrap) {
-      wrap.innerHTML = numerosVisiveis.map(function(x){
-        return '<div class="bola' + (x === n ? ' ultima' : '') + '">' + x + '</div>';
-      }).join('');
-    }
-    var stS = document.getElementById('stS');
-    var stR = document.getElementById('stR');
-    if (stS) stS.textContent = numerosVisiveis.length;
-    if (stR) stR.textContent = 90 - numerosVisiveis.length;
+    var wrap=document.getElementById('bolasWrap');
+    if(wrap)wrap.innerHTML=numerosVisiveis.map(function(x){return'<div class="bola'+(x===n?' ultima':'')+'">'+x+'</div>';}).join('');
+    var stS=document.getElementById('stS'),stR=document.getElementById('stR');
+    if(stS)stS.textContent=numerosVisiveis.length;
+    if(stR)stR.textContent=90-numerosVisiveis.length;
   }
-
-  function processarFilaNumeros() {
-    if (anunciandoNumero || filaNumeros.length === 0) return;
-    anunciandoNumero = true;
-    var n = filaNumeros.shift();
-
+  function processarFilaNumeros(){
+    if(anunciandoNumero||filaNumeros.length===0)return;
+    anunciandoNumero=true;var n=filaNumeros.shift();
     tocarPing();
-    setTimeout(function() {
-      atualizarBolaGrande(n);
-      falar('Número... ' + n + '!');
-      esperarFimFala(function() {
-        anunciandoNumero = false;
-        if (filaNumeros.length === 0 && pendingFimAnuncio) {
-          var dados = pendingFimAnuncio;
-          pendingFimAnuncio = null;
-          anunciarVencedorAgora(dados.winners, dados.maxScore);
-        } else {
-          processarFilaNumeros();
-        }
+    setTimeout(function(){
+      atualizarBolaGrande(n);falar('Número... '+n+'!');
+      esperarFimFala(function(){
+        anunciandoNumero=false;
+        if(filaNumeros.length===0&&pendingFimAnuncio){
+          var dados=pendingFimAnuncio;pendingFimAnuncio=null;
+          anunciarVencedorAgora(dados.winners,dados.maxScore);
+        }else{processarFilaNumeros();}
       });
-    }, 300);
+    },300);
   }
-
-  function esperarFimFala(callback) {
-    var intervalo = setInterval(function() {
-      if (!estaFalando && filaFala.length === 0) {
-        clearInterval(intervalo);
-        setTimeout(callback, 400);
-      }
-    }, 200);
+  function esperarFimFala(cb){
+    var iv=setInterval(function(){
+      if(!estaFalando&&filaFala.length===0){clearInterval(iv);setTimeout(cb,400);}
+    },200);
   }
-
-  function anunciarVencedorAgora(winners, maxScore) {
-    var valor = (10 / winners.length).toFixed(2);
+  function anunciarVencedorAgora(winners,maxScore){
+    var valor=(10/winners.length).toFixed(2);
     tocarFanfarra();
-    setTimeout(function() {
+    setTimeout(function(){
       var msg;
-      if (winners.length === 1) {
-        msg = 'Sorteio encerrado! O grande vencedor é ' + winners[0].name +
-              '! Com ' + maxScore + ' acertos! Ganhando R$ ' + valor + '! Parabéns!';
-      } else {
-        var nomes = winners.map(function(w){ return w.name; }).join(' e ');
-        msg = 'Sorteio encerrado! Empate emocionante! ' + nomes +
-              ' vencem com ' + maxScore + ' acertos cada! Ganhando R$ ' + valor + ' cada! Parabéns a todos!';
+      if(winners.length===1){
+        msg='Sorteio encerrado! O grande vencedor é '+winners[0].name+'! Com '+maxScore+' acertos! Ganhando R$ '+valor+'! Parabéns!';
+      }else{
+        var nomes=winners.map(function(w){return w.name;}).join(' e ');
+        msg='Sorteio encerrado! Empate emocionante! '+nomes+' vencem com '+maxScore+' acertos cada! Ganhando R$ '+valor+' cada! Parabéns a todos!';
       }
-      falar(msg, true);
-    }, 1600);
+      falar(msg,true);
+    },1600);
   }
 </script>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
   const cfg = {
-    apiKey:            "AIzaSyCXTQ932v0Amnbtha01BzFsUfUZKnwYQIA",
-    authDomain:        "chofer-522be.firebaseapp.com",
-    databaseURL:       "https://chofer-522be-default-rtdb.firebaseio.com",
-    projectId:         "chofer-522be",
-    storageBucket:     "chofer-522be.firebasestorage.app",
-    messagingSenderId: "81306033578",
-    appId:             "1:81306033578:web:0c3688bc455a51b972dfd3"
+    apiKey:"AIzaSyCXTQ932v0Amnbtha01BzFsUfUZKnwYQIA",
+    authDomain:"chofer-522be.firebaseapp.com",
+    databaseURL:"https://chofer-522be-default-rtdb.firebaseio.com",
+    projectId:"chofer-522be",
+    storageBucket:"chofer-522be.firebasestorage.app",
+    messagingSenderId:"81306033578",
+    appId:"1:81306033578:web:0c3688bc455a51b972dfd3"
   };
 
   const db    = getDatabase(initializeApp(cfg));
   const badge = document.getElementById('fbBadge');
 
-  let lastDrawnLen  = 0;
-  let lastStatus    = '';
-  let jaAnunciouFim = false;
-  let state = { game: null, fotos: {} };
+  let lastDrawnLen=0, lastStatus='', jaAnunciouFim=false;
+  let state = { game:null, fotos:{} };
 
-  onValue(ref(db, 'bingo_bronze/game'), snap => {
-    badge.textContent = '🔥 Firebase conectado — ao vivo';
-    badge.className   = 'fb-badge fb-ok';
+  // ─── CONTADOR DE SORTEIOS NO FIREBASE ────────────────────────────────────
+  // Persistido em bingo_bronze/meta para sobreviver entre sessões e dispositivos.
+  // Lógica:
+  //   • Participantes iguais ao último hash → apenas incrementa quando começa novo sorteio
+  //   • Participantes diferentes (exclusão/troca) → reseta para sorteio 1
+  const metaRef = ref(db, 'bingo_bronze/meta');
+  let meta = { numSorteio: 1, hashParticipantes: '' };
+  let metaCarregado = false;
+
+  // Carrega meta inicial do Firebase (leitura única)
+  get(metaRef).then(snap => {
+    if (snap.exists()) meta = { ...meta, ...snap.val() };
+    metaCarregado = true;
+    atualizarBadgeSorteio();
+  }).catch(() => { metaCarregado = true; atualizarBadgeSorteio(); });
+
+  function atualizarBadgeSorteio() {
+    const el = document.getElementById('numSorteio');
+    if (el) el.textContent = meta.numSorteio;
+  }
+
+  function calcHash(cartelas) {
+    return cartelas.map(c => c.id + ':' + (c.name || '')).sort().join('|');
+  }
+
+  async function salvarMeta() {
+    try { await set(metaRef, meta); } catch(e) { console.warn('meta save err:', e); }
+  }
+
+  async function verificarParticipantes(cartelas) {
+    if (!metaCarregado || !cartelas.length) return;
+    const hash = calcHash(cartelas);
+    if (hash !== meta.hashParticipantes) {
+      // Grupo de participantes mudou → reseta para sorteio 1
+      meta.numSorteio = 1;
+      meta.hashParticipantes = hash;
+      atualizarBadgeSorteio();
+      await salvarMeta();
+    }
+  }
+
+  async function incrementarSorteio(cartelas) {
+    if (!metaCarregado) return;
+    const hash = calcHash(cartelas);
+    if (hash !== meta.hashParticipantes) {
+      meta.numSorteio = 1;
+      meta.hashParticipantes = hash;
+    } else {
+      meta.numSorteio++;
+    }
+    atualizarBadgeSorteio();
+    await salvarMeta();
+  }
+  // ─────────────────────────────────────────────────────────────────────────
+
+  onValue(ref(db,'bingo_bronze/game'), snap => {
+    badge.textContent='🔥 Firebase conectado — ao vivo';
+    badge.className='fb-badge fb-ok';
     state.game = snap.exists() ? snap.val() : null;
     if (!state.game) { reset(); return; }
     render();
   }, err => {
-    badge.textContent = '⚠️ Erro: ' + err.message;
-    badge.className   = 'fb-badge fb-err';
+    badge.textContent='⚠️ Erro: '+err.message;
+    badge.className='fb-badge fb-err';
   });
 
-  onValue(ref(db, 'bingo_bronze/fotos'), snap => {
+  onValue(ref(db,'bingo_bronze/fotos'), snap => {
     state.fotos = snap.exists() ? snap.val() : {};
     if (state.game) render();
   });
 
   function reset() {
-    lastDrawnLen = 0; lastStatus = ''; jaAnunciouFim = false;
-    filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null; numerosVisiveis = [];
-    document.getElementById('statusBar').className = 'status-bar aguardando';
-    document.getElementById('statusBar').innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
-    document.getElementById('bolaGrande').textContent = '?';
-    document.getElementById('bolasWrap').innerHTML = '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
-    document.getElementById('stS').textContent = '0';
-    document.getElementById('stR').textContent = '90';
-    document.getElementById('stTotal').textContent = 'R$0';
-    document.getElementById('stLider').textContent = '—';
-    document.getElementById('tabelaBody').innerHTML = '<div class="aguardando-msg">Aguardando início do sorteio...</div>';
-    document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">Aguardando início do sorteio...</div>';
-    setNarrador('— narrador aguardando —', false);
+    lastDrawnLen=0;lastStatus='';jaAnunciouFim=false;
+    filaNumeros=[];anunciandoNumero=false;pendingFimAnuncio=null;numerosVisiveis=[];
+    document.getElementById('statusBar').className='status-bar aguardando';
+    document.getElementById('statusBar').innerHTML='<span class="pulse"></span> Aguardando sorteio...';
+    document.getElementById('bolaGrande').textContent='?';
+    document.getElementById('bolasWrap').innerHTML='<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
+    document.getElementById('stS').textContent='0';document.getElementById('stR').textContent='90';
+    document.getElementById('stTotal').textContent='R$0';document.getElementById('stLider').textContent='—';
+    document.getElementById('tabelaBody').innerHTML='<div class="aguardando-msg">Aguardando início do sorteio...</div>';
+    document.getElementById('cartelasGrid').innerHTML='<div class="aguardando-msg">Aguardando início do sorteio...</div>';
+    setNarrador('— narrador aguardando —',false);
   }
 
-  function render() {
+  async function render() {
     const g        = state.game;
     const fotos    = state.fotos;
     const drawn    = Array.isArray(g.drawn)    ? g.drawn    : [];
@@ -504,110 +464,88 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     const acumulado= g.acumulado || {};
     const status   = g.status    || 'aguardando';
 
+    // Detecta transição finalizado → novo sorteio (incrementa contador)
     if (lastStatus === 'finalizado' && (status === 'ativo' || status === 'aguardando')) {
-      lastDrawnLen = 0; jaAnunciouFim = false;
-      filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null;
-      numerosVisiveis = [];
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
-      filaFala = []; estaFalando = false;
-      document.getElementById('bolaGrande').textContent = '?';
-      document.getElementById('bolasWrap').innerHTML =
-        '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
-      document.getElementById('stS').textContent = '0';
-      document.getElementById('stR').textContent = '90';
-      setNarrador('— narrador aguardando —', false);
-      atualizarContadorSorteio(cartelas, true);
+      lastDrawnLen=0;jaAnunciouFim=false;
+      filaNumeros=[];anunciandoNumero=false;pendingFimAnuncio=null;numerosVisiveis=[];
+      if(window.speechSynthesis)window.speechSynthesis.cancel();
+      filaFala=[];estaFalando=false;
+      document.getElementById('bolaGrande').textContent='?';
+      document.getElementById('bolasWrap').innerHTML='<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
+      document.getElementById('stS').textContent='0';document.getElementById('stR').textContent='90';
+      setNarrador('— narrador aguardando —',false);
+      // Incrementa sorteio no Firebase
+      await incrementarSorteio(cartelas);
     }
+
     if (drawn.length < lastDrawnLen && drawn.length === 0) {
-      filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null;
-      numerosVisiveis = [];
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
-      filaFala = []; estaFalando = false;
-      document.getElementById('bolaGrande').textContent = '?';
-      document.getElementById('bolasWrap').innerHTML =
-        '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
-      document.getElementById('stS').textContent = '0';
-      document.getElementById('stR').textContent = '90';
-      setNarrador('— narrador aguardando —', false);
+      filaNumeros=[];anunciandoNumero=false;pendingFimAnuncio=null;numerosVisiveis=[];
+      if(window.speechSynthesis)window.speechSynthesis.cancel();
+      filaFala=[];estaFalando=false;
+      document.getElementById('bolaGrande').textContent='?';
+      document.getElementById('bolasWrap').innerHTML='<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
+      document.getElementById('stS').textContent='0';document.getElementById('stR').textContent='90';
+      setNarrador('— narrador aguardando —',false);
     }
 
     const bar = document.getElementById('statusBar');
-    if (status === 'finalizado') {
-      bar.className = 'status-bar finalizado';
-      bar.innerHTML = '🏆 SORTEIO FINALIZADO';
-    } else if (status === 'ativo') {
-      bar.className = 'status-bar ativo';
-      bar.innerHTML = '<span class="pulse"></span> SORTEIO EM ANDAMENTO';
-    } else {
-      bar.className = 'status-bar aguardando';
-      bar.innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
+    if(status==='finalizado'){bar.className='status-bar finalizado';bar.innerHTML='🏆 SORTEIO FINALIZADO';}
+    else if(status==='ativo'){bar.className='status-bar ativo';bar.innerHTML='<span class="pulse"></span> SORTEIO EM ANDAMENTO';}
+    else{bar.className='status-bar aguardando';bar.innerHTML='<span class="pulse"></span> Aguardando sorteio...';}
+
+    if(status==='ativo'&&lastStatus!=='ativo'&&lastStatus!=='')
+      falar('Atenção! Sorteio da série bronze iniciado!',true);
+
+    if(drawn.length > lastDrawnLen)
+      drawn.slice(lastDrawnLen).forEach(n => enfileirarNumero(n));
+
+    if(status==='finalizado'&&!jaAnunciouFim&&cartelas.length>0){
+      jaAnunciouFim=true;
+      const maxScore=Math.max(...cartelas.map(c=>c.score));
+      const winners=cartelas.filter(c=>c.score===maxScore);
+      if(filaNumeros.length===0&&!anunciandoNumero) anunciarVencedorAgora(winners,maxScore);
+      else pendingFimAnuncio={winners,maxScore};
     }
+    if(status!=='finalizado') jaAnunciouFim=false;
 
-    if (status === 'ativo' && lastStatus !== 'ativo' && lastStatus !== '') {
-      falar('Atenção! Sorteio da série bronze iniciado!', true);
+    lastDrawnLen=drawn.length;
+    lastStatus=status;
+
+    // Verifica se participantes mudaram (exclusão) — reseta contador se sim
+    if(cartelas.length > 0) await verificarParticipantes(cartelas);
+
+    if(numerosVisiveis.length===0&&drawn.length===0){
+      document.getElementById('bolasWrap').innerHTML='<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
+      document.getElementById('stS').textContent='0';document.getElementById('stR').textContent='90';
     }
-
-    if (drawn.length > lastDrawnLen) {
-      const novos = drawn.slice(lastDrawnLen);
-      novos.forEach(n => enfileirarNumero(n));
-    }
-
-    if (status === 'finalizado' && !jaAnunciouFim && cartelas.length > 0) {
-      jaAnunciouFim = true;
-      const maxScore = Math.max(...cartelas.map(c => c.score));
-      const winners  = cartelas.filter(c => c.score === maxScore);
-
-      if (filaNumeros.length === 0 && !anunciandoNumero) {
-        anunciarVencedorAgora(winners, maxScore);
-      } else {
-        pendingFimAnuncio = { winners, maxScore };
-      }
-    }
-
-    if (status !== 'finalizado') jaAnunciouFim = false;
-
-    lastDrawnLen = drawn.length;
-    lastStatus   = status;
-
-    if (numerosVisiveis.length === 0 && drawn.length === 0) {
-      document.getElementById('bolasWrap').innerHTML =
-        '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
-      document.getElementById('stS').textContent = '0';
-      document.getElementById('stR').textContent = '90';
-    }
-
-    if (!cartelas.length) {
-      document.getElementById('tabelaBody').innerHTML = '<div class="aguardando-msg">Inicie o sorteio!</div>';
-      document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">Inicie o sorteio!</div>';
-      document.getElementById('stTotal').textContent = 'R$0';
-      document.getElementById('stLider').textContent = '—';
+    if(!cartelas.length){
+      document.getElementById('tabelaBody').innerHTML='<div class="aguardando-msg">Inicie o sorteio!</div>';
+      document.getElementById('cartelasGrid').innerHTML='<div class="aguardando-msg">Inicie o sorteio!</div>';
+      document.getElementById('stTotal').textContent='R$0';document.getElementById('stLider').textContent='—';
       return;
     }
-    atualizarContadorSorteio(cartelas, false);
 
-    let total = 0;
-    cartelas.forEach(c => total += (acumulado[c.id]||0));
-    document.getElementById('stTotal').textContent = `R$${total.toFixed(2)}`;
+    let total=0;
+    cartelas.forEach(c=>total+=(acumulado[c.id]||0));
+    document.getElementById('stTotal').textContent=`R$${total.toFixed(2)}`;
 
-    const sorted   = [...cartelas].sort((a,b) => b.score-a.score || (acumulado[b.id]||0)-(acumulado[a.id]||0));
-    document.getElementById('stLider').textContent = sorted[0]?.name?.split(' ')[0] ?? '—';
+    const sorted=[...cartelas].sort((a,b)=>b.score-a.score||(acumulado[b.id]||0)-(acumulado[a.id]||0));
+    document.getElementById('stLider').textContent=sorted[0]?.name?.split(' ')[0]??'—';
 
-    const fin      = status === 'finalizado';
-    const maxScore = Math.max(...cartelas.map(c => c.score));
+    const fin=status==='finalizado';
+    const maxScore=Math.max(...cartelas.map(c=>c.score));
 
-    document.getElementById('tabelaBody').innerHTML = sorted.map((c,i) => {
-      const acum   = acumulado[c.id]||0;
-      const isVenc = fin && c.score===maxScore;
-      const isLid  = !fin && i===0 && c.score>0;
-      const cls    = isVenc?'tabela-row vencedora':isLid?'tabela-row lider':'tabela-row';
-      const icon   = isVenc?'👑 ':isLid?'🔥 ':'';
-      const pct    = (c.score/16)*100;
-      const foto   = fotos[c.id]
-        ? `<img class="jogador-foto" src="${fotos[c.id]}"/>`
-        : `<div class="jogador-foto-vazia">👤</div>`;
-      const nomeCls= isVenc?'nome-txt vencedor-nome':'nome-txt';
-      const valCls = isVenc?'valor-txt vencedor-val':acum>0?'valor-txt tem-valor':'valor-txt zero';
-      const bdgCls = c.score>=8?'acertos-badge alto':'acertos-badge';
+    document.getElementById('tabelaBody').innerHTML=sorted.map((c,i)=>{
+      const acum=acumulado[c.id]||0;
+      const isVenc=fin&&c.score===maxScore;
+      const isLid=!fin&&i===0&&c.score>0;
+      const cls=isVenc?'tabela-row vencedora':isLid?'tabela-row lider':'tabela-row';
+      const icon=isVenc?'👑 ':isLid?'🔥 ':'';
+      const pct=(c.score/16)*100;
+      const foto=fotos[c.id]?`<img class="jogador-foto" src="${fotos[c.id]}"/>`:`<div class="jogador-foto-vazia">👤</div>`;
+      const nomeCls=isVenc?'nome-txt vencedor-nome':'nome-txt';
+      const valCls=isVenc?'valor-txt vencedor-val':acum>0?'valor-txt tem-valor':'valor-txt zero';
+      const bdgCls=c.score>=8?'acertos-badge alto':'acertos-badge';
       return `<div class="${cls}">
         <div class="cel-cartela">C${c.id}</div>
         <div class="cel-foto">${foto}</div>
@@ -625,16 +563,12 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       </div>`;
     }).join('');
 
-    document.getElementById('cartelasGrid').innerHTML = cartelas.map(c => {
-      const isWinner = fin && c.score===maxScore;
-      const acum     = acumulado[c.id]||0;
-      const fotoHtml = fotos[c.id]
-        ? `<img class="cartela-foto" src="${fotos[c.id]}"/>`
-        : `<div class="cartela-foto-vazia">👤</div>`;
-      const marked = Array.isArray(c.markedNumbers)?c.markedNumbers:[];
-      const nums   = (Array.isArray(c.numbers)?c.numbers:[]).map(n =>
-        `<div class="num${marked.includes(n)?' marked':''}">${n}</div>`
-      ).join('');
+    document.getElementById('cartelasGrid').innerHTML=cartelas.map(c=>{
+      const isWinner=fin&&c.score===maxScore;
+      const acum=acumulado[c.id]||0;
+      const fotoHtml=fotos[c.id]?`<img class="cartela-foto" src="${fotos[c.id]}"/>`:`<div class="cartela-foto-vazia">👤</div>`;
+      const marked=Array.isArray(c.markedNumbers)?c.markedNumbers:[];
+      const nums=(Array.isArray(c.numbers)?c.numbers:[]).map(n=>`<div class="num${marked.includes(n)?' marked':''}">${n}</div>`).join('');
       return `<div class="cartela${isWinner?' winner':''}">
         <div class="cartela-header">Cartela ${c.id}${isWinner?' 👑':''}</div>
         <div class="cartela-player-wrap">${fotoHtml}<span class="cartela-player">${c.name||'Jogador '+c.id}</span></div>
