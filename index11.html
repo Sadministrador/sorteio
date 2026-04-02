@@ -7,125 +7,64 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%,#1a0505 100%);min-height:100vh;padding:16px;color:white;}
-
 .header{text-align:center;margin-bottom:20px;}
 .header h1{font-size:2.4em;font-weight:900;letter-spacing:3px;}
 .s{color:#c0392b;}.x{color:#ffffff;}
 .rest{background:linear-gradient(90deg,#ff6b6b,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .header p{font-size:11px;color:#555;letter-spacing:3px;margin-top:4px;}
-
 .fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;}
 .fb-ok{color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);}
 .fb-err{color:#ff6b6b;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);}
-
-/* BOTÃO SOM — destaque máximo para o usuário ativar */
 .btn-som-wrap{text-align:center;margin-bottom:14px;}
-.btn-som{
-  padding:14px 36px;border-radius:40px;
-  font-size:17px;font-weight:bold;letter-spacing:1px;
-  cursor:pointer;transition:all 0.2s;
-  display:inline-block;border:none;
-}
-.btn-som.mudo{
-  background:#c0392b;color:white;
-  box-shadow:0 0 24px rgba(192,57,43,0.7);
-  animation:pulseMudo 1.5s ease-in-out infinite;
-}
-@keyframes pulseMudo{0%,100%{box-shadow:0 0 18px rgba(192,57,43,0.5);}50%{box-shadow:0 0 38px rgba(192,57,43,0.9);}}
-.btn-som.ativo{
-  background:#4caf50;color:white;
-  box-shadow:0 0 18px rgba(76,175,80,0.5);
-  animation:none;
-}
-
+.btn-som{padding:16px 40px;border-radius:40px;font-size:18px;font-weight:bold;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:inline-block;border:none;}
+.btn-som.mudo{background:#c0392b;color:white;box-shadow:0 0 28px rgba(192,57,43,0.8);animation:pulseMudo 1.2s ease-in-out infinite;}
+@keyframes pulseMudo{0%,100%{box-shadow:0 0 18px rgba(192,57,43,0.5);transform:scale(1);}50%{box-shadow:0 0 44px rgba(192,57,43,1);transform:scale(1.03);}}
+.btn-som.ativo{background:#4caf50;color:white;box-shadow:0 0 20px rgba(76,175,80,0.6);animation:none;}
+.narrador-box{background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:14px 20px;text-align:center;margin-bottom:14px;min-height:52px;display:flex;align-items:center;justify-content:center;transition:all 0.3s;}
+.narrador-txt{font-size:20px;font-weight:bold;color:#555;letter-spacing:1px;}
+.narrador-box.falando{background:rgba(255,215,0,0.13);border-color:#ffd700;box-shadow:0 0 22px rgba(255,215,0,0.25);}
+.narrador-box.falando .narrador-txt{color:#ffd700;}
 .status-bar{border-radius:12px;padding:12px 20px;text-align:center;margin-bottom:16px;font-size:16px;font-weight:bold;border:2px solid;}
 .aguardando{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1);color:#555;}
 .ativo{background:rgba(76,175,80,0.1);border-color:#4caf50;color:#4caf50;}
 .finalizado{background:rgba(255,215,0,0.1);border-color:#ffd700;color:#ffd700;}
-
 .ultimo-numero{display:flex;justify-content:center;margin-bottom:16px;}
-.bola-grande{
-  width:100px;height:100px;
-  background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000 60%,#440000);
-  border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:44px;font-weight:900;
-  box-shadow:0 0 30px rgba(139,0,0,0.5);
-  border:3px solid rgba(255,255,255,0.15);transition:all 0.3s;
-}
-.bola-grande.flash{box-shadow:0 0 60px rgba(255,215,0,0.9);border-color:#ffd700;transform:scale(1.1);}
-
+.bola-grande{width:110px;height:110px;background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000 60%,#440000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:50px;font-weight:900;box-shadow:0 0 30px rgba(139,0,0,0.5);border:3px solid rgba(255,255,255,0.15);transition:all 0.3s;}
+.bola-grande.flash{box-shadow:0 0 70px rgba(255,215,0,1);border-color:#ffd700;transform:scale(1.12);}
 .secao{background:rgba(255,255,255,0.04);border-radius:12px;padding:14px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.07);}
 .secao-titulo{color:#ffd700;font-size:11px;letter-spacing:3px;margin-bottom:10px;font-weight:bold;}
 .bolas-wrap{display:flex;flex-wrap:wrap;gap:7px;}
-.bola{width:42px;height:42px;background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
-.bola.ultima{box-shadow:0 0 16px #ffd700;border:2px solid #ffd700;transform:scale(1.12);}
-
+.bola{width:44px;height:44px;background:radial-gradient(circle at 35% 35%,#cc2200,#8B0000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;}
+.bola.ultima{box-shadow:0 0 18px #ffd700;border:2px solid #ffd700;transform:scale(1.14);}
 .stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
 .stat{background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 16px;text-align:center;border:1px solid rgba(255,255,255,0.07);min-width:80px;}
 .stat-val{font-size:22px;font-weight:900;}
 .stat-label{font-size:10px;color:#555;letter-spacing:2px;margin-top:2px;}
-
-/* ── TABELA JOGADORES — totalmente responsiva ── */
 .tabela-wrap{background:rgba(255,255,255,0.03);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.07);margin-bottom:20px;}
-
-/* Cabeçalho apenas em desktop */
-.tabela-header{
-  display:grid;
-  grid-template-columns:52px 70px 1fr auto auto;
-  background:rgba(139,0,0,0.6);
-  padding:12px 14px;
-  font-size:11px;font-weight:bold;letter-spacing:2px;color:#ffd700;
-  align-items:center;gap:10px;
-}
+.tabela-header{display:grid;grid-template-columns:52px 70px 1fr auto auto;background:rgba(139,0,0,0.6);padding:12px 14px;font-size:11px;font-weight:bold;letter-spacing:2px;color:#ffd700;align-items:center;gap:10px;}
 @media(max-width:500px){.tabela-header{display:none;}}
-
-/* Cada linha: layout diferente em mobile */
-.tabela-row{
-  display:grid;
-  grid-template-columns:52px 70px 1fr auto auto;
-  padding:12px 14px;
-  border-bottom:1px solid rgba(255,255,255,0.05);
-  align-items:center;
-  gap:10px;
-  transition:all 0.4s;
-}
+.tabela-row{display:grid;grid-template-columns:52px 70px 1fr auto auto;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center;gap:10px;transition:all 0.4s;}
 .tabela-row.vencedora{background:rgba(255,215,0,0.1);animation:glow-row 2s ease-in-out infinite alternate;}
 .tabela-row.lider{background:rgba(255,107,107,0.06);}
 @keyframes glow-row{from{background:rgba(255,215,0,0.05);}to{background:rgba(255,215,0,0.16);}}
-
-/* Mobile: empilha em 2 colunas simples */
 @media(max-width:500px){
-  .tabela-row{
-    grid-template-columns:72px 1fr;
-    grid-template-rows:auto auto;
-    column-gap:12px;row-gap:6px;
-    padding:14px 12px;
-  }
+  .tabela-row{grid-template-columns:72px 1fr;grid-template-rows:auto auto auto;column-gap:12px;row-gap:6px;padding:14px 12px;}
   .cel-cartela{grid-column:2;grid-row:2;font-size:11px;color:#666;}
-  .cel-foto{grid-column:1;grid-row:1 / 3;}
+  .cel-foto{grid-column:1;grid-row:1/3;}
   .cel-nome{grid-column:2;grid-row:1;}
   .cel-acertos{grid-column:2;grid-row:2;display:flex;align-items:center;gap:8px;}
-  .cel-valor{grid-column:1 / 3;grid-row:3;
-    background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px;
-    display:flex;align-items:center;justify-content:space-between;margin-top:4px;}
+  .cel-valor{grid-column:1/3;grid-row:3;background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;margin-top:4px;}
 }
-
 .cel-cartela{font-size:12px;color:#777;font-weight:600;}
-
-/* FOTO — maior */
 .jogador-foto{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.2);display:block;}
 .jogador-foto-vazia{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.07);border:2px dashed rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:24px;}
 @media(max-width:500px){.jogador-foto,.jogador-foto-vazia{width:60px;height:60px;}}
-
 .nome-txt{font-size:18px;font-weight:900;color:#fff;word-break:break-word;}
 .nome-txt.vencedor-nome{color:#ffd700;font-size:20px;}
 .barra-acertos{height:3px;background:rgba(255,255,255,0.07);border-radius:3px;margin-top:5px;max-width:160px;}
 .barra-fill{height:100%;background:linear-gradient(90deg,#8B0000,#ff6b6b);border-radius:3px;transition:width 0.6s;}
-
 .acertos-badge{display:inline-block;background:rgba(139,0,0,0.4);border:1px solid rgba(255,107,107,0.35);color:#ff9999;border-radius:20px;padding:4px 12px;font-size:14px;font-weight:700;white-space:nowrap;}
 .acertos-badge.alto{background:rgba(76,175,80,0.25);border-color:#4caf50;color:#4caf50;}
-
-/* VALOR — formatado para não vazar */
 .valor-bloco{text-align:right;}
 .valor-label{font-size:10px;color:#555;letter-spacing:1px;margin-bottom:2px;}
 .valor-txt{font-size:22px;font-weight:900;color:#fff;white-space:nowrap;}
@@ -133,8 +72,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 .valor-txt.vencedor-val{color:#ffd700;font-size:26px;}
 .valor-txt.zero{color:#333;font-size:15px;}
 @media(max-width:500px){.valor-bloco{text-align:left;}.valor-txt{font-size:20px;}.valor-txt.vencedor-val{font-size:23px;}}
-
-/* ── CARTELAS ── */
 .cartelas-titulo{color:#ffd700;font-size:11px;letter-spacing:3px;font-weight:bold;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.07);}
 .cartelas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:20px;}
 .cartela{background:#8B0000;border-radius:14px;padding:16px;box-shadow:0 6px 18px rgba(0,0,0,0.3);border:2px solid transparent;transition:all 0.3s;}
@@ -153,7 +90,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 .acertos-txt{color:rgba(255,255,255,0.65);font-size:12px;}
 .acertos-num{color:white;font-weight:bold;}
 .ganho-txt{color:#4caf50;font-size:13px;font-weight:bold;}
-
 .pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4caf50;margin-right:8px;animation:pulseAnim 1.5s infinite;}
 @keyframes pulseAnim{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.3;transform:scale(0.8);}}
 .aguardando-msg{text-align:center;padding:40px;color:#333;font-size:15px;}
@@ -168,11 +104,14 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 
 <div id="fbBadge" class="fb-badge fb-ok">🔥 Conectando ao Firebase...</div>
 
-<!-- BOTÃO SOM — proeminente, pisca quando mudo -->
 <div class="btn-som-wrap">
   <button class="btn-som mudo" id="btnSom" onclick="ativarSom()">
-    🔇 TOQUE AQUI PARA ATIVAR O SOM
+    🔇 TOQUE AQUI PARA ATIVAR VOZ + SOM
   </button>
+</div>
+
+<div class="narrador-box" id="narradorBox">
+  <div class="narrador-txt" id="narradorTxt">— narrador aguardando —</div>
 </div>
 
 <div id="statusBar" class="status-bar aguardando">
@@ -197,21 +136,18 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   <div class="stat"><div class="stat-val" id="stLider" style="color:#ff6b6b;">—</div><div class="stat-label">LÍDER</div></div>
 </div>
 
-<!-- TABELA JOGADORES -->
 <div class="tabela-wrap">
   <div class="tabela-header">
-    <div>Nº</div><div>FOTO</div><div>JOGADOR</div>
-    <div>ACERTOS</div>
-    <div>TOTAL GANHO</div>
+    <div>N</div><div>FOTO</div><div>JOGADOR</div>
+    <div>ACERTOS</div><div>TOTAL GANHO</div>
   </div>
-  <div id="tabelaBody"><div class="aguardando-msg">🎯 Aguardando início do sorteio...</div></div>
+  <div id="tabelaBody"><div class="aguardando-msg">Aguardando início do sorteio...</div></div>
 </div>
 
-<!-- CARTELAS AO VIVO -->
 <div class="secao">
-  <div class="cartelas-titulo">🃏 CARTELAS AO VIVO — NÚMEROS MARCADOS EM TEMPO REAL</div>
+  <div class="cartelas-titulo">CARTELAS AO VIVO — NUMEROS MARCADOS EM TEMPO REAL</div>
   <div class="cartelas-grid" id="cartelasGrid">
-    <div class="aguardando-msg">🎯 Aguardando início do sorteio...</div>
+    <div class="aguardando-msg">Aguardando início do sorteio...</div>
   </div>
 </div>
 
@@ -220,85 +156,127 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 </div>
 
 <script>
-  /* ── ÁUDIO ────────────────────────────────────────────────────────────────
-     O AudioContext só pode ser criado após gesto do usuário (política do browser).
-     Quando o usuário toca "ATIVAR SOM", criamos o contexto e mantemos ativo.
-     A partir daí, qualquer número novo que chegar via Firebase dispara o som.
-  ──────────────────────────────────────────────────────────────────────── */
-  let audioCtx   = null;
-  let somAtivo   = false;
+  var somAtivo     = false;
+  var audioCtx     = null;
+  var gainMaster   = null;
+  var vozesPT      = [];
+  var vozEscolhida = null;
+  var filaFala     = [];
+  var estaFalando  = false;
 
   function ativarSom() {
     if (!somAtivo) {
       try {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        // Resume se estiver suspenso (alguns browsers suspendem por padrão)
+        audioCtx   = new (window.AudioContext || window.webkitAudioContext)();
+        gainMaster = audioCtx.createGain();
+        gainMaster.gain.value = 3.0;
+        gainMaster.connect(audioCtx.destination);
         if (audioCtx.state === 'suspended') audioCtx.resume();
-        somAtivo = true;
-        const btn = document.getElementById('btnSom');
-        btn.textContent = '🔊 SOM ATIVADO — toque para desativar';
-        btn.classList.remove('mudo');
-        btn.classList.add('ativo');
-        tocarTeste();
-      } catch(e) {
-        console.warn('AudioContext falhou:', e);
-      }
+      } catch(e) { console.warn('AudioContext erro:', e); }
+
+      carregarVozes();
+      somAtivo = true;
+
+      var btn = document.getElementById('btnSom');
+      btn.textContent = '🔊 VOZ ATIVADA — toque para desativar';
+      btn.classList.remove('mudo');
+      btn.classList.add('ativo');
+
+      falar('T V Bingo Oficial. Série bronze. Pronto para o sorteio!', true);
     } else {
       somAtivo = false;
-      const btn = document.getElementById('btnSom');
-      btn.textContent = '🔇 TOQUE AQUI PARA ATIVAR O SOM';
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      filaFala = []; estaFalando = false;
+      var btn = document.getElementById('btnSom');
+      btn.textContent = '🔇 TOQUE AQUI PARA ATIVAR VOZ + SOM';
       btn.classList.remove('ativo');
       btn.classList.add('mudo');
+      setNarrador('— narrador desativado —', false);
     }
   }
 
-  // Som de teste ao ativar — confirma que está funcionando
-  function tocarTeste() {
-    if (!somAtivo || !audioCtx) return;
-    [[400,0],[500,0.1],[650,0.2]].forEach(([freq, delay]) => {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
-      gain.gain.setValueAtTime(0.2, audioCtx.currentTime + delay);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.3);
-      osc.start(audioCtx.currentTime + delay);
-      osc.stop(audioCtx.currentTime + delay + 0.35);
-    });
+  function carregarVozes() {
+    if (!window.speechSynthesis) return;
+    var todas = window.speechSynthesis.getVoices();
+    vozesPT = todas.filter(function(v){ return v.lang && v.lang.startsWith('pt'); });
+    vozEscolhida = vozesPT.find(function(v){ return v.lang === 'pt-BR'; }) || vozesPT[0] || null;
+  }
+  if (window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = carregarVozes;
+    carregarVozes();
   }
 
-  // Ping ao sortear número — chamado pelo Firebase listener quando detecta novo número
-  function tocarSorteio() {
-    if (!somAtivo || !audioCtx) return;
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    [[520,0],[660,0.12],[800,0.24]].forEach(([freq, delay]) => {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
-      gain.gain.setValueAtTime(0.35, audioCtx.currentTime + delay);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.4);
-      osc.start(audioCtx.currentTime + delay);
-      osc.stop(audioCtx.currentTime + delay + 0.45);
-    });
+  function falar(texto, prioridade) {
+    if (!somAtivo || !window.speechSynthesis) return;
+    if (prioridade) {
+      window.speechSynthesis.cancel();
+      filaFala = [];
+      estaFalando = false;
+    }
+    filaFala.push(texto);
+    processarFila();
   }
 
-  // Fanfarra de vitória
-  function tocarVitoria() {
-    if (!somAtivo || !audioCtx) return;
+  function processarFila() {
+    if (estaFalando || filaFala.length === 0) return;
+    var texto = filaFala.shift();
+    estaFalando = true;
+    setNarrador(texto, true);
+
+    var u    = new SpeechSynthesisUtterance(texto);
+    u.lang   = 'pt-BR';
+    u.rate   = 0.90;
+    u.pitch  = 1.1;
+    u.volume = 1;
+    if (vozEscolhida) u.voice = vozEscolhida;
+    else carregarVozes();
+
+    u.onend  = function(){ estaFalando = false; setTimeout(processarFila, 300); setNarrador(texto, false); };
+    u.onerror= function(){ estaFalando = false; setTimeout(processarFila, 300); };
+    window.speechSynthesis.speak(u);
+  }
+
+  function setNarrador(texto, ativo) {
+    var box = document.getElementById('narradorBox');
+    var txt = document.getElementById('narradorTxt');
+    if (txt) txt.textContent = texto;
+    if (box) {
+      if (ativo) box.classList.add('falando');
+      else box.classList.remove('falando');
+    }
+  }
+
+  function tocarPing() {
+    if (!audioCtx || !gainMaster) return;
     if (audioCtx.state === 'suspended') audioCtx.resume();
-    [[523,0],[659,0.15],[784,0.3],[1047,0.5],[784,0.7],[1047,0.9]].forEach(([freq, delay]) => {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.type = 'triangle';
+    [[520,0],[660,0.1],[820,0.2]].forEach(function(pair){
+      var freq = pair[0], delay = pair[1];
+      var osc  = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(gainMaster);
+      osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
       gain.gain.setValueAtTime(0.4, audioCtx.currentTime + delay);
       gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.35);
       osc.start(audioCtx.currentTime + delay);
       osc.stop(audioCtx.currentTime + delay + 0.4);
+    });
+  }
+
+  function tocarFanfarra() {
+    if (!audioCtx || !gainMaster) return;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    [[523,0],[659,0.15],[784,0.3],[1047,0.5],[784,0.7],[1047,0.9],[1318,1.1]].forEach(function(pair){
+      var freq = pair[0], delay = pair[1];
+      var osc  = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(gainMaster);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+      gain.gain.setValueAtTime(0.45, audioCtx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.4);
+      osc.start(audioCtx.currentTime + delay);
+      osc.stop(audioCtx.currentTime + delay + 0.45);
     });
   }
 </script>
@@ -319,8 +297,10 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 
   const db    = getDatabase(initializeApp(cfg));
   const badge = document.getElementById('fbBadge');
-  let lastDrawnLen    = 0;
-  let jaTocouVitoria  = false;
+
+  let lastDrawnLen  = 0;
+  let lastStatus    = '';
+  let jaAnunciouFim = false;
   let state = { game: null, fotos: {} };
 
   onValue(ref(db, 'bingo_bronze/game'), snap => {
@@ -340,7 +320,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   });
 
   function reset() {
-    lastDrawnLen = 0; jaTocouVitoria = false;
+    lastDrawnLen = 0; lastStatus = ''; jaAnunciouFim = false;
     document.getElementById('statusBar').className = 'status-bar aguardando';
     document.getElementById('statusBar').innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
     document.getElementById('bolaGrande').textContent = '?';
@@ -349,8 +329,9 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     document.getElementById('stR').textContent = '90';
     document.getElementById('stTotal').textContent = 'R$0';
     document.getElementById('stLider').textContent = '—';
-    document.getElementById('tabelaBody').innerHTML = '<div class="aguardando-msg">🎯 Aguardando início do sorteio...</div>';
-    document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">🎯 Aguardando início do sorteio...</div>';
+    document.getElementById('tabelaBody').innerHTML = '<div class="aguardando-msg">Aguardando início do sorteio...</div>';
+    document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">Aguardando início do sorteio...</div>';
+    setNarrador('— narrador aguardando —', false);
   }
 
   function render() {
@@ -361,116 +342,140 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     const acumulado= g.acumulado || {};
     const status   = g.status    || 'aguardando';
 
-    // Status
     const bar = document.getElementById('statusBar');
     if (status === 'finalizado') {
       bar.className = 'status-bar finalizado';
       bar.innerHTML = '🏆 SORTEIO FINALIZADO';
-      if (!jaTocouVitoria) { jaTocouVitoria = true; tocarVitoria(); }
     } else if (status === 'ativo') {
       bar.className = 'status-bar ativo';
       bar.innerHTML = '<span class="pulse"></span> SORTEIO EM ANDAMENTO';
-      jaTocouVitoria = false;
     } else {
       bar.className = 'status-bar aguardando';
       bar.innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
-      jaTocouVitoria = false;
     }
 
-    // Bola grande + som
+    // Anuncia início
+    if (status === 'ativo' && lastStatus !== 'ativo' && lastStatus !== '') {
+      falar('Atenção! Sorteio da série bronze iniciado!', true);
+    }
+
+    // Novos números — toca ping e fala
+    if (drawn.length > lastDrawnLen) {
+      const novos = drawn.slice(lastDrawnLen);
+      novos.forEach((n, i) => {
+        const delay = i * 1600;
+        setTimeout(() => tocarPing(), delay);
+        // pausa dramática com reticências
+        setTimeout(() => falar('Número... ' + n + '!'), delay + 300);
+      });
+    }
+
+    // Fim — anuncia vencedor
+    if (status === 'finalizado' && !jaAnunciouFim && cartelas.length > 0) {
+      jaAnunciouFim = true;
+      const maxScore = Math.max(...cartelas.map(c => c.score));
+      const winners  = cartelas.filter(c => c.score === maxScore);
+      const valor    = (10 / winners.length).toFixed(2);
+      setTimeout(() => {
+        tocarFanfarra();
+        setTimeout(() => {
+          let msg;
+          if (winners.length === 1) {
+            msg = 'Sorteio encerrado! O grande vencedor é ' + winners[0].name + '! Com ' + maxScore + ' acertos! Ganhando R$ ' + valor + '! Parabéns!';
+          } else {
+            const nomes = winners.map(w => w.name).join(' e ');
+            msg = 'Sorteio encerrado! Empate emocionante! ' + nomes + ' vencem com ' + maxScore + ' acertos cada! Ganhando R$ ' + valor + ' cada! Parabéns a todos!';
+          }
+          falar(msg, true);
+        }, 1600);
+      }, 600);
+    }
+
+    if (status !== 'finalizado') jaAnunciouFim = false;
+
+    lastDrawnLen = drawn.length;
+    lastStatus   = status;
+
     const ultimo = drawn.length > 0 ? drawn[drawn.length - 1] : null;
     const bolaG  = document.getElementById('bolaGrande');
     bolaG.textContent = ultimo ?? '?';
-    if (drawn.length > lastDrawnLen) {
-      bolaG.classList.add('flash');
-      setTimeout(() => bolaG.classList.remove('flash'), 800);
-      tocarSorteio(); // ← dispara som se usuário já ativou
-    }
-    lastDrawnLen = drawn.length;
+    bolaG.classList.add('flash');
+    setTimeout(() => bolaG.classList.remove('flash'), 900);
 
-    // Bolas sorteadas
-    const wrap = document.getElementById('bolasWrap');
-    wrap.innerHTML = drawn.length === 0
+    document.getElementById('bolasWrap').innerHTML = drawn.length === 0
       ? '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>'
-      : drawn.map(n => `<div class="bola${n === ultimo ? ' ultima' : ''}">${n}</div>`).join('');
+      : drawn.map(n => `<div class="bola${n===ultimo?' ultima':''}">${n}</div>`).join('');
 
-    // Stats
     document.getElementById('stS').textContent = drawn.length;
     document.getElementById('stR').textContent = 90 - drawn.length;
 
     if (!cartelas.length) {
-      document.getElementById('tabelaBody').innerHTML = '<div class="aguardando-msg">🎯 Inicie o sorteio para ver os jogadores!</div>';
-      document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">🎯 Inicie o sorteio para ver as cartelas!</div>';
+      document.getElementById('tabelaBody').innerHTML = '<div class="aguardando-msg">Inicie o sorteio!</div>';
+      document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">Inicie o sorteio!</div>';
       document.getElementById('stTotal').textContent = 'R$0';
       document.getElementById('stLider').textContent = '—';
       return;
     }
 
     let total = 0;
-    cartelas.forEach(c => total += (acumulado[c.id] || 0));
+    cartelas.forEach(c => total += (acumulado[c.id]||0));
     document.getElementById('stTotal').textContent = `R$${total.toFixed(2)}`;
 
-    const sorted   = [...cartelas].sort((a,b) => b.score - a.score || (acumulado[b.id]||0)-(acumulado[a.id]||0));
+    const sorted   = [...cartelas].sort((a,b) => b.score-a.score || (acumulado[b.id]||0)-(acumulado[a.id]||0));
     document.getElementById('stLider').textContent = sorted[0]?.name?.split(' ')[0] ?? '—';
 
     const fin      = status === 'finalizado';
     const maxScore = Math.max(...cartelas.map(c => c.score));
 
-    // ── TABELA ──
-    document.getElementById('tabelaBody').innerHTML = sorted.map((c, i) => {
-      const acum   = acumulado[c.id] || 0;
-      const isVenc = fin && c.score === maxScore;
-      const isLid  = !fin && i === 0 && c.score > 0;
-      const cls    = isVenc ? 'tabela-row vencedora' : isLid ? 'tabela-row lider' : 'tabela-row';
-      const icon   = isVenc ? '👑 ' : isLid ? '🔥 ' : '';
-      const pct    = (c.score / 16) * 100;
-      const fotoHtml = fotos[c.id]
+    document.getElementById('tabelaBody').innerHTML = sorted.map((c,i) => {
+      const acum   = acumulado[c.id]||0;
+      const isVenc = fin && c.score===maxScore;
+      const isLid  = !fin && i===0 && c.score>0;
+      const cls    = isVenc?'tabela-row vencedora':isLid?'tabela-row lider':'tabela-row';
+      const icon   = isVenc?'👑 ':isLid?'🔥 ':'';
+      const pct    = (c.score/16)*100;
+      const foto   = fotos[c.id]
         ? `<img class="jogador-foto" src="${fotos[c.id]}"/>`
         : `<div class="jogador-foto-vazia">👤</div>`;
-      const nomeCls = isVenc ? 'nome-txt vencedor-nome' : 'nome-txt';
-      const valCls  = isVenc ? 'valor-txt vencedor-val' : acum > 0 ? 'valor-txt tem-valor' : 'valor-txt zero';
-      const bdgCls  = c.score >= 8 ? 'acertos-badge alto' : 'acertos-badge';
-      // Separa o label do valor para não vazar
-      return `
-        <div class="${cls}">
-          <div class="cel-cartela">C${c.id}</div>
-          <div class="cel-foto">${fotoHtml}</div>
-          <div class="cel-nome">
-            <div class="${nomeCls}">${icon}${c.name || 'Jogador ' + c.id}</div>
-            <div class="barra-acertos"><div class="barra-fill" style="width:${pct}%"></div></div>
+      const nomeCls= isVenc?'nome-txt vencedor-nome':'nome-txt';
+      const valCls = isVenc?'valor-txt vencedor-val':acum>0?'valor-txt tem-valor':'valor-txt zero';
+      const bdgCls = c.score>=8?'acertos-badge alto':'acertos-badge';
+      return `<div class="${cls}">
+        <div class="cel-cartela">C${c.id}</div>
+        <div class="cel-foto">${foto}</div>
+        <div class="cel-nome">
+          <div class="${nomeCls}">${icon}${c.name||'Jogador '+c.id}</div>
+          <div class="barra-acertos"><div class="barra-fill" style="width:${pct}%"></div></div>
+        </div>
+        <div class="cel-acertos"><span class="${bdgCls}">${c.score}/16</span></div>
+        <div class="cel-valor">
+          <div class="valor-bloco">
+            <div class="valor-label">TOTAL</div>
+            <div class="${valCls}">${acum>0?'R$&nbsp;'+acum.toFixed(2):'—'}</div>
           </div>
-          <div class="cel-acertos"><span class="${bdgCls}">${c.score}/16</span></div>
-          <div class="cel-valor">
-            <div class="valor-bloco">
-              <div class="valor-label">TOTAL</div>
-              <div class="${valCls}">${acum > 0 ? 'R$&nbsp;' + acum.toFixed(2) : '—'}</div>
-            </div>
-          </div>
-        </div>`;
+        </div>
+      </div>`;
     }).join('');
 
-    // ── CARTELAS ──
     document.getElementById('cartelasGrid').innerHTML = cartelas.map(c => {
-      const isWinner = fin && c.score === maxScore;
-      const acum     = acumulado[c.id] || 0;
-      const foto     = fotos[c.id];
-      const fotoHtml = foto
-        ? `<img class="cartela-foto" src="${foto}"/>`
+      const isWinner = fin && c.score===maxScore;
+      const acum     = acumulado[c.id]||0;
+      const fotoHtml = fotos[c.id]
+        ? `<img class="cartela-foto" src="${fotos[c.id]}"/>`
         : `<div class="cartela-foto-vazia">👤</div>`;
-      const marked = Array.isArray(c.markedNumbers) ? c.markedNumbers : [];
-      const nums = (Array.isArray(c.numbers) ? c.numbers : []).map(n =>
-        `<div class="num${marked.includes(n) ? ' marked' : ''}">${n}</div>`
+      const marked = Array.isArray(c.markedNumbers)?c.markedNumbers:[];
+      const nums   = (Array.isArray(c.numbers)?c.numbers:[]).map(n =>
+        `<div class="num${marked.includes(n)?' marked':''}">${n}</div>`
       ).join('');
-      return `
-        <div class="cartela${isWinner ? ' winner' : ''}">
-          <div class="cartela-header">Cartela ${c.id}${isWinner ? ' 👑' : ''}</div>
-          <div class="cartela-player-wrap">${fotoHtml}<span class="cartela-player">${c.name || 'Jogador ' + c.id}</span></div>
-          <div class="cartela-numbers">${nums}</div>
-          <div class="cartela-footer">
-            <span class="acertos-txt">Acertos: <span class="acertos-num">${c.score}/16</span></span>
-            <span class="ganho-txt">${acum > 0 ? '💰 R$ ' + acum.toFixed(2) : ''}</span>
-          </div>
-        </div>`;
+      return `<div class="cartela${isWinner?' winner':''}">
+        <div class="cartela-header">Cartela ${c.id}${isWinner?' 👑':''}</div>
+        <div class="cartela-player-wrap">${fotoHtml}<span class="cartela-player">${c.name||'Jogador '+c.id}</span></div>
+        <div class="cartela-numbers">${nums}</div>
+        <div class="cartela-footer">
+          <span class="acertos-txt">Acertos: <span class="acertos-num">${c.score}/16</span></span>
+          <span class="ganho-txt">${acum>0?'💰 R$ '+acum.toFixed(2):''}</span>
+        </div>
+      </div>`;
     }).join('');
   }
 </script>
