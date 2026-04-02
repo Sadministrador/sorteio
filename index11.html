@@ -151,9 +151,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   </div>
 </div>
 
-<div style="text-align:center;margin-top:8px;margin-bottom:20px;font-size:11px;color:#333;">
-  <span class="pulse"></span> AO VIVO — FIREBASE REALTIME DATABASE
-</div>
+<div style="margin-bottom:20px;"></div>
 
 <script>
   var somAtivo     = false;
@@ -300,14 +298,37 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     processarFilaNumeros();
   }
 
+  // Lista dos números já anunciados pelo narrador (controla o visual sincronizado)
+  var numerosVisiveis = [];
+
+  function atualizarBolaGrande(n) {
+    var bolaG = document.getElementById('bolaGrande');
+    if (!bolaG) return;
+    bolaG.textContent = n;
+    bolaG.classList.add('flash');
+    setTimeout(function(){ bolaG.classList.remove('flash'); }, 900);
+    numerosVisiveis.push(n);
+    var wrap = document.getElementById('bolasWrap');
+    if (wrap) {
+      wrap.innerHTML = numerosVisiveis.map(function(x){
+        return '<div class="bola' + (x === n ? ' ultima' : '') + '">' + x + '</div>';
+      }).join('');
+    }
+    var stS = document.getElementById('stS');
+    var stR = document.getElementById('stR');
+    if (stS) stS.textContent = numerosVisiveis.length;
+    if (stR) stR.textContent = 90 - numerosVisiveis.length;
+  }
+
   function processarFilaNumeros() {
     if (anunciandoNumero || filaNumeros.length === 0) return;
     anunciandoNumero = true;
     var n = filaNumeros.shift();
 
     tocarPing();
-    // Pausa dramática antes de falar o número
+    // Atualiza a bola grande e o painel junto com o ping — sincronizado com a voz
     setTimeout(function() {
+      atualizarBolaGrande(n);
       falar('Número... ' + n + '!');
       // Aguarda o término da fala antes de processar o próximo
       esperarFimFala(function() {
@@ -392,8 +413,8 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 
   function reset() {
     lastDrawnLen = 0; lastStatus = ''; jaAnunciouFim = false;
-    // Limpa fila de áudio ao resetar
-    window.filaNumeros = []; window.anunciandoNumero = false; window.pendingFimAnuncio = null;
+    // Limpa fila de áudio e visual ao resetar
+    filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null; numerosVisiveis = [];
     document.getElementById('statusBar').className = 'status-bar aguardando';
     document.getElementById('statusBar').innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
     document.getElementById('bolaGrande').textContent = '?';
@@ -463,19 +484,15 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     lastDrawnLen = drawn.length;
     lastStatus   = status;
 
-    // ── Visual: bola grande ──────────────────────────────────────────────────
-    const ultimo = drawn.length > 0 ? drawn[drawn.length - 1] : null;
-    const bolaG  = document.getElementById('bolaGrande');
-    bolaG.textContent = ultimo ?? '?';
-    bolaG.classList.add('flash');
-    setTimeout(() => bolaG.classList.remove('flash'), 900);
-
-    document.getElementById('bolasWrap').innerHTML = drawn.length === 0
-      ? '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>'
-      : drawn.map(n => `<div class="bola${n===ultimo?' ultima':''}">${n}</div>`).join('');
-
-    document.getElementById('stS').textContent = drawn.length;
-    document.getElementById('stR').textContent = 90 - drawn.length;
+    // ── Visual: bola grande e painel são controlados pelo áudio ────────────
+    // atualizarBolaGrande(n) é chamado em processarFilaNumeros() junto com a voz.
+    // Assim a bola e o painel só mudam quando o narrador começa a falar o número.
+    if (numerosVisiveis.length === 0 && drawn.length === 0) {
+      document.getElementById('bolasWrap').innerHTML =
+        '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
+      document.getElementById('stS').textContent = '0';
+      document.getElementById('stR').textContent = '90';
+    }
 
     if (!cartelas.length) {
       document.getElementById('tabelaBody').innerHTML = '<div class="aguardando-msg">Inicie o sorteio!</div>';
