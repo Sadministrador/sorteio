@@ -15,7 +15,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 .header p{font-size:11px;color:#555;letter-spacing:3px;margin-top:4px;}
 .sorteio-badge{display:inline-block;margin-top:8px;padding:6px 22px;border-radius:30px;font-size:15px;font-weight:bold;letter-spacing:3px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);color:#ffd700;}
 .sorteio-badge span{font-size:24px;font-weight:900;color:#fff;margin-left:8px;}
-.fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;display:none;}
+.fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;}
 .fb-ok{color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);}
 .btn-actions{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;}
 .btn-som{padding:12px 26px;border-radius:30px;font-size:14px;font-weight:bold;cursor:pointer;transition:all 0.2s;border:none;outline:none;}
@@ -45,7 +45,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 .cartela-numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:10px;}
 .num{background:rgba(255,255,255,0.1);padding:8px;text-align:center;border-radius:5px;font-weight:bold;}
 .num.marked{background:#4caf50;}
-.jogador-foto{width:50px;height:50px;border-radius:50%;object-fit:cover;}
+.jogador-foto-vazia{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;}
 </style>
 </head>
 <body>
@@ -56,7 +56,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   <div class="sorteio-badge">SORTEIO <span id="numSorteioDisplay">1</span></div>
 </div>
 
-<div id="fbBadge" class="fb-badge fb-ok">Conectando...</div>
+<div id="fbBadge" class="fb-badge fb-ok" style="background: rgba(255,0,0,0.1); color: red;">⏳ Conectando ao Firebase...</div>
 
 <div class="btn-actions">
   <button class="btn-som mudo" id="btnSom" onclick="ativarSom()">
@@ -89,7 +89,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 <div class="cartelas-grid" id="cartelasGrid"></div>
 
 <script>
-  // --- VARIÁVEIS DE CONTROLE ---
   var somAtivo = false;
   var audioCtx = null;
   var gainMaster = null;
@@ -97,7 +96,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   var filaFala = [];
   var vozEscolhida = null;
   
-  // Controle do Número do Sorteio (Persistente)
+  // Persistência do número do sorteio
   var numSorteio = parseInt(localStorage.getItem('sx_bingo_n_sorteio')) || 1;
   var ultimaListaJogadores = localStorage.getItem('sx_bingo_jogadores_hash') || "";
 
@@ -119,11 +118,16 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       document.getElementById('btnSom').innerHTML = '🔊 Áudio Ativado';
       document.getElementById('btnSom').className = 'btn-som ativo';
       
-      // Carregar vozes
-      var vozes = window.speechSynthesis.getVoices();
-      vozEscolhida = vozes.find(v => v.lang.startsWith('pt') && (v.name.includes('Male') || v.name.includes('Google'))) || vozes.find(v => v.lang.startsWith('pt'));
+      var carregarVozes = () => {
+        var vozes = window.speechSynthesis.getVoices();
+        vozEscolhida = vozes.find(v => v.lang.startsWith('pt') && (v.name.includes('Male') || v.name.includes('Google'))) || vozes.find(v => v.lang.startsWith('pt'));
+      };
+      carregarVozes();
+      if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = carregarVozes;
+      }
       
-      tocarPing(); // Apenas um bipe para confirmar que ligou
+      tocarPing();
     } else {
       somAtivo = false;
       window.speechSynthesis.cancel();
@@ -144,12 +148,19 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     var texto = filaFala.shift();
     var msg = new SpeechSynthesisUtterance(texto);
     msg.lang = 'pt-BR';
-    msg.pitch = 0.8; // Voz mais grave
-    msg.rate = 0.9;
+    msg.pitch = 0.85; 
+    msg.rate = 1.0; // Velocidade normal para ser mais rápido
     if (vozEscolhida) msg.voice = vozEscolhida;
     
-    msg.onstart = () => { document.getElementById('narradorBox').classList.add('falando'); document.getElementById('narradorTxt').textContent = texto; };
-    msg.onend = () => { estaFalando = false; document.getElementById('narradorBox').classList.remove('falando'); setTimeout(processarFila, 200); };
+    msg.onstart = () => { 
+      document.getElementById('narradorBox').classList.add('falando'); 
+      document.getElementById('narradorTxt').textContent = texto; 
+    };
+    msg.onend = () => { 
+      estaFalando = false; 
+      document.getElementById('narradorBox').classList.remove('falando'); 
+      processarFila(); 
+    };
     window.speechSynthesis.speak(msg);
   }
 
@@ -189,38 +200,41 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     const g = snap.val();
     if (!g) return;
 
-    document.getElementById('fbBadge').style.display = 'block';
+    // Feedback de conexão
+    const badge = document.getElementById('fbBadge');
+    badge.textContent = "✅ Conectado ao Bingo";
+    badge.style.background = "rgba(76, 175, 80, 0.1)";
+    badge.style.color = "#4caf50";
     
     const drawn = g.drawn || [];
     const cartelas = g.cartelas || [];
 
-    // --- LOGICA DE MUDANÇA DE SORTEIO ---
-    // 1. Verificar se os participantes mudaram (Resetar para 1)
-    const currentJogadoresHash = cartelas.map(c => c.id).join(',');
-    if (currentJogadoresHash !== ultimaListaJogadores && cartelas.length > 0) {
-      numSorteio = 1;
-      ultimaListaJogadores = currentJogadoresHash;
-      localStorage.setItem('sx_bingo_jogadores_hash', currentJogadoresHash);
-      salvarSorteio();
-    }
-
-    // 2. Verificar se um novo sorteio começou (Aumentar contador)
-    if (g.status === 'ativo' && statusAnterior === 'finalizado') {
+    // --- LÓGICA DE TROCA DE SORTEIO ---
+    // Se a lista de números foi esvaziada e antes tinha números, significa que limpou o sorteador.
+    if (drawn.length === 0 && lastDrawnCount > 0) {
       numSorteio++;
       salvarSorteio();
-      falar("Iniciando sorteio número " + numSorteio);
+      falar("Iniciando novo sorteio. Sorteio número " + numSorteio);
     }
-    
-    statusAnterior = g.status;
+
+    // Se a lista de participantes mudou radicalmente (excluiu todos), volta ao 1
+    const currentJogadoresHash = cartelas.map(c => c.id).join(',');
+    if (ultimaListaJogadores !== "" && currentJogadoresHash === "" && cartelas.length === 0) {
+      numSorteio = 1;
+      salvarSorteio();
+    }
+    ultimaListaJogadores = currentJogadoresHash;
+    localStorage.setItem('sx_bingo_jogadores_hash', currentJogadoresHash);
 
     // --- ÁUDIO DOS NÚMEROS ---
     if (drawn.length > lastDrawnCount) {
       const novoNumero = drawn[drawn.length - 1];
       tocarPing();
-      setTimeout(() => { falar("Número " + novoNumero); }, 400);
-      lastDrawnCount = drawn.length;
+      falar("Número " + novoNumero);
     }
-
+    
+    lastDrawnCount = drawn.length;
+    statusAnterior = g.status;
     render(g);
   });
 
@@ -229,23 +243,15 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     const cartelas = g.cartelas || [];
     const bar = document.getElementById('statusBar');
 
-    // Status
     bar.textContent = g.status === 'ativo' ? '🔴 SORTEIO EM ANDAMENTO' : '🏆 SORTEIO FINALIZADO';
     bar.className = 'status-bar ' + (g.status === 'ativo' ? 'ativo' : 'finalizado');
 
-    // Bola Grande
     document.getElementById('bolaGrande').textContent = drawn.length ? drawn[drawn.length-1] : '?';
-    if (drawn.length) document.getElementById('bolaGrande').classList.add('flash');
-    setTimeout(() => document.getElementById('bolaGrande').classList.remove('flash'), 500);
-
-    // Lista de Bolas
     document.getElementById('bolasWrap').innerHTML = drawn.map(n => `<div class="bola">${n}</div>`).join('');
     
-    // Stats
     document.getElementById('stS').textContent = drawn.length;
     document.getElementById('stR').textContent = 90 - drawn.length;
 
-    // Tabela e Cartelas
     document.getElementById('tabelaBody').innerHTML = cartelas.sort((a,b)=>b.score-a.score).map(c => `
       <div class="tabela-row">
         <div style="font-size:10px">C${c.id}</div>
