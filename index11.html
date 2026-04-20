@@ -3,20 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SX Bingo</title>
+<title>SX Bingo - Sincronizado</title>
 <meta name="theme-color" content="#8B0000">
-<link rel="manifest" href="data:application/manifest+json,{
-  &quot;name&quot;:&quot;SX Bingo&quot;,
-  &quot;short_name&quot;:&quot;SX Bingo&quot;,
-  &quot;start_url&quot;:&quot;.&quot;,
-  &quot;display&quot;:&quot;standalone&quot;,
-  &quot;background_color&quot;:&quot;#0a0a1a&quot;,
-  &quot;theme_color&quot;:&quot;#8B0000&quot;,
-  &quot;icons&quot;:[
-    {&quot;src&quot;:&quot;https://cdn-icons-png.flaticon.com/512/847/847969.png&quot;,&quot;sizes&quot;:&quot;192x192&quot;,&quot;type&quot;:&quot;image/png&quot;},
-    {&quot;src&quot;:&quot;https://cdn-icons-png.flaticon.com/512/847/847969.png&quot;,&quot;sizes&quot;:&quot;512x512&quot;,&quot;type&quot;:&quot;image/png&quot;}
-  ]
-}">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%,#1a0505 100%);min-height:100vh;padding:16px;color:white;}
@@ -25,30 +13,20 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 .s{color:#ff1a1a;text-shadow:0 0 18px rgba(255,30,30,0.9);}.x{color:#ffffff;}
 .rest{background:linear-gradient(90deg,#ff2222,#ff8800,#ffd700,#ff8800,#ff2222);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:brilhoBingo 2.5s linear infinite;}@keyframes brilhoBingo{0%{background-position:0% center;}100%{background-position:200% center;}}
 .header p{font-size:11px;color:#555;letter-spacing:3px;margin-top:4px;}
-
-/* SORTEIO BADGE — letras maiores */
 .sorteio-badge{display:inline-block;margin-top:8px;padding:6px 22px;border-radius:30px;font-size:15px;font-weight:bold;letter-spacing:3px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);color:#ffd700;transition:all 0.5s;}
 .sorteio-badge span{font-size:24px;font-weight:900;color:#fff;margin-left:8px;}
-
 .fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;display:none;}
 .fb-ok{color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);}
 .fb-err{color:#ff6b6b;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);display:block!important;}
-
-/* BOTÕES DE AÇÃO — linha com som + instalar */
 .btn-actions{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
-
-/* BOTÃO SOM — menor */
 .btn-som{padding:10px 22px;border-radius:30px;font-size:13px;font-weight:bold;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;border:none;}
 .btn-som.mudo{background:linear-gradient(135deg,#ff0000,#cc0000);color:white;box-shadow:0 0 28px rgba(255,0,0,0.8);animation:pulseMudo 1.2s ease-in-out infinite;}
 @keyframes pulseMudo{0%,100%{box-shadow:0 0 18px rgba(255,0,0,0.6);transform:scale(1);}50%{box-shadow:0 0 45px rgba(255,0,0,0.95);transform:scale(1.03);}}
 .btn-som.ativo{background:linear-gradient(135deg,#0077ff,#0044cc);color:white;box-shadow:0 0 22px rgba(0,119,255,0.7);animation:pulseAtivo 2s ease-in-out infinite;}
 @keyframes pulseAtivo{0%,100%{box-shadow:0 0 16px rgba(0,119,255,0.5);}50%{box-shadow:0 0 36px rgba(0,119,255,0.9);}}
-
-/* BOTÃO INSTALAR */
 .btn-instalar{padding:10px 22px;border-radius:30px;font-size:13px;font-weight:bold;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:none;align-items:center;gap:6px;border:none;background:linear-gradient(135deg,#ffd700,#ff8800);color:#000;box-shadow:0 0 20px rgba(255,215,0,0.5);}
 .btn-instalar:hover{transform:scale(1.04);box-shadow:0 0 32px rgba(255,215,0,0.8);}
 .btn-instalar.visivel{display:inline-flex;}
-
 .narrador-box{background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:14px 20px;text-align:center;margin-bottom:14px;min-height:52px;display:flex;align-items:center;justify-content:center;transition:all 0.3s;}
 .narrador-txt{font-size:20px;font-weight:bold;color:#555;letter-spacing:1px;}
 .narrador-box.falando{background:rgba(255,215,0,0.13);border-color:#ffd700;box-shadow:0 0 22px rgba(255,215,0,0.25);}
@@ -134,7 +112,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 
 <div id="fbBadge" class="fb-badge fb-ok">🔥 Conectando ao Firebase...</div>
 
-<!-- Linha com botão de som + botão instalar -->
 <div class="btn-actions">
   <button class="btn-som mudo" id="btnSom" onclick="ativarSom()">
     🔇 Clique para ativar audio
@@ -188,13 +165,12 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 <div style="margin-bottom:20px;"></div>
 
 <script>
-  // ─── PWA: instalar app ────────────────────────────────────────────────────
+  // ─── PWA ─────────────────────────────────────────────────────────────────
   let deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    const btn = document.getElementById('btnInstalar');
-    btn.classList.add('visivel');
+    document.getElementById('btnInstalar').classList.add('visivel');
   });
   document.getElementById('btnInstalar').addEventListener('click', async () => {
     if (deferredPrompt) {
@@ -204,48 +180,41 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       document.getElementById('btnInstalar').classList.remove('visivel');
     }
   });
-  // Service Worker inline para PWA
   if ('serviceWorker' in navigator) {
     const swCode = `self.addEventListener('install',e=>{self.skipWaiting();});self.addEventListener('fetch',e=>{});`;
-    const blob   = new Blob([swCode], { type: 'application/javascript' });
+    const blob = new Blob([swCode], { type: 'application/javascript' });
     navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
   }
 
-  var somAtivo     = false;
-  var audioCtx     = null;
-  var gainMaster   = null;
-  var vozesPT      = [];
+  // ─── ÁUDIO ───────────────────────────────────────────────────────────────
+  var somAtivo = false;
+  var audioCtx = null;
+  var gainMaster = null;
+  var vozesPT = [];
   var vozEscolhida = null;
-  var filaFala     = [];
-  var estaFalando  = false;
-
-  var filaNumerosAudio = [];
-  var audioEmProcessamento = false;
+  var filaFala = [];
+  var estaFalando = false;
 
   function ativarSom() {
     if (!somAtivo) {
       try {
-        audioCtx   = new (window.AudioContext || window.webkitAudioContext)();
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         gainMaster = audioCtx.createGain();
         gainMaster.gain.value = 3.0;
         gainMaster.connect(audioCtx.destination);
         if (audioCtx.state === 'suspended') audioCtx.resume();
       } catch(e) { console.warn('AudioContext erro:', e); }
-
       carregarVozes();
       somAtivo = true;
-
       var btn = document.getElementById('btnSom');
       btn.textContent = '🔊 Áudio ativado';
       btn.classList.remove('mudo');
       btn.classList.add('ativo');
-
       falar('S X Bingo Oficial. Série bronze. Pronto para o sorteio!', true);
     } else {
       somAtivo = false;
       if (window.speechSynthesis) window.speechSynthesis.cancel();
       filaFala = []; estaFalando = false;
-      filaNumerosAudio = []; audioEmProcessamento = false;
       var btn = document.getElementById('btnSom');
       btn.textContent = '🔇 Clique para ativar audio';
       btn.classList.remove('ativo');
@@ -281,17 +250,12 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     var texto = filaFala.shift();
     estaFalando = true;
     setNarrador(texto, true);
-
-    var u    = new SpeechSynthesisUtterance(texto);
-    u.lang   = 'pt-BR';
-    u.rate   = 0.90;
-    u.pitch  = 1.1;
-    u.volume = 1;
+    var u = new SpeechSynthesisUtterance(texto);
+    u.lang = 'pt-BR'; u.rate = 0.90; u.pitch = 1.1; u.volume = 1;
     if (vozEscolhida) u.voice = vozEscolhida;
     else carregarVozes();
-
-    u.onend  = function(){ estaFalando = false; setTimeout(processarFila, 300); setNarrador(texto, false); };
-    u.onerror= function(){ estaFalando = false; setTimeout(processarFila, 300); };
+    u.onend = function(){ estaFalando = false; setTimeout(processarFila, 300); setNarrador(texto, false); };
+    u.onerror = function(){ estaFalando = false; setTimeout(processarFila, 300); };
     window.speechSynthesis.speak(u);
   }
 
@@ -299,26 +263,22 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     var box = document.getElementById('narradorBox');
     var txt = document.getElementById('narradorTxt');
     if (txt) txt.textContent = texto;
-    if (box) {
-      if (ativo) box.classList.add('falando');
-      else box.classList.remove('falando');
-    }
+    if (box) { if (ativo) box.classList.add('falando'); else box.classList.remove('falando'); }
   }
 
   function tocarPing() {
     if (!audioCtx || !gainMaster) return;
     if (audioCtx.state === 'suspended') audioCtx.resume();
     [[520,0],[660,0.1],[820,0.2]].forEach(function(pair){
-      var freq = pair[0], delay = pair[1];
-      var osc  = audioCtx.createOscillator();
+      var osc = audioCtx.createOscillator();
       var gain = audioCtx.createGain();
       osc.connect(gain); gain.connect(gainMaster);
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
-      gain.gain.setValueAtTime(0.4, audioCtx.currentTime + delay);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.35);
-      osc.start(audioCtx.currentTime + delay);
-      osc.stop(audioCtx.currentTime + delay + 0.4);
+      osc.frequency.setValueAtTime(pair[0], audioCtx.currentTime + pair[1]);
+      gain.gain.setValueAtTime(0.4, audioCtx.currentTime + pair[1]);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + pair[1] + 0.35);
+      osc.start(audioCtx.currentTime + pair[1]);
+      osc.stop(audioCtx.currentTime + pair[1] + 0.4);
     });
   }
 
@@ -326,22 +286,29 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     if (!audioCtx || !gainMaster) return;
     if (audioCtx.state === 'suspended') audioCtx.resume();
     [[523,0],[659,0.15],[784,0.3],[1047,0.5],[784,0.7],[1047,0.9],[1318,1.1]].forEach(function(pair){
-      var freq = pair[0], delay = pair[1];
-      var osc  = audioCtx.createOscillator();
+      var osc = audioCtx.createOscillator();
       var gain = audioCtx.createGain();
       osc.connect(gain); gain.connect(gainMaster);
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
-      gain.gain.setValueAtTime(0.45, audioCtx.currentTime + delay);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.4);
-      osc.start(audioCtx.currentTime + delay);
-      osc.stop(audioCtx.currentTime + delay + 0.45);
+      osc.frequency.setValueAtTime(pair[0], audioCtx.currentTime + pair[1]);
+      gain.gain.setValueAtTime(0.45, audioCtx.currentTime + pair[1]);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + pair[1] + 0.4);
+      osc.start(audioCtx.currentTime + pair[1]);
+      osc.stop(audioCtx.currentTime + pair[1] + 0.45);
     });
   }
 
-  var filaNumeros      = [];
-  var numSorteio       = parseInt(localStorage.getItem('sx_numSorteio') || '1');
-  var hashParticipantes= localStorage.getItem('sx_hashParticipantes') || '';
+  // ─── ESTADO GLOBAL ────────────────────────────────────────────────────────
+  var filaNumeros       = [];
+  var anunciandoNumero  = false;
+  var pendingFimAnuncio = null;
+  var numerosVisiveis = [];
+  var lastDrawnSnapshot = [];
+  var numSorteio         = parseInt(localStorage.getItem('sx_numSorteio') || '1');
+  var hashParticipantes  = localStorage.getItem('sx_hashParticipantes') || '';
+  var lastStatus         = '';
+  var jaAnunciouFim      = false;
+
   document.addEventListener('DOMContentLoaded', function(){
     var el = document.getElementById('numSorteio');
     if (el) el.textContent = numSorteio;
@@ -364,43 +331,60 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     var el = document.getElementById('numSorteio');
     if (el) el.textContent = numSorteio;
   }
-  var anunciandoNumero = false;
-  var pendingFimAnuncio = null;
 
-  function enfileirarNumero(n) {
-    filaNumeros.push(n);
+  function sincronizarNumeros(drawn) {
+    var drawnArr = Array.isArray(drawn) ? drawn : [];
+    var numerosJaExibidos = new Set(numerosVisiveis);
+    var novos = drawnArr.filter(function(n){ return !numerosJaExibidos.has(n); });
+
+    if (drawnArr.length < numerosVisiveis.length) {
+      resetCompleto();
+      return;
+    }
+
+    if (novos.length === 0) {
+      numerosVisiveis = drawnArr.slice();
+      renderizarBolas();
+      return;
+    }
+
+    novos.forEach(function(n){ filaNumeros.push(n); });
     processarFilaNumeros();
+    lastDrawnSnapshot = drawnArr.slice();
   }
 
-  var numerosVisiveis = [];
-
-  function atualizarBolaGrande(n) {
-    var bolaG = document.getElementById('bolaGrande');
-    if (!bolaG) return;
-    bolaG.textContent = n;
-    bolaG.classList.add('flash');
-    setTimeout(function(){ bolaG.classList.remove('flash'); }, 900);
-    numerosVisiveis.push(n);
+  function renderizarBolas() {
     var wrap = document.getElementById('bolasWrap');
-    if (wrap) {
-      wrap.innerHTML = numerosVisiveis.map(function(x){
-        return '<div class="bola' + (x === n ? ' ultima' : '') + '">' + x + '</div>';
-      }).join('');
+    if (!wrap) return;
+    if (numerosVisiveis.length === 0) {
+      wrap.innerHTML = '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
+      document.getElementById('stS').textContent = '0';
+      document.getElementById('stR').textContent = '90';
+      document.getElementById('bolaGrande').textContent = '?';
+      return;
     }
-    var stS = document.getElementById('stS');
-    var stR = document.getElementById('stR');
-    if (stS) stS.textContent = numerosVisiveis.length;
-    if (stR) stR.textContent = 90 - numerosVisiveis.length;
+    var ultimo = numerosVisiveis[numerosVisiveis.length - 1];
+    wrap.innerHTML = numerosVisiveis.map(function(x){
+      return '<div class="bola' + (x === ultimo ? ' ultima' : '') + '">' + x + '</div>';
+    }).join('');
+    document.getElementById('stS').textContent = numerosVisiveis.length;
+    document.getElementById('stR').textContent = 90 - numerosVisiveis.length;
   }
 
   function processarFilaNumeros() {
     if (anunciandoNumero || filaNumeros.length === 0) return;
     anunciandoNumero = true;
     var n = filaNumeros.shift();
-
     tocarPing();
     setTimeout(function() {
-      atualizarBolaGrande(n);
+      var bolaG = document.getElementById('bolaGrande');
+      if (bolaG) {
+        bolaG.textContent = n;
+        bolaG.classList.add('flash');
+        setTimeout(function(){ bolaG.classList.remove('flash'); }, 900);
+      }
+      numerosVisiveis.push(n);
+      renderizarBolas();
       falar('Número... ' + n + '!');
       esperarFimFala(function() {
         anunciandoNumero = false;
@@ -440,6 +424,29 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       falar(msg, true);
     }, 1600);
   }
+
+  function resetCompleto() {
+    numerosVisiveis   = [];
+    lastDrawnSnapshot = [];
+    filaNumeros       = [];
+    anunciandoNumero  = false;
+    pendingFimAnuncio = null;
+    jaAnunciouFim     = false;
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    filaFala = []; estaFalando = false;
+
+    document.getElementById('statusBar').className = 'status-bar aguardando';
+    document.getElementById('statusBar').innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
+    document.getElementById('bolaGrande').textContent = '?';
+    document.getElementById('bolasWrap').innerHTML = '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
+    document.getElementById('stS').textContent = '0';
+    document.getElementById('stR').textContent = '90';
+    document.getElementById('stTotal').textContent = 'R$0';
+    document.getElementById('stLider').textContent = '—';
+    document.getElementById('tabelaBody').innerHTML = '<div class="aguardando-msg">Aguardando início do sorteio...</div>';
+    document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">Aguardando início do sorteio...</div>';
+    setNarrador('— narrador aguardando —', false);
+  }
 </script>
 
 <script type="module">
@@ -459,42 +466,24 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   const db    = getDatabase(initializeApp(cfg));
   const badge = document.getElementById('fbBadge');
 
-  let lastDrawnLen  = 0;
-  let lastStatus    = '';
-  let jaAnunciouFim = false;
   let state = { game: null, fotos: {} };
 
   onValue(ref(db, 'bingo_bronze/game'), snap => {
     badge.textContent = '🔥 Firebase conectado — ao vivo';
     badge.className   = 'fb-badge fb-ok';
     state.game = snap.exists() ? snap.val() : null;
-    if (!state.game) { reset(); return; }
+    if (!state.game) { resetCompleto(); return; }
     render();
   }, err => {
-    badge.textContent = '⚠️ Erro: ' + err.message;
+    badge.textContent = '⚠️ Erro Firebase: ' + err.message;
     badge.className   = 'fb-badge fb-err';
+    console.error('Firebase erro:', err);
   });
 
   onValue(ref(db, 'bingo_bronze/fotos'), snap => {
     state.fotos = snap.exists() ? snap.val() : {};
     if (state.game) render();
   });
-
-  function reset() {
-    lastDrawnLen = 0; lastStatus = ''; jaAnunciouFim = false;
-    filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null; numerosVisiveis = [];
-    document.getElementById('statusBar').className = 'status-bar aguardando';
-    document.getElementById('statusBar').innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
-    document.getElementById('bolaGrande').textContent = '?';
-    document.getElementById('bolasWrap').innerHTML = '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
-    document.getElementById('stS').textContent = '0';
-    document.getElementById('stR').textContent = '90';
-    document.getElementById('stTotal').textContent = 'R$0';
-    document.getElementById('stLider').textContent = '—';
-    document.getElementById('tabelaBody').innerHTML = '<div class="aguardando-msg">Aguardando início do sorteio...</div>';
-    document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">Aguardando início do sorteio...</div>';
-    setNarrador('— narrador aguardando —', false);
-  }
 
   function render() {
     const g        = state.game;
@@ -505,30 +494,8 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     const status   = g.status    || 'aguardando';
 
     if (lastStatus === 'finalizado' && (status === 'ativo' || status === 'aguardando')) {
-      lastDrawnLen = 0; jaAnunciouFim = false;
-      filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null;
-      numerosVisiveis = [];
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
-      filaFala = []; estaFalando = false;
-      document.getElementById('bolaGrande').textContent = '?';
-      document.getElementById('bolasWrap').innerHTML =
-        '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
-      document.getElementById('stS').textContent = '0';
-      document.getElementById('stR').textContent = '90';
-      setNarrador('— narrador aguardando —', false);
+      resetCompleto();
       atualizarContadorSorteio(cartelas, true);
-    }
-    if (drawn.length < lastDrawnLen && drawn.length === 0) {
-      filaNumeros = []; anunciandoNumero = false; pendingFimAnuncio = null;
-      numerosVisiveis = [];
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
-      filaFala = []; estaFalando = false;
-      document.getElementById('bolaGrande').textContent = '?';
-      document.getElementById('bolasWrap').innerHTML =
-        '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
-      document.getElementById('stS').textContent = '0';
-      document.getElementById('stR').textContent = '90';
-      setNarrador('— narrador aguardando —', false);
     }
 
     const bar = document.getElementById('statusBar');
@@ -547,34 +514,21 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       falar('Atenção! Sorteio da série bronze iniciado!', true);
     }
 
-    if (drawn.length > lastDrawnLen) {
-      const novos = drawn.slice(lastDrawnLen);
-      novos.forEach(n => enfileirarNumero(n));
-    }
+    sincronizarNumeros(drawn);
 
     if (status === 'finalizado' && !jaAnunciouFim && cartelas.length > 0) {
       jaAnunciouFim = true;
       const maxScore = Math.max(...cartelas.map(c => c.score));
       const winners  = cartelas.filter(c => c.score === maxScore);
-
       if (filaNumeros.length === 0 && !anunciandoNumero) {
         anunciarVencedorAgora(winners, maxScore);
       } else {
         pendingFimAnuncio = { winners, maxScore };
       }
     }
-
     if (status !== 'finalizado') jaAnunciouFim = false;
 
-    lastDrawnLen = drawn.length;
-    lastStatus   = status;
-
-    if (numerosVisiveis.length === 0 && drawn.length === 0) {
-      document.getElementById('bolasWrap').innerHTML =
-        '<div style="color:#333;font-size:13px;">Nenhum número sorteado ainda...</div>';
-      document.getElementById('stS').textContent = '0';
-      document.getElementById('stR').textContent = '90';
-    }
+    lastStatus = status;
 
     if (!cartelas.length) {
       document.getElementById('tabelaBody').innerHTML = '<div class="aguardando-msg">Inicie o sorteio!</div>';
@@ -593,11 +547,11 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     document.getElementById('stLider').textContent = sorted[0]?.name?.split(' ')[0] ?? '—';
 
     const fin      = status === 'finalizado';
-    const maxScore = Math.max(...cartelas.map(c => c.score));
+    const maxScore = cartelas.length > 0 ? Math.max(...cartelas.map(c => c.score)) : 0;
 
     document.getElementById('tabelaBody').innerHTML = sorted.map((c,i) => {
       const acum   = acumulado[c.id]||0;
-      const isVenc = fin && c.score===maxScore;
+      const isVenc = fin && c.score===maxScore && maxScore > 0;
       const isLid  = !fin && i===0 && c.score>0;
       const cls    = isVenc?'tabela-row vencedora':isLid?'tabela-row lider':'tabela-row';
       const icon   = isVenc?'👑 ':isLid?'🔥 ':'';
@@ -626,7 +580,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     }).join('');
 
     document.getElementById('cartelasGrid').innerHTML = cartelas.map(c => {
-      const isWinner = fin && c.score===maxScore;
+      const isWinner = fin && c.score===maxScore && maxScore > 0;
       const acum     = acumulado[c.id]||0;
       const fotoHtml = fotos[c.id]
         ? `<img class="cartela-foto" src="${fotos[c.id]}"/>`
