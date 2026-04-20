@@ -304,35 +304,52 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 
 
   // ─── ESTADO GLOBAL ────────────────────────────────────────────────────────
-  var filaNumeros       = [];
-  var anunciandoNumero  = false;
-  var pendingFimAnuncio = null;
-  var lastStatus        = '';
-  var jaAnunciouFim     = false;
-  var cartelasVisuais   = [];
-  var acumuladoVisual   = {};
+  var filaNumeros      = [];   // números aguardando ser falados
+  var anunciandoNumero = false;
+  var pendingFimAnuncio= null;
+  var lastStatus       = '';
+  var jaAnunciouFim    = false;
+  var cartelasVisuais  = [];
+  var acumuladoVisual  = {};
 
-  // ── Persistência completa no localStorage ──
-  var numSorteio        = parseInt(localStorage.getItem('sx_numSorteio')  || '1');
-  var hashParticipantes = localStorage.getItem('sx_hashPart')             || '';
-  // Restaura números já anunciados de sessão anterior (sem precisar falar de novo)
-  var numerosVisiveis   = JSON.parse(localStorage.getItem('sx_numerosVistos')   || '[]');
-  // Set de todos os drawn processados: evita duplicatas mesmo após reload
-  var drawnConhecidos   = new Set(JSON.parse(localStorage.getItem('sx_drawnConhecidos') || '[]'));
+  // ── Persistência ──
+  var numSorteio        = parseInt(localStorage.getItem('sx_numSorteio') || '1');
+  var hashParticipantes = localStorage.getItem('sx_hashPart') || '';
+  // numerosVisiveis = números já falados neste sorteio (restaura após reload)
+  var numerosVisiveis   = JSON.parse(localStorage.getItem('sx_numVistos') || '[]');
 
   function salvarEstado() {
-    localStorage.setItem('sx_numSorteio',       numSorteio);
-    localStorage.setItem('sx_hashPart',          hashParticipantes);
-    localStorage.setItem('sx_numerosVistos',     JSON.stringify(numerosVisiveis));
-    localStorage.setItem('sx_drawnConhecidos',   JSON.stringify(Array.from(drawnConhecidos)));
+    localStorage.setItem('sx_numSorteio', numSorteio);
+    localStorage.setItem('sx_hashPart',   hashParticipantes);
+    localStorage.setItem('sx_numVistos',  JSON.stringify(numerosVisiveis));
   }
 
   document.addEventListener('DOMContentLoaded', function(){
     var el = document.getElementById('numSorteio');
     if (el) el.textContent = numSorteio;
-    // Se havia números salvos, restaura bolas sem falar
     if (numerosVisiveis.length > 0) renderizarBolas();
   });
+
+  // ── Converte drawn do Firebase para array limpo sem duplicatas ──
+  // Firebase às vezes retorna objeto {0:5,1:18,...} em vez de array
+  function toArrayUnico(drawn) {
+    var arr;
+    if (Array.isArray(drawn)) {
+      arr = drawn;
+    } else if (drawn && typeof drawn === 'object') {
+      arr = Object.values(drawn);
+    } else {
+      return [];
+    }
+    // Remove duplicatas preservando ordem
+    var visto = new Set();
+    return arr.filter(function(n) {
+      var k = String(n);
+      if (visto.has(k)) return false;
+      visto.add(k);
+      return true;
+    });
+  }
 
   function calcHashParticipantes(cartelas) {
     return cartelas.map(function(c){ return c.id + ':' + (c.name||''); }).sort().join('|');
@@ -341,18 +358,15 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   function atualizarContadorSorteio(cartelas, novoSorteio) {
     var hashAtual = calcHashParticipantes(cartelas);
     if (hashAtual !== hashParticipantes) {
-      // Novo grupo de participantes: começa do 1
       numSorteio        = 1;
       hashParticipantes = hashAtual;
       numerosVisiveis   = [];
-      drawnConhecidos   = new Set();
     } else if (novoSorteio) {
       numSorteio++;
-      // Após sorteio 10, reinicia ciclo para o mesmo grupo
       if (numSorteio > 10) {
         numSorteio      = 1;
         numerosVisiveis = [];
-        drawnConhecidos = new Set();
+        localStorage.removeItem('sx_numVistos');
       }
     }
     salvarEstado();
@@ -360,15 +374,13 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     if (el) el.textContent = numSorteio;
   }
 
-
-  // Monta estado visual usando markedNumbers do Firebase
-  // mas filtrando apenas os já anunciados (sincronia com fala)
+  // ── Monta cartelas visuais: marcação = interseção entre drawn já falado e numbers da cartela ──
+  // NÃO usa markedNumbers do Firebase (evita discrepâncias entre monitor e celular)
   function calcCartelasVisuais(cartelasFirebase, acumulado) {
-    var marcadosAnunciados = new Set(numerosVisiveis);
+    var falados = new Set(numerosVisiveis.map(String));
     return cartelasFirebase.map(function(c) {
-      var nums   = Array.isArray(c.numbers)       ? c.numbers       : [];
-      var fbMark = Array.isArray(c.markedNumbers) ? c.markedNumbers : [];
-      var marked = fbMark.filter(function(n){ return marcadosAnunciados.has(n); });
+      var nums   = Array.isArray(c.numbers) ? c.numbers : [];
+      var marked = nums.filter(function(n){ return falados.has(String(n)); });
       return {
         id:            c.id,
         name:          c.name,
@@ -380,34 +392,32 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     });
   }
 
-  function sincronizarNumeros(drawn, cartelasFirebase, acumulado) {
-    var drawnArr = Array.isArray(drawn) ? drawn : [];
+  function sincronizarNumeros(drawnRaw, cartelasFirebase, acumulado) {
+    var drawn = toArrayUnico(drawnRaw);
 
-    // Reset se o sorteador reiniciou o drawn do zero
-    if (drawnArr.length === 0 && numerosVisiveis.length > 0) {
+    // Sorteio reiniciado no monitor (drawn voltou a zero)
+    if (drawn.length === 0 && numerosVisiveis.length > 0) {
       resetCompleto();
       return;
     }
 
-    // Números novos = estão no drawn mas ainda não foram processados (nem visíveis, nem na fila)
-    var jaProcessados = new Set(numerosVisiveis);
-    filaNumeros.forEach(function(n){ jaProcessados.add(n); });
-    // drawnConhecidos garante que após reload não reprocessamos o que já foi falado
-    var novos = drawnArr.filter(function(n){ return !jaProcessados.has(n) && !drawnConhecidos.has(n); });
+    // Números novos = estão no drawn mas ainda não foram falados nem estão na fila
+    var jaFeitos = new Set(numerosVisiveis.map(String));
+    filaNumeros.forEach(function(n){ jaFeitos.add(String(n)); });
+    var novos = drawn.filter(function(n){ return !jaFeitos.has(String(n)); });
+
+    // Sempre atualiza referência das cartelas (fotos, acumulado podem mudar)
+    window._cartelasFirebase  = cartelasFirebase;
+    window._acumuladoFirebase = acumulado;
 
     if (novos.length === 0) {
-      // Sem números novos: só atualiza acumulado/fotos nas cartelas já visíveis
-      if (numerosVisiveis.length > 0) {
-        cartelasVisuais = calcCartelasVisuais(cartelasFirebase, acumulado);
-        acumuladoVisual = acumulado;
-        renderizarCartelasETabela();
-      }
+      // Nada novo: só re-renderiza com dados atuais
+      cartelasVisuais = calcCartelasVisuais(cartelasFirebase, acumulado);
       renderizarBolas();
+      renderizarCartelasETabela();
       return;
     }
 
-    window._cartelasFirebase  = cartelasFirebase;
-    window._acumuladoFirebase = acumulado;
     novos.forEach(function(n){ filaNumeros.push(n); });
     processarFilaNumeros();
   }
@@ -428,16 +438,13 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     }).join('');
     document.getElementById('stS').textContent = numerosVisiveis.length;
     document.getElementById('stR').textContent = 90 - numerosVisiveis.length;
-    var bg = document.getElementById('bolaGrande');
-    if (bg && bg.textContent === '?') bg.textContent = ultimo;
   }
 
-  // Renderiza tabela e cartelas com o estado visual atual (só números já falados)
   function renderizarCartelasETabela() {
-    var fotos   = (window._fbState && window._fbState.fotos) || {};
-    var status  = (window._fbState && window._fbState.status) || 'aguardando';
-    var fin     = status === 'finalizado';
-    var cv      = cartelasVisuais;
+    var fotos  = (window._fbState && window._fbState.fotos)  || {};
+    var status = (window._fbState && window._fbState.status) || 'aguardando';
+    var fin    = status === 'finalizado';
+    var cv     = cartelasVisuais;
     if (!cv || !cv.length) return;
 
     var maxScore = Math.max.apply(null, cv.map(function(c){ return c.score; }));
@@ -445,11 +452,10 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       return b.score - a.score || b.acum - a.acum;
     });
 
-    document.getElementById('stLider').textContent = sorted[0] ? (sorted[0].name||'').split(' ')[0] : '—';
-
     var totalAcum = 0;
     cv.forEach(function(c){ totalAcum += c.acum; });
     document.getElementById('stTotal').textContent = 'R$' + totalAcum.toFixed(2);
+    document.getElementById('stLider').textContent = sorted[0] ? (sorted[0].name||'').split(' ')[0] : '—';
 
     // ── Tabela ──
     document.getElementById('tabelaBody').innerHTML = sorted.map(function(c, i){
@@ -489,7 +495,8 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       }).join('');
       return '<div class="cartela' + (isWinner ? ' winner' : '') + '">' +
         '<div class="cartela-header">Cartela ' + c.id + (isWinner ? ' 👑' : '') + '</div>' +
-        '<div class="cartela-player-wrap">' + fotoHtml + '<span class="cartela-player">' + (c.name || 'Jogador ' + c.id) + '</span></div>' +
+        '<div class="cartela-player-wrap">' + fotoHtml +
+          '<span class="cartela-player">' + (c.name || 'Jogador ' + c.id) + '</span></div>' +
         '<div class="cartela-numbers">' + nums + '</div>' +
         '<div class="cartela-footer">' +
           '<span class="acertos-txt">Acertos: <span class="acertos-num">' + c.score + '/16</span></span>' +
@@ -511,17 +518,16 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
         setTimeout(function(){ bolaG.classList.remove('flash'); }, 900);
       }
       numerosVisiveis.push(n);
-      drawnConhecidos.add(n);   // marca como processado permanentemente
       renderizarBolas();
       falar('Número... ' + n + '!');
       esperarFimFala(function() {
-        // SÓ AGORA marca nas cartelas
-        var cfb = window._cartelasFirebase || [];
-        var acb = window._acumuladoFirebase || {};
-        cartelasVisuais = calcCartelasVisuais(cfb, acb);
-        acumuladoVisual = acb;
+        // SÓ AGORA marca nas cartelas (após fala terminar)
+        cartelasVisuais = calcCartelasVisuais(
+          window._cartelasFirebase  || [],
+          window._acumuladoFirebase || {}
+        );
         renderizarCartelasETabela();
-        salvarEstado();   // persiste após cada número confirmado
+        salvarEstado();
 
         anunciandoNumero = false;
         if (filaNumeros.length === 0 && pendingFimAnuncio) {
@@ -536,9 +542,9 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   }
 
   function esperarFimFala(callback) {
-    var intervalo = setInterval(function() {
+    var iv = setInterval(function() {
       if (!estaFalando && filaFala.length === 0) {
-        clearInterval(intervalo);
+        clearInterval(iv);
         setTimeout(callback, 400);
       }
     }, 200);
@@ -561,10 +567,8 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     }, 1600);
   }
 
-  // Reset apenas do sorteio atual — NÃO apaga numSorteio nem hashPart
   function resetCompleto() {
     numerosVisiveis   = [];
-    drawnConhecidos   = new Set();
     filaNumeros       = [];
     anunciandoNumero  = false;
     pendingFimAnuncio = null;
@@ -575,10 +579,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     window._acumuladoFirebase = {};
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     filaFala = []; estaFalando = false;
-
-    // Limpa só os dados do sorteio, preserva numSorteio e hashPart
-    localStorage.removeItem('sx_numerosVistos');
-    localStorage.removeItem('sx_drawnConhecidos');
+    localStorage.removeItem('sx_numVistos');
 
     document.getElementById('statusBar').className = 'status-bar aguardando';
     document.getElementById('statusBar').innerHTML = '<span class="pulse"></span> Aguardando sorteio...';
@@ -592,8 +593,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">Aguardando início do sorteio...</div>';
     setNarrador('— narrador aguardando —', false);
   }
-</script>
-
 </script>
 
 <script type="module">
