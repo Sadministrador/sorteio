@@ -11,9 +11,10 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 .header{text-align:center;margin-bottom:20px;}
 .header h1{font-size:2.4em;font-weight:900;letter-spacing:3px;}
 .s{color:#ff1a1a;text-shadow:0 0 18px rgba(255,30,30,0.9);}.x{color:#ffffff;}
-.rest{background:linear-gradient(90deg,#ff2222,#ff8800,#ffd700,#ff8800,#ff2222);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:brilhoBingo 2.5s linear infinite;}@keyframes brilhoBingo{0%{background-position:0% center;}100%{background-position:200% center;}}
+.rest{background:linear-gradient(90deg,#ff2222,#ff8800,#ffd700,#ff8800,#ff2222);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:brilhoBingo 2.5s linear infinite;}
+@keyframes brilhoBingo{0%{background-position:0% center;}100%{background-position:200% center;}}
 .header p{font-size:11px;color:#555;letter-spacing:3px;margin-top:4px;}
-.sorteio-badge{display:inline-block;margin-top:8px;padding:6px 22px;border-radius:30px;font-size:15px;font-weight:bold;letter-spacing:3px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);color:#ffd700;transition:all 0.5s;}
+.sorteio-badge{display:inline-block;margin-top:8px;padding:6px 22px;border-radius:30px;font-size:15px;font-weight:bold;letter-spacing:3px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);color:#ffd700;}
 .sorteio-badge span{font-size:24px;font-weight:900;color:#fff;margin-left:8px;}
 .fb-badge{text-align:center;font-size:12px;margin-bottom:10px;padding:6px;border-radius:8px;font-weight:bold;display:none;}
 .fb-ok{color:#4caf50;background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);}
@@ -210,10 +211,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       btn.textContent = '🔊 Áudio ativado';
       btn.classList.remove('mudo');
       btn.classList.add('ativo');
-      // ── fala inicial: apenas anuncia o número do sorteio atual ──
-      var textoInicial = numSorteio === 1
-        ? 'Sorteio 1!'
-        : 'Sorteio ' + numSorteio + '!';
+      var textoInicial = numSorteio === 1 ? 'Sorteio 1!' : 'Sorteio ' + numSorteio + '!';
       falar(textoInicial, true);
     } else {
       somAtivo = false;
@@ -302,20 +300,16 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     });
   }
 
-
   // ─── ESTADO GLOBAL ────────────────────────────────────────────────────────
-  var filaNumeros      = [];   // números aguardando ser falados
+  var filaNumeros      = [];
   var anunciandoNumero = false;
   var pendingFimAnuncio= null;
   var lastStatus       = '';
   var jaAnunciouFim    = false;
   var cartelasVisuais  = [];
-  var acumuladoVisual  = {};
 
-  // ── Persistência ──
   var numSorteio        = parseInt(localStorage.getItem('sx_numSorteio') || '1');
   var hashParticipantes = localStorage.getItem('sx_hashPart') || '';
-  // numerosVisiveis = números já falados neste sorteio (restaura após reload)
   var numerosVisiveis   = JSON.parse(localStorage.getItem('sx_numVistos') || '[]');
 
   function salvarEstado() {
@@ -330,8 +324,9 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     if (numerosVisiveis.length > 0) renderizarBolas();
   });
 
-  // ── Converte drawn do Firebase para array limpo sem duplicatas ──
-  // Firebase às vezes retorna objeto {0:5,1:18,...} em vez de array
+  // ── CONVERTE drawn do Firebase para array limpo SEM DUPLICATAS ────────────
+  // Firebase pode retornar objeto {0:5, 1:18, ...} em vez de array
+  // A conversão usa Number() para normalizar e um Set de números para deduplicar
   function toArrayUnico(drawn) {
     var arr;
     if (Array.isArray(drawn)) {
@@ -341,14 +336,15 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     } else {
       return [];
     }
-    // Remove duplicatas preservando ordem
+    // Deduplicar por VALOR NUMÉRICO (não por string, evita "5" vs 5)
     var visto = new Set();
     return arr.filter(function(n) {
-      var k = String(n);
+      var k = Number(n);
+      if (isNaN(k)) return false;
       if (visto.has(k)) return false;
       visto.add(k);
       return true;
-    });
+    }).map(Number); // garante que todos são números
   }
 
   function calcHashParticipantes(cartelas) {
@@ -374,13 +370,13 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     if (el) el.textContent = numSorteio;
   }
 
-  // ── Monta cartelas visuais: marcação = interseção entre drawn já falado e numbers da cartela ──
-  // NÃO usa markedNumbers do Firebase (evita discrepâncias entre monitor e celular)
+  // ── Marcação calculada a partir de numerosVisiveis (já falados) ──────────
+  // NÃO usa markedNumbers do Firebase — evita discrepâncias
   function calcCartelasVisuais(cartelasFirebase, acumulado) {
-    var falados = new Set(numerosVisiveis.map(String));
+    var falados = new Set(numerosVisiveis.map(Number)); // compara por número
     return cartelasFirebase.map(function(c) {
-      var nums   = Array.isArray(c.numbers) ? c.numbers : [];
-      var marked = nums.filter(function(n){ return falados.has(String(n)); });
+      var nums   = Array.isArray(c.numbers) ? c.numbers.map(Number) : [];
+      var marked = nums.filter(function(n){ return falados.has(n); });
       return {
         id:            c.id,
         name:          c.name,
@@ -390,6 +386,15 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
         acum:          acumulado[c.id] || 0
       };
     });
+  }
+
+  // ── Determina vencedores a partir das cartelasVisuais LOCAIS ─────────────
+  // NÃO usa os scores do Firebase — garante que a fala bate com o visual
+  function calcVencedoresLocais() {
+    if (!cartelasVisuais || cartelasVisuais.length === 0) return { winners: [], maxScore: 0 };
+    var maxScore = Math.max.apply(null, cartelasVisuais.map(function(c){ return c.score; }));
+    var winners  = cartelasVisuais.filter(function(c){ return c.score === maxScore; });
+    return { winners: winners, maxScore: maxScore };
   }
 
   function sincronizarNumeros(drawnRaw, cartelasFirebase, acumulado) {
@@ -402,23 +407,22 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     }
 
     // Números novos = estão no drawn mas ainda não foram falados nem estão na fila
-    var jaFeitos = new Set(numerosVisiveis.map(String));
-    filaNumeros.forEach(function(n){ jaFeitos.add(String(n)); });
-    var novos = drawn.filter(function(n){ return !jaFeitos.has(String(n)); });
+    var jaFeitos = new Set(numerosVisiveis.map(Number));
+    filaNumeros.forEach(function(n){ jaFeitos.add(Number(n)); });
+    var novos = drawn.filter(function(n){ return !jaFeitos.has(Number(n)); });
 
-    // Sempre atualiza referência das cartelas (fotos, acumulado podem mudar)
     window._cartelasFirebase  = cartelasFirebase;
     window._acumuladoFirebase = acumulado;
 
     if (novos.length === 0) {
-      // Nada novo: só re-renderiza com dados atuais
+      // Nada novo: recalcula e re-renderiza
       cartelasVisuais = calcCartelasVisuais(cartelasFirebase, acumulado);
       renderizarBolas();
       renderizarCartelasETabela();
       return;
     }
 
-    novos.forEach(function(n){ filaNumeros.push(n); });
+    novos.forEach(function(n){ filaNumeros.push(Number(n)); });
     processarFilaNumeros();
   }
 
@@ -521,7 +525,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       renderizarBolas();
       falar('Número... ' + n + '!');
       esperarFimFala(function() {
-        // SÓ AGORA marca nas cartelas (após fala terminar)
+        // Só agora marca nas cartelas (após fala terminar)
         cartelasVisuais = calcCartelasVisuais(
           window._cartelasFirebase  || [],
           window._acumuladoFirebase || {}
@@ -550,6 +554,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     }, 200);
   }
 
+  // ── Anúncio de vencedor: usa SEMPRE os scores calculados localmente ───────
   function anunciarVencedorAgora(winners, maxScore) {
     var valor = (10 / winners.length).toFixed(2);
     tocarFanfarra();
@@ -574,7 +579,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     pendingFimAnuncio = null;
     jaAnunciouFim     = false;
     cartelasVisuais   = [];
-    acumuladoVisual   = {};
     window._cartelasFirebase  = [];
     window._acumuladoFirebase = {};
     if (window.speechSynthesis) window.speechSynthesis.cancel();
@@ -634,7 +638,7 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   function render() {
     const g        = state.game;
     const fotos    = state.fotos;
-    const drawn    = Array.isArray(g.drawn)    ? g.drawn    : [];
+    const drawn    = Array.isArray(g.drawn) ? g.drawn : [];
     const cartelas = Array.isArray(g.cartelas) ? g.cartelas : [];
     const acumulado= g.acumulado || {};
     const status   = g.status    || 'aguardando';
@@ -674,10 +678,11 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 
     sincronizarNumeros(drawn, cartelas, acumulado);
 
+    // ── Vencedor: calculado LOCALMENTE após todos os números serem falados ──
     if (status === 'finalizado' && !jaAnunciouFim && cartelasVisuais.length > 0) {
       jaAnunciouFim = true;
-      const maxScore = Math.max(...cartelasVisuais.map(c => c.score));
-      const winners  = cartelasVisuais.filter(c => c.score === maxScore);
+      // Usa calcVencedoresLocais() — não os dados do Firebase
+      const { winners, maxScore } = calcVencedoresLocais();
       if (filaNumeros.length === 0 && !anunciandoNumero) {
         anunciarVencedorAgora(winners, maxScore);
       } else {
