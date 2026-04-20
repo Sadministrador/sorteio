@@ -210,7 +210,11 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       btn.textContent = '🔊 Áudio ativado';
       btn.classList.remove('mudo');
       btn.classList.add('ativo');
-      falar('S X Bingo Oficial. Série bronze. Pronto para o sorteio!', true);
+      // ── fala inicial: apenas anuncia o número do sorteio atual ──
+      var textoInicial = numSorteio === 1
+        ? 'Sorteio 1!'
+        : 'Sorteio ' + numSorteio + '!';
+      falar(textoInicial, true);
     } else {
       somAtivo = false;
       if (window.speechSynthesis) window.speechSynthesis.cancel();
@@ -299,15 +303,19 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
   }
 
   // ─── ESTADO GLOBAL ────────────────────────────────────────────────────────
-  var filaNumeros       = [];
+  var filaNumeros       = [];   // fila de números a anunciar
   var anunciandoNumero  = false;
   var pendingFimAnuncio = null;
-  var numerosVisiveis = [];
-  var lastDrawnSnapshot = [];
+  var numerosVisiveis   = [];   // números já anunciados (exibidos nas bolas)
   var numSorteio         = parseInt(localStorage.getItem('sx_numSorteio') || '1');
   var hashParticipantes  = localStorage.getItem('sx_hashParticipantes') || '';
   var lastStatus         = '';
   var jaAnunciouFim      = false;
+
+  // ── Estado visual das cartelas: só avança após a fala de cada número ──
+  // Cada entrada: { id, name, numbers, markedNumbers, score, acum }
+  var cartelasVisuais = [];   // snapshot visual atual (atualiza após fala)
+  var acumuladoVisual = {};   // snapshot do acumulado visual
 
   document.addEventListener('DOMContentLoaded', function(){
     var el = document.getElementById('numSorteio');
@@ -332,25 +340,56 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     if (el) el.textContent = numSorteio;
   }
 
-  function sincronizarNumeros(drawn) {
-    var drawnArr = Array.isArray(drawn) ? drawn : [];
-    var numerosJaExibidos = new Set(numerosVisiveis);
-    var novos = drawnArr.filter(function(n){ return !numerosJaExibidos.has(n); });
+  // Monta estado visual usando os markedNumbers/score vindos direto do Firebase
+  // mas filtrando apenas os números já anunciados (para manter sincronia com a fala)
+  function calcCartelasVisuais(cartelasFirebase, acumulado) {
+    var marcadosAnunciados = new Set(numerosVisiveis);
+    return cartelasFirebase.map(function(c) {
+      var nums    = Array.isArray(c.numbers)       ? c.numbers       : [];
+      // usa os markedNumbers do Firebase, mas só exibe os que já foram falados
+      var fbMark  = Array.isArray(c.markedNumbers) ? c.markedNumbers : [];
+      var marked  = fbMark.filter(function(n){ return marcadosAnunciados.has(n); });
+      return {
+        id:            c.id,
+        name:          c.name,
+        numbers:       nums,
+        markedNumbers: marked,
+        score:         marked.length,
+        acum:          acumulado[c.id] || 0
+      };
+    });
+  }
 
+  function sincronizarNumeros(drawn, cartelasFirebase, acumulado) {
+    var drawnArr = Array.isArray(drawn) ? drawn : [];
+
+    // Reset se o sorteio foi reiniciado (drawn encolheu)
     if (drawnArr.length < numerosVisiveis.length) {
       resetCompleto();
       return;
     }
 
+    var jaExibidos = new Set(numerosVisiveis);
+    // também exclui os que já estão na fila aguardando
+    filaNumeros.forEach(function(n){ jaExibidos.add(n); });
+    var novos = drawnArr.filter(function(n){ return !jaExibidos.has(n); });
+
     if (novos.length === 0) {
-      numerosVisiveis = drawnArr.slice();
+      // Nenhum número novo: apenas atualiza nomes/fotos/acumulado visualmente sem mexer nas marcações
+      if (numerosVisiveis.length > 0 || drawnArr.length === 0) {
+        cartelasVisuais = calcCartelasVisuais(cartelasFirebase, acumulado);
+        acumuladoVisual = acumulado;
+        renderizarCartelasETabela();
+      }
       renderizarBolas();
       return;
     }
 
+    // Guarda referência das cartelas para usar ao processar a fila
+    window._cartelasFirebase = cartelasFirebase;
+    window._acumuladoFirebase = acumulado;
     novos.forEach(function(n){ filaNumeros.push(n); });
     processarFilaNumeros();
-    lastDrawnSnapshot = drawnArr.slice();
   }
 
   function renderizarBolas() {
@@ -371,6 +410,72 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     document.getElementById('stR').textContent = 90 - numerosVisiveis.length;
   }
 
+  // Renderiza tabela e cartelas com o estado visual atual (só números já falados)
+  function renderizarCartelasETabela() {
+    var fotos   = (window._fbState && window._fbState.fotos) || {};
+    var status  = (window._fbState && window._fbState.status) || 'aguardando';
+    var fin     = status === 'finalizado';
+    var cv      = cartelasVisuais;
+    if (!cv || !cv.length) return;
+
+    var maxScore = Math.max.apply(null, cv.map(function(c){ return c.score; }));
+    var sorted   = cv.slice().sort(function(a,b){
+      return b.score - a.score || b.acum - a.acum;
+    });
+
+    document.getElementById('stLider').textContent = sorted[0] ? (sorted[0].name||'').split(' ')[0] : '—';
+
+    var totalAcum = 0;
+    cv.forEach(function(c){ totalAcum += c.acum; });
+    document.getElementById('stTotal').textContent = 'R$' + totalAcum.toFixed(2);
+
+    // ── Tabela ──
+    document.getElementById('tabelaBody').innerHTML = sorted.map(function(c, i){
+      var isVenc = fin && c.score === maxScore && maxScore > 0;
+      var isLid  = !fin && i === 0 && c.score > 0;
+      var cls    = isVenc ? 'tabela-row vencedora' : isLid ? 'tabela-row lider' : 'tabela-row';
+      var icon   = isVenc ? '👑 ' : isLid ? '🔥 ' : '';
+      var pct    = (c.score / 16) * 100;
+      var foto   = fotos[c.id]
+        ? '<img class="jogador-foto" src="' + fotos[c.id] + '"/>'
+        : '<div class="jogador-foto-vazia">👤</div>';
+      var nomeCls = isVenc ? 'nome-txt vencedor-nome' : 'nome-txt';
+      var valCls  = isVenc ? 'valor-txt vencedor-val' : c.acum > 0 ? 'valor-txt tem-valor' : 'valor-txt zero';
+      var bdgCls  = c.score >= 8 ? 'acertos-badge alto' : 'acertos-badge';
+      return '<div class="' + cls + '">' +
+        '<div class="cel-cartela">C' + c.id + '</div>' +
+        '<div class="cel-foto">' + foto + '</div>' +
+        '<div class="cel-nome">' +
+          '<div class="' + nomeCls + '">' + icon + (c.name || 'Jogador ' + c.id) + '</div>' +
+          '<div class="barra-acertos"><div class="barra-fill" style="width:' + pct + '%"></div></div>' +
+        '</div>' +
+        '<div class="cel-acertos"><span class="' + bdgCls + '">' + c.score + '/16</span></div>' +
+        '<div class="cel-valor"><div class="valor-bloco">' +
+          '<div class="valor-label">TOTAL</div>' +
+          '<div class="' + valCls + '">' + (c.acum > 0 ? 'R$&nbsp;' + c.acum.toFixed(2) : '—') + '</div>' +
+        '</div></div></div>';
+    }).join('');
+
+    // ── Cartelas ──
+    document.getElementById('cartelasGrid').innerHTML = cv.map(function(c){
+      var isWinner = fin && c.score === maxScore && maxScore > 0;
+      var fotoHtml = fotos[c.id]
+        ? '<img class="cartela-foto" src="' + fotos[c.id] + '"/>'
+        : '<div class="cartela-foto-vazia">👤</div>';
+      var nums = c.numbers.map(function(n){
+        return '<div class="num' + (c.markedNumbers.includes(n) ? ' marked' : '') + '">' + n + '</div>';
+      }).join('');
+      return '<div class="cartela' + (isWinner ? ' winner' : '') + '">' +
+        '<div class="cartela-header">Cartela ' + c.id + (isWinner ? ' 👑' : '') + '</div>' +
+        '<div class="cartela-player-wrap">' + fotoHtml + '<span class="cartela-player">' + (c.name || 'Jogador ' + c.id) + '</span></div>' +
+        '<div class="cartela-numbers">' + nums + '</div>' +
+        '<div class="cartela-footer">' +
+          '<span class="acertos-txt">Acertos: <span class="acertos-num">' + c.score + '/16</span></span>' +
+          '<span class="ganho-txt">' + (c.acum > 0 ? '💰 R$ ' + c.acum.toFixed(2) : '') + '</span>' +
+        '</div></div>';
+    }).join('');
+  }
+
   function processarFilaNumeros() {
     if (anunciandoNumero || filaNumeros.length === 0) return;
     anunciandoNumero = true;
@@ -387,6 +492,13 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       renderizarBolas();
       falar('Número... ' + n + '!');
       esperarFimFala(function() {
+        // ── SÓ AGORA atualiza cartelas e tabela com o novo número marcado ──
+        var cfb = window._cartelasFirebase || [];
+        var acb = window._acumuladoFirebase || {};
+        cartelasVisuais = calcCartelasVisuais(cfb, acb);
+        acumuladoVisual = acb;
+        renderizarCartelasETabela();
+
         anunciandoNumero = false;
         if (filaNumeros.length === 0 && pendingFimAnuncio) {
           var dados = pendingFimAnuncio;
@@ -427,11 +539,14 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
 
   function resetCompleto() {
     numerosVisiveis   = [];
-    lastDrawnSnapshot = [];
     filaNumeros       = [];
     anunciandoNumero  = false;
     pendingFimAnuncio = null;
     jaAnunciouFim     = false;
+    cartelasVisuais   = [];
+    acumuladoVisual   = {};
+    window._cartelasFirebase  = [];
+    window._acumuladoFirebase = {};
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     filaFala = []; estaFalando = false;
 
@@ -493,6 +608,8 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     const acumulado= g.acumulado || {};
     const status   = g.status    || 'aguardando';
 
+    window._fbState = { fotos, status };
+
     if (lastStatus === 'finalizado' && (status === 'ativo' || status === 'aguardando')) {
       resetCompleto();
       atualizarContadorSorteio(cartelas, true);
@@ -514,12 +631,22 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
       falar('Atenção! Sorteio da série bronze iniciado!', true);
     }
 
-    sincronizarNumeros(drawn);
+    if (!cartelas.length) {
+      document.getElementById('tabelaBody').innerHTML = '<div class="aguardando-msg">Inicie o sorteio!</div>';
+      document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">Inicie o sorteio!</div>';
+      document.getElementById('stTotal').textContent = 'R$0';
+      document.getElementById('stLider').textContent = '—';
+      lastStatus = status;
+      return;
+    }
+    atualizarContadorSorteio(cartelas, false);
 
-    if (status === 'finalizado' && !jaAnunciouFim && cartelas.length > 0) {
+    sincronizarNumeros(drawn, cartelas, acumulado);
+
+    if (status === 'finalizado' && !jaAnunciouFim && cartelasVisuais.length > 0) {
       jaAnunciouFim = true;
-      const maxScore = Math.max(...cartelas.map(c => c.score));
-      const winners  = cartelas.filter(c => c.score === maxScore);
+      const maxScore = Math.max(...cartelasVisuais.map(c => c.score));
+      const winners  = cartelasVisuais.filter(c => c.score === maxScore);
       if (filaNumeros.length === 0 && !anunciandoNumero) {
         anunciarVencedorAgora(winners, maxScore);
       } else {
@@ -529,76 +656,6 @@ body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0a0a1a 0%
     if (status !== 'finalizado') jaAnunciouFim = false;
 
     lastStatus = status;
-
-    if (!cartelas.length) {
-      document.getElementById('tabelaBody').innerHTML = '<div class="aguardando-msg">Inicie o sorteio!</div>';
-      document.getElementById('cartelasGrid').innerHTML = '<div class="aguardando-msg">Inicie o sorteio!</div>';
-      document.getElementById('stTotal').textContent = 'R$0';
-      document.getElementById('stLider').textContent = '—';
-      return;
-    }
-    atualizarContadorSorteio(cartelas, false);
-
-    let total = 0;
-    cartelas.forEach(c => total += (acumulado[c.id]||0));
-    document.getElementById('stTotal').textContent = `R$${total.toFixed(2)}`;
-
-    const sorted   = [...cartelas].sort((a,b) => b.score-a.score || (acumulado[b.id]||0)-(acumulado[a.id]||0));
-    document.getElementById('stLider').textContent = sorted[0]?.name?.split(' ')[0] ?? '—';
-
-    const fin      = status === 'finalizado';
-    const maxScore = cartelas.length > 0 ? Math.max(...cartelas.map(c => c.score)) : 0;
-
-    document.getElementById('tabelaBody').innerHTML = sorted.map((c,i) => {
-      const acum   = acumulado[c.id]||0;
-      const isVenc = fin && c.score===maxScore && maxScore > 0;
-      const isLid  = !fin && i===0 && c.score>0;
-      const cls    = isVenc?'tabela-row vencedora':isLid?'tabela-row lider':'tabela-row';
-      const icon   = isVenc?'👑 ':isLid?'🔥 ':'';
-      const pct    = (c.score/16)*100;
-      const foto   = fotos[c.id]
-        ? `<img class="jogador-foto" src="${fotos[c.id]}"/>`
-        : `<div class="jogador-foto-vazia">👤</div>`;
-      const nomeCls= isVenc?'nome-txt vencedor-nome':'nome-txt';
-      const valCls = isVenc?'valor-txt vencedor-val':acum>0?'valor-txt tem-valor':'valor-txt zero';
-      const bdgCls = c.score>=8?'acertos-badge alto':'acertos-badge';
-      return `<div class="${cls}">
-        <div class="cel-cartela">C${c.id}</div>
-        <div class="cel-foto">${foto}</div>
-        <div class="cel-nome">
-          <div class="${nomeCls}">${icon}${c.name||'Jogador '+c.id}</div>
-          <div class="barra-acertos"><div class="barra-fill" style="width:${pct}%"></div></div>
-        </div>
-        <div class="cel-acertos"><span class="${bdgCls}">${c.score}/16</span></div>
-        <div class="cel-valor">
-          <div class="valor-bloco">
-            <div class="valor-label">TOTAL</div>
-            <div class="${valCls}">${acum>0?'R$&nbsp;'+acum.toFixed(2):'—'}</div>
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-
-    document.getElementById('cartelasGrid').innerHTML = cartelas.map(c => {
-      const isWinner = fin && c.score===maxScore && maxScore > 0;
-      const acum     = acumulado[c.id]||0;
-      const fotoHtml = fotos[c.id]
-        ? `<img class="cartela-foto" src="${fotos[c.id]}"/>`
-        : `<div class="cartela-foto-vazia">👤</div>`;
-      const marked = Array.isArray(c.markedNumbers)?c.markedNumbers:[];
-      const nums   = (Array.isArray(c.numbers)?c.numbers:[]).map(n =>
-        `<div class="num${marked.includes(n)?' marked':''}">${n}</div>`
-      ).join('');
-      return `<div class="cartela${isWinner?' winner':''}">
-        <div class="cartela-header">Cartela ${c.id}${isWinner?' 👑':''}</div>
-        <div class="cartela-player-wrap">${fotoHtml}<span class="cartela-player">${c.name||'Jogador '+c.id}</span></div>
-        <div class="cartela-numbers">${nums}</div>
-        <div class="cartela-footer">
-          <span class="acertos-txt">Acertos: <span class="acertos-num">${c.score}/16</span></span>
-          <span class="ganho-txt">${acum>0?'💰 R$ '+acum.toFixed(2):''}</span>
-        </div>
-      </div>`;
-    }).join('');
   }
 </script>
 </body>
